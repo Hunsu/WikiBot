@@ -24,7 +24,7 @@ public class TVSeries {
 		Wiki frWiki = new Wiki("fr.wikipedia.org");
 
 		try {
-			enWiki.login("Hunsu", "MegamiMonster");
+			//enWiki.login("Hunsu", "MegamiMonster");
 			frWiki.login("Hunsu", "MegamiMonster");
 
 			String frWikiTitle = "Saison 1 du Trône de fer";
