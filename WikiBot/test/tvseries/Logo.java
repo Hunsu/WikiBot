@@ -46,8 +46,8 @@ public class Logo {
 						System.out.println("Problem : page " + titles[i]+" contains more than one season template");
 					else{
 						String template = al.get(0);
-						String image = ParseUtils.getTemplateParam(template, "image");
-						if(image != null && !image.trim().equals(""))
+						String image = ParseUtils.getTemplateParam(template, "image",true);
+						if(image != null && !image.equals(""))
 							System.out.println("Warning : page "+titles[i]+" contains image");
 						else{
 							//FileUtils.writeStringToFile(new File(titles[i]+"o"), article);

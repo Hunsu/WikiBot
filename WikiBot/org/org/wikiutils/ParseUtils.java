@@ -205,18 +205,22 @@ public class ParseUtils {
 	 *            {{NAME|PARM1|PARAM2|...}}
 	 * @param param
 	 *            The parameter to retrieve, without "=".
+	 * @param trim 
 	 * 
 	 * @return The param we parsed out or null if we didn't find a param
 	 *         matching the specified criteria
 	 * 
 	 */
 
-	public static String getTemplateParam(String template, String param) {
+	public static String getTemplateParam(String template, String param, boolean trim) {
 		LinkedHashMap<String,String> map = getTemplateParametersWithValue(template);
 		if(map == null) return null;
 		for (String key : map.keySet())
 			if (key.trim().equals(param.trim()))
-				return map.get(key);
+				if(trim)
+					return map.get(key).trim();
+				else
+					return map.get(key);
 
 		return null; // if nothing matched
 	}
@@ -608,11 +612,14 @@ public class ParseUtils {
 	}
 
 	public static String getTemplateParam(LinkedHashMap<String, String> map,
-			String param) {
+			String param,boolean trim) {
 		for(String key : map.keySet())
 		{
 			if (key.trim().equals(param.trim()))
-				return map.get(key);
+				if(trim)
+					return map.get(key).trim();
+				else 
+					return map.get(key);
 		}
 		return null;
 	}

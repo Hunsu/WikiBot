@@ -167,15 +167,15 @@ public class LoggedInTests {
 
 	public static String correctDate(String template){
 		template = correctDate(template,"date");
-		template = correctDate(template,"consulté le");
-		template = correctDate(template,"en ligne le");
+		template = correctDate(template,"accessdate");
+		//template = correctDate(template,"en ligne le");
 		return template;
 	}
 	
 	public static String correctDate(String template, String param) {
-		String date = ParseUtils.getTemplateParam(template, param);
+		String date = ParseUtils.getTemplateParam(template, param,false);
 		if (date != null) {
-			Pattern p = Pattern.compile("(\\d\\d\\d\\d)-(\\d\\d?)-(\\d\\d?)|(\\d\\d?)/(\\d\\d?)/(\\d\\d\\d\\d)");
+			Pattern p = Pattern.compile("(\\d\\d\\d\\d)-(\\d\\d?)-(\\d\\d?)");
 			Matcher m = p.matcher(date);
 			if (m.find()) {
 				if (Integer.parseInt(m.group(2)) < 13) {
