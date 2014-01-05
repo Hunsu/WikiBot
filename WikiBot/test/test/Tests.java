@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import maintenance.Date;
+
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
@@ -18,11 +20,7 @@ public class Tests {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String template = "{{lien web"
-				+ "|       <!--------{{</nowiki>titre\n-->"
-				+ "|         url\n"
-				+ "|3        =site\n"
-				+ "}}";
+		String template = "{{date|..|.....|1883}}";
 		//ArrayList al = ParseUtils.getTemplates("lien web", template);
 		//HashMap<String, String> errors = LoggedInTests.getErrors("erreurs");
 		//template = ParseUtils.setTemplateParam(template, "éditeur ", "éditeur",true);
@@ -33,7 +31,7 @@ public class Tests {
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		ArrayList<String> al = wiki.getPagesInCategory("Saison de série télévisée", 700);
 		System.out.println(wiki.getArticleInSpecifLang("Desperate Housewives (season 6)", "fr"));*/
-		
+		template = Date.correctDate(template);
 		System.out.print(ParseUtils.removeTemplateParam(template, 2));
 
 	}

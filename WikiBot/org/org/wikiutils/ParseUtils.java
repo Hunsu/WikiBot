@@ -647,6 +647,18 @@ public class ParseUtils {
 		}
 		return null;
 	}
+
+	public static String getTemplateName(String template) {
+		if(template == null)
+			return null;
+		int index = template.indexOf("|");
+		String templateName;
+		if(index == -1)
+			templateName = template.substring(2,template.length()-2);
+		else
+			templateName = template.substring(2,index);
+		return templateName;
+	}
 	
 
 	/*
