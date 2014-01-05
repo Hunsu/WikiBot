@@ -25,10 +25,10 @@ public class Logo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String title = "Breaking Bad";
+		String title = "Lie to Me";
 		if(title.endsWith(" (série télévisée)"))
 			title = title.substring(0,title.length()-18);
-		addLogo(title,"Breaking Bad logo.svg");
+		addLogo(title,"Lie to Me.svg");
 	}
 
 	private static void addLogo(String title, String imageTitle) {
@@ -52,7 +52,7 @@ public class Logo {
 						else{
 							//FileUtils.writeStringToFile(new File(titles[i]+"o"), article);
 							template = ParseUtils.setTemplateParam(template, "image", imageTitle+"\n", true);
-							template = ParseUtils.setTemplateParam(template, "légende", "Logo de la série\n", true);
+							template = ParseUtils.setTemplateParam(template, "légende", "''Logo original de la série''\n", true);
 							article = article.replace(al.get(0), template);
 							FileUtils.writeStringToFile(new File(titles[i]), article);
 							wiki.edit(titles[i], article, "bot: ajout logo");

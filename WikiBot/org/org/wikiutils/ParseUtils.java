@@ -248,6 +248,28 @@ public class ParseUtils {
 		return template;
 	}
 	
+	public static String removeTemplateParam(String template, int number) {
+		String param = String.valueOf(number);
+		int i = number;
+		LinkedHashMap<String,String>  map = getTemplateParametersWithValue(template);
+		for(String key : map.keySet()){
+			if(param.equals(key.trim())){
+					map.remove(key);
+					return templateFromMap(map);
+			}
+			
+			else{
+				try{
+					if(Integer.parseInt(key.trim()) < number)
+						i--;
+				}catch (NumberFormatException e){}
+			}
+			
+		}
+		map.remove("ParamWithoutName"+i);
+		return templateFromMap(map);
+	}
+	
 	
 	
 	public static ArrayList<String> getTemplateParamerters(String template){
@@ -595,11 +617,13 @@ public class ParseUtils {
 		ArrayList<String> al = getTemplateParamerters(template);
 		if (al == null)
 			return map;
+		int j=1;
 		int size = al.size();
 		for(int i=0;i<size;i++){
 			index = al.get(i).indexOf("=");
 			if (index == -1) {
-				map.put("ParamWithoutName"+(i+1), al.get(i));
+				map.put("ParamWithoutName"+(j), al.get(i));
+				j++;
 			}
 			else
 			{

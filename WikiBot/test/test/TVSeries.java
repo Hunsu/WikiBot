@@ -17,7 +17,12 @@ public class TVSeries {
 
 	private static Wiki wiki = new Wiki();
 
-	public static void main(String[] args) {
+	
+	public void main(String args){
+		UpdateFRArticle("Saison 1 ");
+	}
+	
+	public static void UpdateFRArticle(String articleTitle) {
 		Wiki enWiki = new Wiki("en.wikipedia.org");
 		Wiki frWiki = new Wiki("fr.wikipedia.org");
 
@@ -25,12 +30,11 @@ public class TVSeries {
 			//enWiki.login("Hunsu", "MegamiMonster");
 			frWiki.login("Hunsu", "MegamiMonster");
 
-			String frWikiTitle = "Saison 7 de Cold Case : Affaires classées";
-			String enWikiTitle = frWiki.getArticleInSpecifLang(frWikiTitle,
+			String enWikiTitle = frWiki.getArticleInSpecifLang(articleTitle,
 					"en");
 
 			String enArticle = enWiki.getPageText(enWikiTitle);
-			String frArticle = frWiki.getPageText(frWikiTitle);
+			String frArticle = frWiki.getPageText(articleTitle);
 			String oldArticle = frArticle;
 
 			// frArticle = FileUtils.readFileToString(new
@@ -90,7 +94,7 @@ public class TVSeries {
             	return;
 			frArticle = frArticle.replace("{{Références}}", "{{Références|colonnes=2}}");
 			
-			frWiki.edit(frWikiTitle, frArticle,
+			frWiki.edit(articleTitle, frArticle,
 					"bot : ajout d'infos depuis WPen");
 
 		} catch (FailedLoginException e) {
@@ -124,7 +128,6 @@ public class TVSeries {
 					|| (enTitle == null && frEpisodeNumber == null)
 					|| (enEpisodeNumber == null && title == null))
 				return null;
-			boolean test = enTitle.contains(title.toLowerCase());
 			if ((frEpisodeNumber != null && frEpisodeNumber.startsWith(enEpisodeNumber + " ("))
 					|| (enTitle != null && enTitle.contains(title.toLowerCase())))
 				return enAl.get(i);
@@ -203,7 +206,7 @@ public class TVSeries {
 		if (originalAirDate == null || originalAirDate.trim().equals("")) {
 			originalAirDate = "\n*{{États-Unis}} : "
 					+ translateDate(
-							ParseUtils.getTemplateParam(map, "Aux3",true)
+							ParseUtils.getTemplateParam(map, "OriginalAirDate",true)
 									 + "\n", true);
 			template = ParseUtils.setTemplateParam(template,
 					"première diffusion", originalAirDate, true);
@@ -251,6 +254,10 @@ public class TVSeries {
 						} else
 							viewers += "\n" + viewer[i];
 					} else
+						viewers += "\n" + viewer[i];
+				}
+				else{
+					if( i != 0)
 						viewers += "\n" + viewer[i];
 				}
 			}

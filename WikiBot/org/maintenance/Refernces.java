@@ -3,14 +3,86 @@ package maintenance;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
+import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
 public class Refernces {
+
 	public static void main(String[] args) {
+		correctRefslist();
+	}
+
+	public static void correctRefslist() {
+		Wiki wiki = new Wiki("fr.wikipedia.org");
+		try {
+			wiki.login("Hunsu", "MegamiMonster");
+
+			String[] titles = wiki
+					.getCategoryMembers("Page utilisant un modèle avec un paramètre obsolète");
+			for (int i = 0; i < titles.length; i++) {
+				if (titles[i].toLowerCase().startsWith("catégorie:"))
+					continue;
+				else {
+					String text = wiki.getPageText(titles[i]);
+					String oldText = text;
+					ArrayList<String> al = ParseUtils.getTemplates("reflist",
+							text);
+					al.addAll(ParseUtils.getTemplates("Références", text));
+					al.addAll(ParseUtils.getTemplates("references", text));
+					// al.addAll(ParseUtils.getTemplates("multi bandeau",
+					// text));
+					if(al.size() > 1)
+						System.out.println("Problem : "+titles[i]);
+					for (int j = 0; j < al.size(); j++) {
+						String template = al.get(j);
+						template = ParseUtils.setTemplateParam(template, "templateName", "Références", false);
+						template = ParseUtils.renameTemplateParam(template, "group", "groupe", false);
+						template = ParseUtils.removeTemplateParam(template,
+								"colwidth");
+						for (int k = 1; k < 3; k++) {
+							String param = ParseUtils.getTemplateParam(
+									template, k);
+							if (param != null) {
+								if (param.trim().length() > 2 || param.trim().equals("1"))
+									template = ParseUtils.removeTemplateParam(
+											template, 1);
+								else {
+									try {
+										int cols = Integer.parseInt(param
+												.trim());
+										template = ParseUtils
+												.removeTemplateParam(template,
+														1);
+										template = ParseUtils.setTemplateParam(
+												template, "colonnes",
+												String.valueOf(cols), false);
+									} catch (Exception e) {
+										template = ParseUtils
+												.removeTemplateParam(template,
+														1);
+									}
+								}
+							}
+						}
+						text = text.replace(al.get(j), template);
+					}
+					if (!text.equals(oldText))
+						wiki.edit(titles[i], text, "bot: Maintenance");
+				}
+			}
+
+		} catch (IOException | LoginException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void coorectRefs() {
 		try {
 			FileInputStream fstream = new FileInputStream("titles.txt");
 			DataInputStream in = new DataInputStream(fstream);

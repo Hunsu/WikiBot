@@ -21,7 +21,7 @@ public class Tests {
 		String template = "{{lien web"
 				+ "|       <!--------{{</nowiki>titre\n-->"
 				+ "|         url\n"
-				+ "|1        =site\n"
+				+ "|3        =site\n"
 				+ "}}";
 		//ArrayList al = ParseUtils.getTemplates("lien web", template);
 		//HashMap<String, String> errors = LoggedInTests.getErrors("erreurs");
@@ -34,7 +34,7 @@ public class Tests {
 		ArrayList<String> al = wiki.getPagesInCategory("Saison de série télévisée", 700);
 		System.out.println(wiki.getArticleInSpecifLang("Desperate Housewives (season 6)", "fr"));*/
 		
-		System.out.print(ParseUtils.getTemplateParam(template, 2));
+		System.out.print(ParseUtils.removeTemplateParam(template, 2));
 
 	}
 

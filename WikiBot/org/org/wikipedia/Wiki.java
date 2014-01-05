@@ -1648,7 +1648,12 @@ public class Wiki implements Serializable {
 	 */
 	public void edit(String title, String text, String summary)
 			throws IOException, LoginException {
-		edit(title, text, summary, markminor, markbot, -2, null);
+		if(!hasNewMessages())
+			edit(title, text, summary, markminor, markbot, -2, null);
+		else{
+			System.out.println("New massage!\n");
+			System.exit(0);
+		}
 	}
 
 	/**
