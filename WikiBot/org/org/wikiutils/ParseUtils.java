@@ -399,7 +399,7 @@ public class ParseUtils {
 		template = template.substring(1);
 		Pattern p = Pattern.compile("\\{\\{\\s*("
 				+ Character.toLowerCase(firstChar) + "|"
-				+ Character.toUpperCase(firstChar) + ")" + Pattern.quote(template));
+				+ Character.toUpperCase(firstChar) + ")" + Pattern.quote(template)+"\\s*[\\|\\}]");
 		Matcher m = p.matcher(text);
 		while (m.find()) {
 			int startPos = m.start();
@@ -421,9 +421,10 @@ public class ParseUtils {
 				}
 				i++;
 			}
-			if (i > len-1)
+			if (i > len)
 				continue;
-			String temp = text.substring(startPos, i+1);
+			i = (i+1 > len) ? len : i+1;
+			String temp = text.substring(startPos, i);
 			if (!temp.endsWith("}}"))
 				temp = temp.substring(0,temp.length()-1);
 			al.add(temp);

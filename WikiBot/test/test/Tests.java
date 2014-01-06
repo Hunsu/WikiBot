@@ -20,7 +20,7 @@ public class Tests {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String template = "{{date|..|.....|1883}}";
+		String template = "{{date|}}";
 		//ArrayList al = ParseUtils.getTemplates("lien web", template);
 		//HashMap<String, String> errors = LoggedInTests.getErrors("erreurs");
 		//template = ParseUtils.setTemplateParam(template, "éditeur ", "éditeur",true);
@@ -32,7 +32,9 @@ public class Tests {
 		ArrayList<String> al = wiki.getPagesInCategory("Saison de série télévisée", 700);
 		System.out.println(wiki.getArticleInSpecifLang("Desperate Housewives (season 6)", "fr"));*/
 		template = Date.correctDate(template);
-		System.out.print(ParseUtils.removeTemplateParam(template, 2));
+		//ArrayList<String> al = ParseUtils.getTemplates("Date", template);
+	
+		System.out.print(template+"\n");
 
 	}
 

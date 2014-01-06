@@ -135,6 +135,12 @@ public class Date {
 		else
 			year1 = "";
 		// if(param != null && !param.trim().equals(""))
+		
+		if(month1.equals("") && param.equals("") && year.equals(""))
+			return "";
+		if(month1.equals("") && param.equals("") && !year.equals(""))
+			return year1;
+		
 
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 		map.put("templateName", templateName);
@@ -145,8 +151,12 @@ public class Date {
 				year1 = day1;
 				param = month1;
 				month1 = "";
-			} else
-				map.put("ParamWithoutName1", day1);
+			} else{
+				if(test == 0)
+					map.put("ParamWithoutName1", "");
+				else			
+					map.put("ParamWithoutName1", day1);
+			}
 		} catch (Exception e) {
 			if (day1.startsWith("..") || day1.startsWith("00")
 					|| day1.equals("0") || day1.startsWith("?")
@@ -155,6 +165,8 @@ public class Date {
 			else{
 				if(day != null)
 					map.put("ParamWithoutName1", day);
+				else
+					map.put("ParamWithoutName1", "");
 			}
 		}
 		if (month1.startsWith("..") || month1.startsWith("00")
@@ -166,45 +178,57 @@ public class Date {
 				int test = Integer.parseInt(month1);
 				map.put("ParamWithoutName2", new DateFormatSymbols().getMonths()[test - 1]);
 			} catch (Exception e) {
-				if(month1.equals(""))
-					if(month != null)
-						map.put("ParamWithoutName2", month);
-				else
+				if(month1.equals("") && month != null)
+					map.put("ParamWithoutName2", month);
+				if(month == null){
 					map.put("ParamWithoutName2", "");
+				}
 			}
 		} else {
 			if (month1.startsWith("..") || month1.startsWith("00")
 					|| month1.equals("0") || month1.startsWith("?")
 					|| month1.startsWith("-"))
 				map.put("ParamWithoutName2", "");
-			else
+			else{
 				if(month != null)
 					map.put("ParamWithoutName2", month);
+				else 
+					map.put("ParamWithoutName2", "");
+			}
+			
 		}
 		String s = "";
 		int index = year1.indexOf(" ");
 		if (year1.length() != 4 && index != -1)
 			s = year1.substring(0, index);
 		else
-			s = year1;
+			s = year;
 		try {
-			Integer.parseInt(s);
-			if (param == null) {
-				map.put("ParamWithoutName3", s);
+			if(Integer.parseInt(s) == 0)
+				map.put("ParamWithoutName3", "");
+			else{
+				if (param == null && s != null) {
+					map.put("ParamWithoutName3", s);
 				if (index != -1 && param == null)
 					map.put("ParamWithoutName4", year1.substring(index + 1));
 			} else {
 				if(year != null)
 					map.put("ParamWithoutName3", year);
+				else
+					map.put("ParamWithoutName3", "");
+			}
 			}
 		} catch (Exception e) {
 			if (year1.startsWith("..") || year1.startsWith("0")
 					|| year1.equals("0") || year1.startsWith("?")
 					|| year1.startsWith("-"))
 				map.put("ParamWithoutName3", "");
-			else
+			else{
 				if(year != null)
 					map.put("ParamWithoutName3", year);
+				else
+					map.put("ParamWithoutName3", "");
+			}			
 		}
 
 		if (param != null)
