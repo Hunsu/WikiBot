@@ -1561,6 +1561,37 @@ public class Wiki implements Serializable {
 		return temp;
 	}
 	
+	
+	public String getRedirectTitle(String title) {
+		try {
+			if (namespace(title) < 0)
+				throw new UnsupportedOperationException(
+						"Cannot retrieve Special: or Media: pages!");
+
+			// go for it
+			String url;
+
+			url = base + URLEncoder.encode(normalize(title), "UTF-8")
+					+ "&action=raw";
+
+			String temp;
+			temp = fetch(url, "getPageText");
+
+			log(Level.INFO, "getPageText", "Successfully retrieved text of "
+					+ title);
+			Pattern p = Pattern.compile("#(REDIRECTION|REDIRECT)\\s*\\[\\[(.*?)\\]\\]");
+			Matcher m = p.matcher(temp);
+			if (m.find())
+				return m.group(2);
+			else
+				return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public String getPageText(String title) throws IOException{
 		return getPageText(title,false);
 	}
@@ -2039,6 +2070,20 @@ public class Wiki implements Serializable {
 		log(Level.INFO, "purge", "Successfully purged " + titles.length
 				+ " pages.");
 	}
+	
+	
+	
+	public void purge(String title) throws IOException {
+		StringBuilder url = new StringBuilder("https://fr.wikipedia.org/w/index.php?title=");
+		title = URLEncoder
+		.encode(title, "UTF-8");
+		url.append(title);
+		url.append("&action=purge");
+
+			post(url.toString(), "&titles=" + title, "purge");
+	}
+	
+	
 
 	/**
 	 * Gets the list of images used on a particular page. Capped at <tt>max</tt>
