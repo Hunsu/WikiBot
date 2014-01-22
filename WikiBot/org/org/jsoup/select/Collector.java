@@ -10,6 +10,9 @@ import org.jsoup.nodes.Node;
  */
 public class Collector {
 
+    /**
+     * Instantiates a new collector.
+     */
     private Collector() {
     }
 
@@ -25,17 +28,36 @@ public class Collector {
         return elements;
     }
 
+    /**
+     * The Class Accumulator.
+     */
     private static class Accumulator implements NodeVisitor {
+        
+        /** The root. */
         private final Element root;
+        
+        /** The elements. */
         private final Elements elements;
+        
+        /** The eval. */
         private final Evaluator eval;
 
+        /**
+         * Instantiates a new accumulator.
+         *
+         * @param root the root
+         * @param elements the elements
+         * @param eval the eval
+         */
         Accumulator(Element root, Elements elements, Evaluator eval) {
             this.root = root;
             this.elements = elements;
             this.eval = eval;
         }
 
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#head(org.jsoup.nodes.Node, int)
+         */
         public void head(Node node, int depth) {
             if (node instanceof Element) {
                 Element el = (Element) node;
@@ -44,6 +66,9 @@ public class Collector {
             }
         }
 
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#tail(org.jsoup.nodes.Node, int)
+         */
         public void tail(Node node, int depth) {
             // void
         }

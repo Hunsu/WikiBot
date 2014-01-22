@@ -20,39 +20,43 @@ package test;
  */
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.wikipedia.ParserUtils;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+import Tools.Login;
+
 /**
  * Tests for Wiki.java which should only be run when logged in.
- * 
+ *
  * @author MER-C
  */
 public class LoggedInTests {
+
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws Exception the exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		Wiki wiki = new Wiki("fr.wikipedia.org");
-		wiki.login("Hunsu", "MegamiMonster");
-		HashMap<String, String> errors = getErrors("erreurs");
+		Login login = new Login();
+		wiki.login(login.getLogin(), login.getPassword());
+		HashMap<String, String> errors = getErrors("err1");
 
 		try {
-			FileInputStream fstream = new FileInputStream("title.txt");
+			FileInputStream fstream = new FileInputStream("titles.txt");
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			//Writer out = new PrintWriter("");
@@ -64,7 +68,7 @@ public class LoggedInTests {
 						break;
 					}
 					else{
-						if(i<8784){
+						if(i<4683){
 							i++;
 							continue;
 						}
@@ -78,19 +82,14 @@ public class LoggedInTests {
 					int nb = al.size();
 					for (int k=0;k<nb;k++) {
 						text = text.replace(al.get(k),citeWeb(al.get(k),errors));
-
-						/*
-						 * String lienWeb = citeWeb(map.get(key)); text =
-						 * text.replace(map.get(key), lienWeb);
-						 */
 					}
-					
+
 					//wiki.edit("Utilisateur:Hunsu/Brouillons", text, "");
 					if(oldtext.equals(text)){
 						System.out.println(strLine);
 						continue;
 					}
-						
+
 					else{
 						text = text.replace("{{pdf}} {{lien web", "{{lien web|format=pdf");
 						text = text.replace("{{Pdf}} {{lien web", "{{lien web|format=pdf");
@@ -101,22 +100,10 @@ public class LoggedInTests {
 						wiki.edit(strLine, text, "Maintenance lien web");
 						System.out.println(strLine);
 					}
-					if (i % 5 == 0){
-						if(wiki.hasNewMessages()){
-							System.out.print("true\n");
-							System.exit(-1);
-						}
-					}
-					//out.write(text);
-					//out.flush();
-					// text = text.replaceAll(pattern, "|consulté le=");
-
-					// wiki.edit(strLine, text, "Maintenance lien web");
 				} catch (Exception e) {
 					System.out.print("Erreur" + e);
 					e.printStackTrace();
 				}
-				// if (wiki.hasNewMessages()) break;
 
 			}
 			//out.close();
@@ -128,11 +115,18 @@ public class LoggedInTests {
 
 	}
 
+	/**
+	 * Cite web.
+	 *
+	 * @param template the template
+	 * @param map the map
+	 * @return the string
+	 */
 	public static String citeWeb(String template, HashMap<String,String> map) {
 		for (String key : map.keySet()) {
 			String value = map.get(key);
-			if(value.equals("sup"))
-				template = ParseUtils.removeTemplateParam(template, key);
+			if(value.trim().equals("sup"))
+				template = ParseUtils.removeTemplateParam(template, key.trim());
 			else
 				template = ParseUtils.renameTemplateParam(template, key, value,false);
 		}
@@ -140,13 +134,19 @@ public class LoggedInTests {
 			template = correctDate(template);
 		}
 		catch(Exception e){}
-		
+
 		return template;
 	}
 
+	/**
+	 * Gets the errors.
+	 *
+	 * @param filename the filename
+	 * @return the errors
+	 */
 	public static HashMap<String, String> getErrors(String filename) {
 		try {
-			FileInputStream fstream = new FileInputStream("erreurs");
+			FileInputStream fstream = new FileInputStream(filename);
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String line = "";
@@ -165,13 +165,26 @@ public class LoggedInTests {
 		}
 	}
 
+	/**
+	 * Correct date.
+	 *
+	 * @param template the template
+	 * @return the string
+	 */
 	public static String correctDate(String template){
 		template = correctDate(template,"date");
-		template = correctDate(template,"accessdate");
+		template = correctDate(template,"consulté le");
 		//template = correctDate(template,"en ligne le");
 		return template;
 	}
-	
+
+	/**
+	 * Correct date.
+	 *
+	 * @param template the template
+	 * @param param the param
+	 * @return the string
+	 */
 	public static String correctDate(String template, String param) {
 		String date = ParseUtils.getTemplateParam(template, param,false);
 		if (date != null) {
@@ -218,6 +231,12 @@ public class LoggedInTests {
 		return template;
 	}
 
+	/**
+	 * Gets the format.
+	 *
+	 * @param format the format
+	 * @return the format
+	 */
 	public static String getFormat(String format) {
 		format = format.toLowerCase();
 		if (format.equalsIgnoreCase("asp") || format.equalsIgnoreCase("asf")
@@ -252,7 +271,13 @@ public class LoggedInTests {
 
 		return null;
 	}
-	
+
+	/**
+	 * Removes the parameters.
+	 *
+	 * @param template the template
+	 * @return the string
+	 */
 	public static String removeParameters(String template){
 		template = ParseUtils.removeTemplateParam(template, "archiveurl");
 		template = ParseUtils.removeTemplateParam(template, "archiveurl");
@@ -305,10 +330,10 @@ public class LoggedInTests {
  * "consutlté le"
  * ,"consulté-le","consulté ke","Consulté le","Consulte le","consnulté le",
  * "conslté le","consultm le"};
- * 
+ *
  * Wiki wiki = new Wiki("fr.wikipedia.org"); wiki.login("Hunsu",
  * "MegamiMonster");
- * 
+ *
  * try{ // Open the file that is the first // command line parameter
  * FileInputStream fstream = new FileInputStream("title.txt"); // Get the object
  * of DataInputStream DataInputStream in = new DataInputStream(fstream);
@@ -319,7 +344,7 @@ public class LoggedInTests {
  * text = text.replaceAll(pattern, "|consulté le="); } wiki.edit(strLine, text,
  * "Maintenance lien web"); }catch(Exception e){ System.out.print("Erreur + e");
  * } if (wiki.hasNewMessages()) break;
- * 
+ *
  * } //Close the input stream in.close(); }catch (Exception e){//Catch exception
  * if any System.err.println("Error: " + e.getMessage()); }
  */

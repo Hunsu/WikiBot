@@ -22,7 +22,7 @@ public class StringUtils
 {
 	
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private StringUtils()
 	{
@@ -64,12 +64,13 @@ public class StringUtils
 	 * separated by a newline character. Space characters are ignored. The ignore list is case
 	 * sensitive, and only checks if each String in the list starts with the specified text; this is
 	 * useful for parsing out comments and/or unwanted crap.
-	 * 
+	 *
 	 * @param s The String to use (must be delimited by new line chars)
 	 * @param prefix Adds a prefix to the beginning of each element. Specify "" for no prefix.
 	 * @param ignorelist If an item in the list contains a String in this list, it won't be included
-	 *           in the final result. Whatever you do, don't put an empty string in here; you'll be
-	 *           sorry :3
+	 * in the final result. Whatever you do, don't put an empty string in here; you'll be
+	 * sorry :3
+	 * @return the string[]
 	 */
 
 	public static String[] listify(String s, String prefix, String... ignorelist)
@@ -124,11 +125,9 @@ public class StringUtils
 	
 	/**
 	 * Parses out the extension of a file.
-	 * 
+	 *
 	 * @param f The file to get an extension from
-	 * @throws IllegalArgumentException If <tt>f</tt> is a directory.
 	 * @return The extension of the file, without the "."
-	 * 
 	 * @see #getFileExt(String)
 	 */
 	public static String getFileExt(File f)

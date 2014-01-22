@@ -27,13 +27,16 @@ import java.util.zip.*;
 import org.wikipedia.Wiki;
 
 /**
- *
+ * The Class CCIAnalyzer.
  */
 public class CCIAnalyzer
 {
 
     /**
+     * The main method.
+     *
      * @param args the command line arguments
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(String[] args) throws IOException
     {
@@ -129,6 +132,13 @@ public class CCIAnalyzer
         return false;
     }
     
+    /**
+     * Fetch.
+     *
+     * @param url the url
+     * @return the string
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private static String fetch(String url) throws IOException
     {
         // connect

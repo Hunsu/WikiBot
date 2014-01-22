@@ -13,7 +13,10 @@ public class TextNode extends Node {
     memory, and the child nodes are never used. So we don't have them, and override accessors to attributes to create
     them as needed on the fly.
      */
+    /** The Constant TEXT_KEY. */
     private static final String TEXT_KEY = "text";
+    
+    /** The text. */
     String text;
 
     /**
@@ -28,6 +31,9 @@ public class TextNode extends Node {
         this.text = text;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#nodeName()
+     */
     public String nodeName() {
         return "#text";
     }
@@ -89,6 +95,9 @@ public class TextNode extends Node {
         return tailNode;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlHead(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         String html = Entities.escape(getWholeText(), out);
         if (out.prettyPrint() && parent() instanceof Element && !Element.preserveWhitespace((Element) parent())) {
@@ -100,15 +109,23 @@ public class TextNode extends Node {
         accum.append(html);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlTail(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out) {}
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#toString()
+     */
     public String toString() {
         return outerHtml();
     }
 
     /**
      * Create a new TextNode from HTML encoded (aka escaped) data.
+     *
      * @param encodedText Text containing encoded HTML (e.g. &amp;lt;)
+     * @param baseUri the base uri
      * @return TextNode containing unencoded data (e.g. &lt;)
      */
     public static TextNode createFromEncoded(String encodedText, String baseUri) {
@@ -116,20 +133,41 @@ public class TextNode extends Node {
         return new TextNode(text, baseUri);
     }
 
+    /**
+     * Normalise whitespace.
+     *
+     * @param text the text
+     * @return the string
+     */
     static String normaliseWhitespace(String text) {
         text = StringUtil.normaliseWhitespace(text);
         return text;
     }
 
+    /**
+     * Strip leading whitespace.
+     *
+     * @param text the text
+     * @return the string
+     */
     static String stripLeadingWhitespace(String text) {
         return text.replaceFirst("^\\s+", "");
     }
 
+    /**
+     * Last char is whitespace.
+     *
+     * @param sb the sb
+     * @return true, if successful
+     */
     static boolean lastCharIsWhitespace(StringBuilder sb) {
         return sb.length() != 0 && sb.charAt(sb.length() - 1) == ' ';
     }
 
     // attribute fiddling. create on first access.
+    /**
+     * Ensure attributes.
+     */
     private void ensureAttributes() {
         if (attributes == null) {
             attributes = new Attributes();
@@ -137,36 +175,54 @@ public class TextNode extends Node {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#attr(java.lang.String)
+     */
     @Override
     public String attr(String attributeKey) {
         ensureAttributes();
         return super.attr(attributeKey);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#attributes()
+     */
     @Override
     public Attributes attributes() {
         ensureAttributes();
         return super.attributes();
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#attr(java.lang.String, java.lang.String)
+     */
     @Override
     public Node attr(String attributeKey, String attributeValue) {
         ensureAttributes();
         return super.attr(attributeKey, attributeValue);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#hasAttr(java.lang.String)
+     */
     @Override
     public boolean hasAttr(String attributeKey) {
         ensureAttributes();
         return super.hasAttr(attributeKey);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#removeAttr(java.lang.String)
+     */
     @Override
     public Node removeAttr(String attributeKey) {
         ensureAttributes();
         return super.removeAttr(attributeKey);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#absUrl(java.lang.String)
+     */
     @Override
     public String absUrl(String attributeKey) {
         ensureAttributes();

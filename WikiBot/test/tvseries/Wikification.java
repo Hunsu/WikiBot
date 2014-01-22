@@ -2,30 +2,64 @@ package tvseries;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+import Tools.Login;
 import test.TVSeries;
 
+/**
+ * The Class Wikification.
+ */
 public class Wikification {
 
+	private static Wiki wiki = new Wiki("fr.wikipedia.org");
+
+	/**
+	 * Instantiates a new wikification.
+	 */
 	public Wikification() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
-		String title = "Saison 4 des Experts : Manhattan";
-		Wiki wiki = new Wiki("fr.wikipedia.org");
+		String category = "Saison de Friends";
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
-			String text = wiki.getPageText(title);
-			text = wikifiy(text);
+			boolean dosave = true;
+			boolean test = false;
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
+			if(dosave){
+				saveToPages();
+				return;
+			}
+			if(test){
+				test();
+				return;
+			}
+
+			String text = "";
+			String [] titles = wiki.getCategoryMembers(category);
+			for(int i=0;i<titles.length;i++){
+				String txt = wiki.getPageText(titles[i]);
+				if(txt.indexOf("{{Saison de série télévisée/Épisode") != -1)
+					continue;
+				txt = wikifiy(txt);
+				txt = "<title>" + titles[i]+"</title>" + txt + "</endpage>";
+				text = text + txt;
+			}
+			text = process(text);
 			wiki.edit("Utilisateur:Hunsu/Brouillons", text, "bot: Wikification");
-			//wiki.edit(title, text, "bot: Wikification");
-			//TVSeries.UpdateFRArticle(title);
 
 		} catch (LoginException | IOException e) {
 			// TODO Auto-generated catch block
@@ -60,30 +94,68 @@ public class Wikification {
 	 * ref startIndex); } return s; }
 	 */
 
+	private static void test() throws IOException, LoginException {
+		String text = wiki.getPageText("Utilisateur:Hunsu/Brouillons");
+		text = formatInvites(text);
+		wiki.edit("Utilisateur:Hunsu/Brouillons", text, "");
+	}
+
+	private static String process(String text) {
+		ArrayList<String> al = ParseUtils.getTemplates("Saison de série télévisée/Épisode", text);
+		for(int i=0;i<al.size();i++){
+			String resume = ParseUtils.getTemplateParam(al.get(i), "résumé", true);
+			if(resume != null){
+				if(!resume.startsWith("<ref"))
+					continue;
+				int end = resume.indexOf("</ref>");
+				String ref = null;
+				if(end != -1){
+					ref = resume.substring(0, end+6);
+					resume = resume.replace(ref, "").replaceFirst("^\\s*:\\s*", "");
+					String title = ParseUtils.getTemplateParam(al.get(i), "titre original", true);
+					String template = ParseUtils.setTemplateParam(al.get(i), "titre original", title+ref+"\n", true);
+					template = ParseUtils.setTemplateParam(template, "résumé", resume+"\n", true);
+					text = text.replace(al.get(i), template);
+				}
+			}
+		}
+		return text;
+	}
+
+	/**
+	 * Reg ex replace.
+	 *
+	 * @param s the s
+	 * @param pattern the pattern
+	 * @param replacement the replacement
+	 * @return the string
+	 */
 	public static String RegExReplace(String s, String pattern,
 			String replacement) {
 		return s.replaceAll(pattern, replacement);
 	}
 
+	/**
+	 * Wikifiy.
+	 *
+	 * @param s the s
+	 * @return the string
+	 */
 	public static String wikifiy(String s) {
 		String titlePattern = "(?i)\\*\\s*'''Titre original\\s*:?\\s*'''\\s*:?\\s*''(.*)''|\\*\\s*Titre original\\s*:\\s*''(.*)''";
 		String numbPattern = "(?i)\\*\\s*'''Numéros?\\(?s?\\)?'''\\s*:|\\*\\s*'''Episode N°'''\\s*:";
 		String autPattern = "(?i)\\*\\s*'''Autres? titres?( francophone)?'''\\s*:\\s*''(.*)''";
 		String scPattern = "(?i)\\*\\s*'''Scénariste\\(?s?\\)?\\s*:?\\s*'''\\s*:?";
 		String dirPattern = "(?i)\\*\\s*'''Réalisat(eur|ion)\\(?s?\\)?'''\\s*:";
-		String diffPattern = "(?i)\\*\\s*'''Diffusion\\(?s?\\)?'''\\s*:|\\*Diffusion\\s*:|\\*\\s*'''Diffusion\\(s\\)\\s*:";
+		String diffPattern = "(?i)\\*\\s*'''Diffusion\\(?s?\\)?'''\\s*:|\\*Diffusion\\s*:|\\*\\s*'''Diffusion\\(s\\)\\s*:|\\s*'''Première diffusion'''\\s*:";
 		String audPattern = "(?i)\\*\\s*'''Audiences?\\(?s?\\)?'''\\s*:|\\*\\s*'''Audience\\(s\\)''' É.-U. :";
 		String invPattern = "(?i)\\*\\s*'''(Acteurs secondaires)?(Invité\\(e?s\\))?'''.*:|\\*\\s*'''Invité'''.*:|\\*\\s*'''Invitée'''.*:|\\*\\s*Invité.*:|\\*\\s*'''Invité\\(e\\)s'''.*:|\\*'''Invités'''.*?:";
 		String resPattern = "(?i)\\*\\s*'''Résumé'''\\s*:|\\*'''résumé''' :|\\*''' Résumé''' :|\\*'''Synopsis''' :|\\*\\s*Synopsis\\s*:|\\*'''Résumé''' :";
 		String refPattern = "(?i)\\*\\s*'''Références'''\\s*:|\\*\\s*'''Clin d’œil'''\\s*:";
 		String comPattern = "(?i)\\*\\s*'''(Commentaires?\\(?s?\\)?)?(Remarques?)?'''\\s*:|\\* '''Note''' :|\\*\\s*Note :|\\*\\s*'''Notes'''\\s*:|\\*\\s*'''commentaire'''\\s*:";
-		String codeProductionPattern = "(?i)\\*'''Production'''\\s*:";
+		String codeProductionPattern = "(?i)\\*'''Production'''\\s*:|\\*'''Code de production'''\\s*:";
 		String codeProduction = "(?i)/ Prod°(.*)";
 		String qctitle = "(?i)\\*\\s*'''Titre québécois'''\\s*:'?'?(.*)'?'?";
-
-		String date = "(?i)\\[?\\[?(\\d\\d?)\\s*(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\\]?\\]?\\s*\\[?\\[?(\\d\\d\\d\\d)\\]?\\]?";
-
-		String date2 = "(?i)\\[?\\[?1er\\s*(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\\]\\]\\s*\\[\\[(\\d\\d\\d\\d)\\]\\]";
 
 		// String spaces = @"\n\s*\n";
 		s = RegExReplace(s, titlePattern,
@@ -100,14 +172,12 @@ public class Wikification {
 		s = RegExReplace(s, resPattern, "| résumé             =");
 		s = RegExReplace(s, comPattern, "| commentaire        =");
 		s = RegExReplace(s, codeProduction, "\n| code de production = $1");
-		s = RegExReplace(s, date, "{{date rapide|$1|$2|$3}}");
-		s = RegExReplace(s, date2, "{{date rapide|1|$1|$2}}");
 		s = RegExReplace(s, codeProductionPattern, "| code de production =");
+		s = RegExReplace(s, "\\*'''Autre titre français\\s*:\\s* '?'?(.*?)'?'?","| autre titre     = $1");
 		s = s.replace("*'''Résumé''' :", "| résumé   =");
 		s = s.replace("* '''Remarque(s)''' :", "| commentaire =");
 		s = s.replace("* '''Remarque(s)''':", "| commentaire =")
 				.replace("'''Notes''' :", "| commentaire =")
-				.replace("{{Date", "{{Date rapide")
 				.replace("* '''Production''' :", "| code de production =")
 				.replace("*'''Note''' :", "| commentaire =")
 				.replace("*'''Titre original''' :",
@@ -122,7 +192,6 @@ public class Wikification {
 				.replace("{{BE}}", "{{Belgique}}")
 				.replace("{{QUE}}", "{{Québec}}")
 				.replace("{{QC}}", "{{Québec}}")
-				.replace("{{date|", "{{date rapide|")
 				.replace("* '''première diffusion''' :",
 						"| première diffusion = ")
 				.replace("*'''Résumé ''' :", "| résumé             =")
@@ -147,7 +216,7 @@ public class Wikification {
 		s = RegExReplace(s, invPattern, "| invités            =");
 
 		invPattern = "(?i)\\*\\s*'''Distribution''' (\\(''Invités''\\))?\\s*:";
-		resPattern = "(?s)(?i)\\*\\s*'''Résumé'''.*? : ";
+		resPattern = "(?s)(?i)\\*\\s*'''Résumé'''\\s*:?";
 		s = RegExReplace(s,resPattern,"| résumé             =");
 		s = RegExReplace(s, invPattern, "| invités            =");
 
@@ -192,7 +261,13 @@ public class Wikification {
 
 		return s;
 	}
-	
+
+	/**
+	 * Format invites.
+	 *
+	 * @param text the text
+	 * @return the string
+	 */
 	public static String formatInvites(String text){
 		ArrayList<String> al = ParseUtils.getTemplates("Saison de série télévisée/Épisode", text);
 		int size = al.size();
@@ -201,6 +276,24 @@ public class Wikification {
 			String guest = ParseUtils.getTemplateParam(template, "invités", true);
 			if(guest != null && !guest.equals("")){
 				String inv = "\n* " + guest.replace(",", "\n* ").replace(" et ", "\n* ") + "\n";
+				String[] invs = inv.trim().split("\\n");
+				String temp = "";
+				inv = "";
+				for(int j=0;j<invs.length;j++){
+					if(temp.equals("") && invs[j].length() > 1){
+						temp = invs[j].substring(1);
+					}else{
+							if(temp.length() > 0 && invs[j].length() > 1)
+								temp += "," + invs[j].substring(1);
+					}
+
+					if(ParseUtils.countOccurrences(temp, "(") == ParseUtils.countOccurrences(temp, ")" )){
+						inv += "\n*" +temp;
+						temp = "";
+					}
+
+				}
+				inv =inv + "\n";
 				if(inv.endsWith(".\n"))
 					inv = inv.substring(0,inv.length()-2) + "\n";
 				template = ParseUtils.setTemplateParam(template, "invités", inv, true);
@@ -213,8 +306,45 @@ public class Wikification {
 				text.replace(al.get(i), template);
 			}
 		}
+		if(text.endsWith("*\n"))
+			text = text.substring(0, text.length()-2) + "\n";
 		return text;
 	}
-	
 
+	private static void saveToPages() throws IOException, LoginException{
+		String text = wiki.getPageText("Utilisateur:Hunsu/Brouillons");
+		String title = null;
+		while((title = getPageTitle(text)) != null){
+			int start = text.indexOf("</title>");
+			int end = text.indexOf("</endpage>");
+			if(start == -1 || end == -1)
+				return;
+			start += 8;
+			String page = text.substring(start, end);
+			page = beforeSave(page);
+			text = text.substring(end+10);
+			wiki.edit(title, page, "bot: wikification");
+			TVSeries.UpdateFRArticle(title);
+	}
 }
+
+	private static String getPageTitle(String text) {
+		int start = text.indexOf("<title>");
+		int end = text.indexOf("</title>");
+		if(start ==-1 || end == -1)
+		return null;
+		return text.substring(start+7,end);
+	}
+
+	private static String beforeSave(String text){
+		text = text.replace("{{pdf}} {{lien web", "{{lien web|format=pdf");
+		text = text.replace("{{Pdf}} {{lien web", "{{lien web|format=pdf");
+		text = text.replace("{{Pdf}} {{Lien web", "{{Lien web|format=pdf");
+		text = text.replace("{{pdf}} {{Lien web", "{{Lien web|format=pdf");
+		text = text.replace("{{en}} {{lien web", "{{lien web|langue=en");
+		text = text.replace("{{en}} {{Lien web", "{{Lien web|langue=en");
+		return text;
+	}
+}
+
+

@@ -14,24 +14,49 @@ import java.util.*;
 
  @author Jonathan Hedley, jonathan@hedley.net */
 public class Elements implements List<Element>, Cloneable {
+    
+    /** The contents. */
     private List<Element> contents;
 
+    /**
+     * Instantiates a new elements.
+     */
     public Elements() {
         contents = new ArrayList<Element>();
     }
 
+    /**
+     * Instantiates a new elements.
+     *
+     * @param initialCapacity the initial capacity
+     */
     public Elements(int initialCapacity) {
         contents = new ArrayList<Element>(initialCapacity);
     }
 
+    /**
+     * Instantiates a new elements.
+     *
+     * @param elements the elements
+     */
     public Elements(Collection<Element> elements) {
         contents = new ArrayList<Element>(elements);
     }
     
+    /**
+     * Instantiates a new elements.
+     *
+     * @param elements the elements
+     */
     public Elements(List<Element> elements) {
         contents = elements;
     }
     
+    /**
+     * Instantiates a new elements.
+     *
+     * @param elements the elements
+     */
     public Elements(Element... elements) {
         this(Arrays.asList(elements));
     }
@@ -202,6 +227,11 @@ public class Elements implements List<Element>, Cloneable {
         return sb.toString();
     }
 
+    /**
+     * Checks for text.
+     *
+     * @return true, if successful
+     */
     public boolean hasText() {
         for (Element element: contents) {
             if (element.hasText())
@@ -254,9 +284,10 @@ public class Elements implements List<Element>, Cloneable {
 
     /**
      * Update the tag name of each matched element. For example, to change each {@code <i>} to a {@code <em>}, do
-     * {@code doc.select("i").tagName("em");}
+     *
      * @param tagName the new tag name
      * @return this, for chaining
+     * {@code doc.select("i").tagName("em");}
      * @see Element#tagName(String)
      */
     public Elements tagName(String tagName) {
@@ -332,13 +363,14 @@ public class Elements implements List<Element>, Cloneable {
     }
 
     /**
-     Wrap the supplied HTML around each matched elements. For example, with HTML
-     {@code <p><b>This</b> is <b>Jsoup</b></p>},
-     <code>doc.select("b").wrap("&lt;i&gt;&lt;/i&gt;");</code>
-     becomes {@code <p><i><b>This</b></i> is <i><b>jsoup</b></i></p>}
-     @param html HTML to wrap around each element, e.g. {@code <div class="head"></div>}. Can be arbitrarily deep.
-     @return this (for chaining)
-     @see Element#wrap
+     * Wrap the supplied HTML around each matched elements. For example, with HTML
+     *
+     * @param html HTML to wrap around each element, e.g. {@code <div class="head"></div>}. Can be arbitrarily deep.
+     * @return this (for chaining)
+     * {@code <p><b>This</b> is <b>Jsoup</b></p>},
+     * <code>doc.select("b").wrap("&lt;i&gt;&lt;/i&gt;");</code>
+     * becomes {@code <p><i><b>This</b></i> is <i><b>jsoup</b></i></p>}
+     * @see Element#wrap
      */
     public Elements wrap(String html) {
         Validate.notEmpty(html);
@@ -355,10 +387,10 @@ public class Elements implements List<Element>, Cloneable {
      * This is useful for e.g removing unwanted formatting elements but keeping their contents.
      * <p/>
      * E.g. with HTML: {@code <div><font>One</font> <font><a href="/">Two</a></font></div>}<br/>
-     * {@code doc.select("font").unwrap();}<br/>
-     * HTML = {@code <div>One <a href="/">Two</a></div>}
      *
      * @return this (for chaining)
+     * {@code doc.select("font").unwrap();}<br/>
+     * HTML = {@code <div>One <a href="/">Two</a></div>}
      * @see Node#unwrap
      */
     public Elements unwrap() {
@@ -509,53 +541,128 @@ public class Elements implements List<Element>, Cloneable {
     }
 
     // implements List<Element> delegates:
+    /* (non-Javadoc)
+     * @see java.util.List#size()
+     */
     public int size() {return contents.size();}
 
+    /* (non-Javadoc)
+     * @see java.util.List#isEmpty()
+     */
     public boolean isEmpty() {return contents.isEmpty();}
 
+    /* (non-Javadoc)
+     * @see java.util.List#contains(java.lang.Object)
+     */
     public boolean contains(Object o) {return contents.contains(o);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#iterator()
+     */
     public Iterator<Element> iterator() {return contents.iterator();}
 
+    /* (non-Javadoc)
+     * @see java.util.List#toArray()
+     */
     public Object[] toArray() {return contents.toArray();}
 
+    /* (non-Javadoc)
+     * @see java.util.List#toArray(java.lang.Object[])
+     */
     public <T> T[] toArray(T[] a) {return contents.toArray(a);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#add(java.lang.Object)
+     */
     public boolean add(Element element) {return contents.add(element);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#remove(java.lang.Object)
+     */
     public boolean remove(Object o) {return contents.remove(o);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#containsAll(java.util.Collection)
+     */
     public boolean containsAll(Collection<?> c) {return contents.containsAll(c);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#addAll(java.util.Collection)
+     */
     public boolean addAll(Collection<? extends Element> c) {return contents.addAll(c);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#addAll(int, java.util.Collection)
+     */
     public boolean addAll(int index, Collection<? extends Element> c) {return contents.addAll(index, c);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#removeAll(java.util.Collection)
+     */
     public boolean removeAll(Collection<?> c) {return contents.removeAll(c);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#retainAll(java.util.Collection)
+     */
     public boolean retainAll(Collection<?> c) {return contents.retainAll(c);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#clear()
+     */
     public void clear() {contents.clear();}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public boolean equals(Object o) {return contents.equals(o);}
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     public int hashCode() {return contents.hashCode();}
 
+    /* (non-Javadoc)
+     * @see java.util.List#get(int)
+     */
     public Element get(int index) {return contents.get(index);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#set(int, java.lang.Object)
+     */
     public Element set(int index, Element element) {return contents.set(index, element);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#add(int, java.lang.Object)
+     */
     public void add(int index, Element element) {contents.add(index, element);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#remove(int)
+     */
     public Element remove(int index) {return contents.remove(index);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#indexOf(java.lang.Object)
+     */
     public int indexOf(Object o) {return contents.indexOf(o);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#lastIndexOf(java.lang.Object)
+     */
     public int lastIndexOf(Object o) {return contents.lastIndexOf(o);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#listIterator()
+     */
     public ListIterator<Element> listIterator() {return contents.listIterator();}
 
+    /* (non-Javadoc)
+     * @see java.util.List#listIterator(int)
+     */
     public ListIterator<Element> listIterator(int index) {return contents.listIterator(index);}
 
+    /* (non-Javadoc)
+     * @see java.util.List#subList(int, int)
+     */
     public List<Element> subList(int fromIndex, int toIndex) {return contents.subList(fromIndex, toIndex);}
 }

@@ -48,10 +48,20 @@ import java.util.Set;
  @author Jonathan Hedley
  */
 public class Whitelist {
+    
+    /** The tag names. */
     private Set<TagName> tagNames; // tags allowed, lower case. e.g. [p, br, span]
+    
+    /** The attributes. */
     private Map<TagName, Set<AttributeKey>> attributes; // tag -> attribute[]. allowed attributes [href] for a tag.
+    
+    /** The enforced attributes. */
     private Map<TagName, Map<AttributeKey, AttributeValue>> enforcedAttributes; // always set these attribute values
+    
+    /** The protocols. */
     private Map<TagName, Map<AttributeKey, Set<Protocol>>> protocols; // allowed URL protocols for attributes
+    
+    /** The preserve relative links. */
     private boolean preserveRelativeLinks; // option to preserve relative links
 
     /**
@@ -321,7 +331,8 @@ public class Whitelist {
     }
 
     /**
-     * Test if the supplied tag is allowed by this whitelist
+     * Test if the supplied tag is allowed by this whitelist.
+     *
      * @param tag test tag
      * @return true if allowed
      */
@@ -330,7 +341,8 @@ public class Whitelist {
     }
 
     /**
-     * Test if the supplied attribute is allowed by this whitelist for this tag
+     * Test if the supplied attribute is allowed by this whitelist for this tag.
+     *
      * @param tagName tag to consider allowing the attribute in
      * @param el element under test, to confirm protocol
      * @param attr attribute under test
@@ -355,6 +367,14 @@ public class Whitelist {
         return !tagName.equals(":all") && isSafeAttribute(":all", el, attr);
     }
 
+    /**
+     * Test valid protocol.
+     *
+     * @param el the el
+     * @param attr the attr
+     * @param protocols the protocols
+     * @return true, if successful
+     */
     private boolean testValidProtocol(Element el, Attribute attr, Set<Protocol> protocols) {
         // try to resolve relative urls to abs, and optionally update the attribute so output html has abs.
         // rels without a baseuri get removed
@@ -373,6 +393,12 @@ public class Whitelist {
         return false;
     }
 
+    /**
+     * Gets the enforced attributes.
+     *
+     * @param tagName the tag name
+     * @return the enforced attributes
+     */
     Attributes getEnforcedAttributes(String tagName) {
         Attributes attrs = new Attributes();
         TagName tag = TagName.valueOf(tagName);
@@ -387,54 +413,127 @@ public class Whitelist {
     
     // named types for config. All just hold strings, but here for my sanity.
 
+    /**
+     * The Class TagName.
+     */
     static class TagName extends TypedValue {
+        
+        /**
+         * Instantiates a new tag name.
+         *
+         * @param value the value
+         */
         TagName(String value) {
             super(value);
         }
 
+        /**
+         * Value of.
+         *
+         * @param value the value
+         * @return the tag name
+         */
         static TagName valueOf(String value) {
             return new TagName(value);
         }
     }
 
+    /**
+     * The Class AttributeKey.
+     */
     static class AttributeKey extends TypedValue {
+        
+        /**
+         * Instantiates a new attribute key.
+         *
+         * @param value the value
+         */
         AttributeKey(String value) {
             super(value);
         }
 
+        /**
+         * Value of.
+         *
+         * @param value the value
+         * @return the attribute key
+         */
         static AttributeKey valueOf(String value) {
             return new AttributeKey(value);
         }
     }
 
+    /**
+     * The Class AttributeValue.
+     */
     static class AttributeValue extends TypedValue {
+        
+        /**
+         * Instantiates a new attribute value.
+         *
+         * @param value the value
+         */
         AttributeValue(String value) {
             super(value);
         }
 
+        /**
+         * Value of.
+         *
+         * @param value the value
+         * @return the attribute value
+         */
         static AttributeValue valueOf(String value) {
             return new AttributeValue(value);
         }
     }
 
+    /**
+     * The Class Protocol.
+     */
     static class Protocol extends TypedValue {
+        
+        /**
+         * Instantiates a new protocol.
+         *
+         * @param value the value
+         */
         Protocol(String value) {
             super(value);
         }
 
+        /**
+         * Value of.
+         *
+         * @param value the value
+         * @return the protocol
+         */
         static Protocol valueOf(String value) {
             return new Protocol(value);
         }
     }
 
+    /**
+     * The Class TypedValue.
+     */
     abstract static class TypedValue {
+        
+        /** The value. */
         private String value;
 
+        /**
+         * Instantiates a new typed value.
+         *
+         * @param value the value
+         */
         TypedValue(String value) {
             Validate.notNull(value);
             this.value = value;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -443,6 +542,9 @@ public class Whitelist {
             return result;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
@@ -455,6 +557,9 @@ public class Whitelist {
             return true;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
         @Override
         public String toString() {
             return value;

@@ -19,8 +19,9 @@ import org.wikipedia.Wiki;
  */
 public class CollectionUtils
 {
+	
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private CollectionUtils()
 	{
@@ -29,10 +30,10 @@ public class CollectionUtils
 	/**
 	 * Splits an array of objects into an array of smaller arrays. Useful for multithreaded bots.
 	 * CAVEAT: if splits > z.length, splits will be set to z.length.
-	 * 
+	 *
 	 * @param z The array we'll be splitting
 	 * @param splits The number of sub-arrays you want.
-	 * 
+	 * @return the object[][]
 	 */
 
 	public static Object[][] arraySplitter(Object[] z, int splits)
@@ -68,13 +69,11 @@ public class CollectionUtils
 	}
 
 	/**
-	 * Checks to see if an array of objects contains a given element
-	 * 
+	 * Checks to see if an array of objects contains a given element.
+	 *
 	 * @param array The array to check
 	 * @param el The element to look for in this array
-	 * 
 	 * @return True if this array contains the element, else false.
-	 * 
 	 */
 
 	public static boolean arrayContains(Object[] array, Object el)

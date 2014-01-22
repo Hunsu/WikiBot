@@ -17,10 +17,19 @@ import java.util.Locale;
  *
  */
 public class DataUtil {
+    
+    /** The Constant charsetPattern. */
     private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)");
+    
+    /** The Constant defaultCharset. */
     static final String defaultCharset = "UTF-8"; // used if not found in header or meta charset
+    
+    /** The Constant bufferSize. */
     private static final int bufferSize = 0x20000; // ~130K.
 
+    /**
+     * Instantiates a new data util.
+     */
     private DataUtil() {}
 
     /**
@@ -72,6 +81,15 @@ public class DataUtil {
 
     // reads bytes first into a buffer, then decodes with the appropriate charset. done this way to support
     // switching the chartset midstream when a meta http-equiv tag defines the charset.
+    /**
+     * Parses the byte data.
+     *
+     * @param byteData the byte data
+     * @param charsetName the charset name
+     * @param baseUri the base uri
+     * @param parser the parser
+     * @return the document
+     */
     static Document parseByteData(ByteBuffer byteData, String charsetName, String baseUri, Parser parser) {
         String docData;
         Document doc = null;
@@ -154,6 +172,13 @@ public class DataUtil {
         return byteData;
     }
 
+    /**
+     * Read to byte buffer.
+     *
+     * @param inStream the in stream
+     * @return the byte buffer
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     static ByteBuffer readToByteBuffer(InputStream inStream) throws IOException {
         return readToByteBuffer(inStream, 0);
     }

@@ -36,22 +36,22 @@ public class ParserUtils
     private static final String DELETED = "<span style=\"color: #aaaaaa, text-decoration: strike\">deleted</span>";
     
     /**
-     *   Parses a list of links into its individual elements. Such a list
-     *   should be in the form:
+     * Parses a list of links into its individual elements. Such a list
+     * should be in the form:
+     * 
+     * <pre>
+     * * [[Main Page]]
+     * * [[Wikipedia:Featured picture candidates]]
+     * * [[:File:Example.png]]
+     * </pre>
+     * 
+     * in which case <tt>{ "Main Page", "Wikipedia:Featured picture
+     * candidates", "File:Example.png" }</tt> is the return value.
      *
-     *  <pre>
-     *  * [[Main Page]]
-     *  * [[Wikipedia:Featured picture candidates]]
-     *  * [[:File:Example.png]]
-     *  </pre>
-     *
-     *  in which case <tt>{ "Main Page", "Wikipedia:Featured picture
-     *  candidates", "File:Example.png" }</tt> is the return value.
-     *
-     *  @param list a list of pages
-     *  @see #formatList
-     *  @return an array of the page titles
-     *  @since Wiki.java 0.11
+     * @param list a list of pages
+     * @return an array of the page titles
+     * @see #formatList
+     * @since Wiki.java 0.11
      */
     public static String[] parseList(String list)
     {

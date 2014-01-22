@@ -24,7 +24,11 @@ public interface Connection {
      * GET and POST http methods.
      */
     public enum Method {
-        GET, POST
+        
+        /** The get. */
+        GET, 
+ /** The post. */
+ POST
     }
 
     /**
@@ -115,14 +119,16 @@ public interface Connection {
     public Connection data(String key, String value);
 
     /**
-     * Adds all of the supplied data to the request data parameters
+     * Adds all of the supplied data to the request data parameters.
+     *
      * @param data collection of data parameters
      * @return this Connection, for chaining
      */
     public Connection data(Collection<KeyVal> data);
 
     /**
-     * Adds all of the supplied data to the request data parameters
+     * Adds all of the supplied data to the request data parameters.
+     *
      * @param data map of data parameters
      * @return this Connection, for chaining
      */
@@ -170,58 +176,53 @@ public interface Connection {
 
     /**
      * Execute the request as a GET, and parse the result.
+     *
      * @return parsed Document
-     * @throws java.net.MalformedURLException if the request URL is not a HTTP or HTTPS URL, or is otherwise malformed
-     * @throws HttpStatusException if the response is not OK and HTTP response errors are not ignored
-     * @throws UnsupportedMimeTypeException if the response mime type is not supported and those errors are not ignored
-     * @throws java.net.SocketTimeoutException if the connection times out
      * @throws IOException on error
      */
     public Document get() throws IOException;
 
     /**
      * Execute the request as a POST, and parse the result.
+     *
      * @return parsed Document
-     * @throws java.net.MalformedURLException if the request URL is not a HTTP or HTTPS URL, or is otherwise malformed
-     * @throws HttpStatusException if the response is not OK and HTTP response errors are not ignored
-     * @throws UnsupportedMimeTypeException if the response mime type is not supported and those errors are not ignored
-     * @throws java.net.SocketTimeoutException if the connection times out
      * @throws IOException on error
      */
     public Document post() throws IOException;
 
     /**
      * Execute the request.
+     *
      * @return a response object
-     * @throws java.net.MalformedURLException if the request URL is not a HTTP or HTTPS URL, or is otherwise malformed
-     * @throws HttpStatusException if the response is not OK and HTTP response errors are not ignored
-     * @throws UnsupportedMimeTypeException if the response mime type is not supported and those errors are not ignored
-     * @throws java.net.SocketTimeoutException if the connection times out
      * @throws IOException on error
      */
     public Response execute() throws IOException;
 
     /**
-     * Get the request object associated with this connection
+     * Get the request object associated with this connection.
+     *
      * @return request
      */
     public Request request();
 
     /**
-     * Set the connection's request
+     * Set the connection's request.
+     *
      * @param request new request object
      * @return this Connection, for chaining
      */
     public Connection request(Request request);
 
     /**
-     * Get the response, once the request has been executed
+     * Get the response, once the request has been executed.
+     *
      * @return response
      */
     public Response response();
 
     /**
-     * Set the connection's response
+     * Set the connection's response.
+     *
      * @param response new response
      * @return this Connection, for chaining
      */
@@ -229,32 +230,37 @@ public interface Connection {
 
 
     /**
-     * Common methods for Requests and Responses
+     * Common methods for Requests and Responses.
+     *
      * @param <T> Type of Base, either Request or Response
      */
     interface Base<T extends Base> {
 
         /**
-         * Get the URL
+         * Get the URL.
+         *
          * @return URL
          */
         public URL url();
 
         /**
-         * Set the URL
+         * Set the URL.
+         *
          * @param url new URL
          * @return this, for chaining
          */
         public T url(URL url);
 
         /**
-         * Get the request method
+         * Get the request method.
+         *
          * @return method
          */
         public Method method();
 
         /**
-         * Set the request method
+         * Set the request method.
+         *
          * @param method new method
          * @return this, for chaining
          */
@@ -280,21 +286,24 @@ public interface Connection {
         public T header(String name, String value);
 
         /**
-         * Check if a header is present
+         * Check if a header is present.
+         *
          * @param name name of header (case insensitive)
          * @return if the header is present in this request/response
          */
         public boolean hasHeader(String name);
 
         /**
-         * Remove a header by name
+         * Remove a header by name.
+         *
          * @param name name of header to remove (case insensitive)
          * @return this, for chaining
          */
         public T removeHeader(String name);
 
         /**
-         * Retrieve all of the request/response headers as a map
+         * Retrieve all of the request/response headers as a map.
+         *
          * @return headers
          */
         public Map<String, String> headers();
@@ -318,21 +327,24 @@ public interface Connection {
         public T cookie(String name, String value);
 
         /**
-         * Check if a cookie is present
+         * Check if a cookie is present.
+         *
          * @param name name of cookie
          * @return if the cookie is present in this request/response
          */
         public boolean hasCookie(String name);
 
         /**
-         * Remove a cookie by name
+         * Remove a cookie by name.
+         *
          * @param name name of cookie to remove
          * @return this, for chaining
          */
         public T removeCookie(String name);
 
         /**
-         * Retrieve all of the request/response cookies as a map
+         * Retrieve all of the request/response cookies as a map.
+         *
          * @return cookies
          */
         public Map<String, String> cookies();
@@ -410,14 +422,16 @@ public interface Connection {
         public Request ignoreContentType(boolean ignoreContentType);
 
         /**
-         * Add a data parameter to the request
+         * Add a data parameter to the request.
+         *
          * @param keyval data to add.
          * @return this Request, for chaining
          */
         public Request data(KeyVal keyval);
 
         /**
-         * Get all of the request's data parameters
+         * Get all of the request's data parameters.
+         *
          * @return collection of keyvals
          */
         public Collection<KeyVal> data();
@@ -491,27 +505,31 @@ public interface Connection {
     public interface KeyVal {
 
         /**
-         * Update the key of a keyval
+         * Update the key of a keyval.
+         *
          * @param key new key
          * @return this KeyVal, for chaining
          */
         public KeyVal key(String key);
 
         /**
-         * Get the key of a keyval
+         * Get the key of a keyval.
+         *
          * @return the key
          */
         public String key();
 
         /**
-         * Update the value of a keyval
+         * Update the value of a keyval.
+         *
          * @param value the new value
          * @return this KeyVal, for chaining
          */
         public KeyVal value(String value);
 
         /**
-         * Get the value of a keyval
+         * Get the value of a keyval.
+         *
          * @return the value
          */
         public String value();

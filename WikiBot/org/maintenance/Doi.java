@@ -18,15 +18,30 @@ import org.jsoup.nodes.Document;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+/**
+ * The Class Doi.
+ */
 public class Doi {
 
+	/** The url. */
 	private static String url = "http://www.ncbi.nlm.nih.gov/pubmed/";
+	
+	/** The arguments. */
 	private static String arguments = "?report=xml&format=text";
 	
+	/** The wiki. */
 	private static Wiki wiki = new Wiki("fr.wikipedia.org");
+	
+	/** The enwiki. */
 	private static Wiki enwiki = new Wiki();
 	
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		try {
 			wiki.login("Hunsu", "MegamiMonster");
@@ -81,6 +96,12 @@ public class Doi {
 
 	}
 
+	/**
+	 * Parses the xml.
+	 *
+	 * @param text the text
+	 * @return the string
+	 */
 	private static String parseXML(String text) {
 		SAXBuilder sxb = new SAXBuilder();
 		org.jdom2.Document document;
@@ -121,11 +142,23 @@ public class Doi {
 		return null;
 	}*/
 
+	/**
+	 * Gets the language.
+	 *
+	 * @param element the element
+	 * @return the language
+	 */
 	private static String getLanguage(Element element) {
 		String lang = "| langue = " +correctLang(element.getText())+"\n";
 		return lang;
 	}
 
+	/**
+	 * Correct lang.
+	 *
+	 * @param lang the lang
+	 * @return the string
+	 */
 	private static String correctLang(String lang) {
 		if(lang.trim().equalsIgnoreCase("eng"))
 			return "en";
@@ -133,11 +166,23 @@ public class Doi {
 		return lang;
 	}
 
+	/**
+	 * Gets the pages.
+	 *
+	 * @param element the element
+	 * @return the pages
+	 */
 	private static String getPages(Element element) {
 		String pages = "| pages = " + element.getChildText("MedlinePgn")+"\n";
 		return pages;
 	}
 
+	/**
+	 * Gets the journal.
+	 *
+	 * @param element the element
+	 * @return the journal
+	 */
 	private static String getJournal(Element element) {
 		String journal =  "| périodique = " + element.getChildText("Title")+"\n";
 		journal += "| volume =" + element.getChild("JournalIssue").getChildText("Volume")+"\n";
@@ -146,12 +191,24 @@ public class Doi {
 		return journal;
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @param element the element
+	 * @return the title
+	 */
 	private static String getTitle(Element element) {
 		String title = "| titre = " + element.getText() + "\n";
 		return title;
 	}
 
 
+	/**
+	 * Gets the authors.
+	 *
+	 * @param element the element
+	 * @return the authors
+	 */
 	private static String getAuthors(Element element) {
 		List<Element> list = element.getChildren();
 		Iterator<Element> it = list.iterator();
@@ -170,6 +227,12 @@ public class Doi {
 		return authors;
 	}
 
+	/**
+	 * Gets the article.
+	 *
+	 * @param pmid the pmid
+	 * @return the article
+	 */
 	private static String getArticle(int pmid) {
 		try {
 			Document doc = Jsoup.connect(url+pmid+arguments).get();

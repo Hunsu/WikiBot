@@ -11,20 +11,35 @@ import java.util.List;
  * in {@link org.jsoup.Jsoup}.
  */
 public class Parser {
+    
+    /** The Constant DEFAULT_MAX_ERRORS. */
     private static final int DEFAULT_MAX_ERRORS = 0; // by default, error tracking is disabled.
     
+    /** The tree builder. */
     private TreeBuilder treeBuilder;
+    
+    /** The max errors. */
     private int maxErrors = DEFAULT_MAX_ERRORS;
+    
+    /** The errors. */
     private ParseErrorList errors;
 
     /**
-     * Create a new Parser, using the specified TreeBuilder
+     * Create a new Parser, using the specified TreeBuilder.
+     *
      * @param treeBuilder TreeBuilder to use to parse input into Documents.
      */
     public Parser(TreeBuilder treeBuilder) {
         this.treeBuilder = treeBuilder;
     }
     
+    /**
+     * Parses the input.
+     *
+     * @param html the html
+     * @param baseUri the base uri
+     * @return the document
+     */
     public Document parseInput(String html, String baseUri) {
         errors = isTrackErrors() ? ParseErrorList.tracking(maxErrors) : ParseErrorList.noTracking();
         Document doc = treeBuilder.parse(html, baseUri, errors);
@@ -137,7 +152,8 @@ public class Parser {
     }
 
     /**
-     * Utility method to unescape HTML entities from a string
+     * Utility method to unescape HTML entities from a string.
+     *
      * @param string HTML escaped string
      * @param inAttribute if the string is to be escaped in strict mode (as attributes are)
      * @return an unescaped string
@@ -148,9 +164,10 @@ public class Parser {
     }
 
     /**
+     * Parses the body fragment relaxed.
+     *
      * @param bodyHtml HTML to parse
      * @param baseUri baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
-     *
      * @return parsed Document
      * @deprecated Use {@link #parseBodyFragment} or {@link #parseFragment} instead.
      */

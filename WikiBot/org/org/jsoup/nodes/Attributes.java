@@ -15,8 +15,11 @@ import java.util.*;
  * @author Jonathan Hedley, jonathan@hedley.net
  */
 public class Attributes implements Iterable<Attribute>, Cloneable {
+    
+    /** The Constant dataPrefix. */
     protected static final String dataPrefix = "data-";
     
+    /** The attributes. */
     private LinkedHashMap<String, Attribute> attributes = null;
     // linked hash map to preserve insertion order.
     // null be default as so many elements have no attributes -- saves a good chunk of memory
@@ -100,6 +103,9 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         attributes.putAll(incoming.attributes);
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Iterable#iterator()
+     */
     public Iterator<Attribute> iterator() {
         return asList().iterator();
     }
@@ -139,6 +145,12 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         return accum.toString();
     }
     
+    /**
+     * Html.
+     *
+     * @param accum the accum
+     * @param out the out
+     */
     void html(StringBuilder accum, Document.OutputSettings out) {
         if (attributes == null)
             return;
@@ -150,10 +162,16 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         }
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return html();
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -166,11 +184,17 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         return true;
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         return attributes != null ? attributes.hashCode() : 0;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Attributes clone() {
         if (attributes == null)
@@ -188,17 +212,29 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
         return clone;
     }
 
+    /**
+     * The Class Dataset.
+     */
     private class Dataset extends AbstractMap<String, String> {
 
+        /**
+         * Instantiates a new dataset.
+         */
         private Dataset() {
             if (attributes == null)
                 attributes = new LinkedHashMap<String, Attribute>(2);
         }
 
+        /* (non-Javadoc)
+         * @see java.util.AbstractMap#entrySet()
+         */
         public Set<Entry<String, String>> entrySet() {
             return new EntrySet();
         }
 
+        /* (non-Javadoc)
+         * @see java.util.AbstractMap#put(java.lang.Object, java.lang.Object)
+         */
         @Override
         public String put(String key, String value) {
             String dataKey = dataKey(key);
@@ -208,11 +244,21 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
             return oldValue;
         }
 
+        /**
+         * The Class EntrySet.
+         */
         private class EntrySet extends AbstractSet<Map.Entry<String, String>> {
+            
+            /* (non-Javadoc)
+             * @see java.util.AbstractCollection#iterator()
+             */
             public Iterator<Map.Entry<String, String>> iterator() {
                 return new DatasetIterator();
             }
 
+            /* (non-Javadoc)
+             * @see java.util.AbstractCollection#size()
+             */
             public int size() {
                 int count = 0;
                 Iterator iter = new DatasetIterator();
@@ -222,9 +268,20 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
             }
         }
 
+        /**
+         * The Class DatasetIterator.
+         */
         private class DatasetIterator implements Iterator<Map.Entry<String, String>> {
+            
+            /** The attr iter. */
             private Iterator<Attribute> attrIter = attributes.values().iterator();
+            
+            /** The attr. */
             private Attribute attr;
+            
+            /* (non-Javadoc)
+             * @see java.util.Iterator#hasNext()
+             */
             public boolean hasNext() {
                 while (attrIter.hasNext()) {
                     attr = attrIter.next();
@@ -233,16 +290,28 @@ public class Attributes implements Iterable<Attribute>, Cloneable {
                 return false;
             }
 
+            /* (non-Javadoc)
+             * @see java.util.Iterator#next()
+             */
             public Entry<String, String> next() {
                 return new Attribute(attr.getKey().substring(dataPrefix.length()), attr.getValue());
             }
 
+            /* (non-Javadoc)
+             * @see java.util.Iterator#remove()
+             */
             public void remove() {
                 attributes.remove(attr.getKey());
             }
         }
     }
 
+    /**
+     * Data key.
+     *
+     * @param key the key
+     * @return the string
+     */
     private static String dataKey(String key) {
         return dataPrefix + key;
     }

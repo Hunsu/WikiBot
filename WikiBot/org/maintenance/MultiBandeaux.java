@@ -9,12 +9,23 @@ import javax.security.auth.login.LoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+/**
+ * The Class MultiBandeaux.
+ */
 public class MultiBandeaux {
 
+	/**
+	 * Instantiates a new multi bandeaux.
+	 */
 	public MultiBandeaux() {
 	}
 	
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args){
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {

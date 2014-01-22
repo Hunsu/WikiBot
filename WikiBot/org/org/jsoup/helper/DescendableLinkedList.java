@@ -6,6 +6,8 @@ import java.util.ListIterator;
 
 /**
  * Provides a descending iterator and other 1.6 methods to allow support on the 1.5 JRE.
+ *
+ * @param <E> the element type
  */
 public class DescendableLinkedList<E> extends LinkedList<E> {
 
@@ -33,7 +35,8 @@ public class DescendableLinkedList<E> extends LinkedList<E> {
     }
 
     /**
-     * Remove and return the last element, if there is one
+     * Remove and return the last element, if there is one.
+     *
      * @return the last element, or null
      */
     public E pollLast() {
@@ -48,9 +51,21 @@ public class DescendableLinkedList<E> extends LinkedList<E> {
         return new DescendingIterator<E>(size());
     }
 
+    /**
+     * The Class DescendingIterator.
+     *
+     * @param <E> the element type
+     */
     private class DescendingIterator<E> implements Iterator<E> {
+        
+        /** The iter. */
         private final ListIterator<E> iter;
 
+        /**
+         * Instantiates a new descending iterator.
+         *
+         * @param index the index
+         */
         @SuppressWarnings("unchecked")
         private DescendingIterator(int index) {
             iter = (ListIterator<E>) listIterator(index);

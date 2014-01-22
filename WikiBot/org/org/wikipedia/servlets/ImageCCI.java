@@ -33,7 +33,10 @@ import org.wikipedia.Wiki;
 public class ImageCCI extends HttpServlet
 {
     // wiki variables
+    /** The Constant enWiki. */
     private static final Wiki enWiki = new Wiki("en.wikipedia.org");
+    
+    /** The Constant commons. */
     private static final Wiki commons = new Wiki("commons.wikimedia.org");
 
     static
@@ -46,8 +49,11 @@ public class ImageCCI extends HttpServlet
     }
 
     /**
-     *  Main for testing/offline stuff. The results are found in results.html,
-     *  which is in either the current or home directory.
+     * Main for testing/offline stuff. The results are found in results.html,
+     * which is in either the current or home directory.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(String[] args) throws IOException
     {
@@ -61,13 +67,18 @@ public class ImageCCI extends HttpServlet
     }
 
     /**
-     *  This servlet is intended to run on Google App Engine, see { @link
-     *  https://code.google.com/appengine/docs/quotas.html here } and { @link
-     *  https://code.google.com/appengine/docs/java/runtime.html#The_Sandbox
-     *  here } for what you can and cannot do in this environment. More
-     *  precisely, at ~1s / wiki, we cannot search more than 30 wikis.
-     *  <p>
-     *  This servlet runs at { @link https://wikipediatools.appspot.com/imagecci.jsp }.
+     * This servlet is intended to run on Google App Engine, see { @link
+     * https://code.google.com/appengine/docs/quotas.html here } and { @link
+     * https://code.google.com/appengine/docs/java/runtime.html#The_Sandbox
+     * here } for what you can and cannot do in this environment. More
+     * precisely, at ~1s / wiki, we cannot search more than 30 wikis.
+     * <p>
+     * This servlet runs at { @link https://wikipediatools.appspot.com/imagecci.jsp }.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

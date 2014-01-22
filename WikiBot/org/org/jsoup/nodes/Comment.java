@@ -5,6 +5,8 @@ package org.jsoup.nodes;
 
  @author Jonathan Hedley, jonathan@hedley.net */
 public class Comment extends Node {
+    
+    /** The Constant COMMENT_KEY. */
     private static final String COMMENT_KEY = "comment";
 
     /**
@@ -17,6 +19,9 @@ public class Comment extends Node {
         attributes.put(COMMENT_KEY, data);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#nodeName()
+     */
     public String nodeName() {
         return "#comment";
     }
@@ -29,6 +34,9 @@ public class Comment extends Node {
         return attributes.get(COMMENT_KEY);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlHead(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         if (out.prettyPrint())
             indent(accum, depth, out);
@@ -38,8 +46,14 @@ public class Comment extends Node {
                 .append("-->");
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlTail(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out) {}
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#toString()
+     */
     public String toString() {
         return outerHtml();
     }

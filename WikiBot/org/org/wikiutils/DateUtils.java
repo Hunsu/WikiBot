@@ -20,8 +20,9 @@ import org.wikipedia.Wiki;
  */
 public class DateUtils
 {
+	
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private DateUtils()
 	{

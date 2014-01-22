@@ -15,6 +15,10 @@ import java.util.regex.Pattern;
  * named character references</a>.
  */
 public class Entities {
+    
+    /**
+     * The Enum EscapeMode.
+     */
     public enum EscapeMode {
         /** Restricted entities suitable for XHTML output: lt, gt, amp, apos, and quot only. */
         xhtml(xhtmlByVal),
@@ -23,29 +27,57 @@ public class Entities {
         /** Complete HTML entities. */
         extended(fullByVal);
 
+        /** The map. */
         private Map<Character, String> map;
 
+        /**
+         * Instantiates a new escape mode.
+         *
+         * @param map the map
+         */
         EscapeMode(Map<Character, String> map) {
             this.map = map;
         }
 
+        /**
+         * Gets the map.
+         *
+         * @return the map
+         */
         public Map<Character, String> getMap() {
             return map;
         }
     }
 
+    /** The Constant full. */
     private static final Map<String, Character> full;
+    
+    /** The Constant xhtmlByVal. */
     private static final Map<Character, String> xhtmlByVal;
+    
+    /** The Constant base. */
     private static final Map<String, Character> base;
+    
+    /** The Constant baseByVal. */
     private static final Map<Character, String> baseByVal;
+    
+    /** The Constant fullByVal. */
     private static final Map<Character, String> fullByVal;
+    
+    /** The Constant unescapePattern. */
     private static final Pattern unescapePattern = Pattern.compile("&(#(x|X)?([0-9a-fA-F]+)|[a-zA-Z]+\\d*);?");
+    
+    /** The Constant strictUnescapePattern. */
     private static final Pattern strictUnescapePattern = Pattern.compile("&(#(x|X)?([0-9a-fA-F]+)|[a-zA-Z]+\\d*);");
 
+    /**
+     * Instantiates a new entities.
+     */
     private Entities() {}
 
     /**
-     * Check if the input is a known named entity
+     * Check if the input is a known named entity.
+     *
      * @param name the possible entity name (e.g. "lt" or "amp")
      * @return true if a known named entity
      */
@@ -64,7 +96,8 @@ public class Entities {
     }
 
     /**
-     * Get the Character value of the named entity
+     * Get the Character value of the named entity.
+     *
      * @param name named entity (e.g. "lt" or "amp")
      * @return the Character value of the named entity (e.g. '<' or '&')
      */
@@ -72,10 +105,25 @@ public class Entities {
         return full.get(name);
     }
     
+    /**
+     * Escape.
+     *
+     * @param string the string
+     * @param out the out
+     * @return the string
+     */
     static String escape(String string, Document.OutputSettings out) {
         return escape(string, out.encoder(), out.escapeMode());
     }
 
+    /**
+     * Escape.
+     *
+     * @param string the string
+     * @param encoder the encoder
+     * @param escapeMode the escape mode
+     * @return the string
+     */
     static String escape(String string, CharsetEncoder encoder, EscapeMode escapeMode) {
         StringBuilder accum = new StringBuilder(string.length() * 2);
         Map<Character, String> map = escapeMode.getMap();
@@ -107,21 +155,29 @@ public class Entities {
         return accum.toString();
     }
 
+    /**
+     * Unescape.
+     *
+     * @param string the string
+     * @return the string
+     */
     static String unescape(String string) {
         return unescape(string, false);
     }
 
     /**
      * Unescape the input string.
-     * @param string
+     *
+     * @param string the string
      * @param strict if "strict" (that is, requires trailing ';' char, otherwise that's optional)
-     * @return
+     * @return the string
      */
     static String unescape(String string, boolean strict) {
         return Parser.unescapeEntities(string, strict);
     }
 
     // xhtml has restricted entities
+    /** The Constant xhtmlArray. */
     private static final Object[][] xhtmlArray = {
             {"quot", 0x00022},
             {"amp", 0x00026},
@@ -143,6 +199,12 @@ public class Entities {
         }
     }
 
+    /**
+     * Load entities.
+     *
+     * @param filename the filename
+     * @return the map
+     */
     private static Map<String, Character> loadEntities(String filename) {
         Properties properties = new Properties();
         Map<String, Character> entities = new HashMap<String, Character>();
@@ -162,6 +224,12 @@ public class Entities {
         return entities;
     }
 
+    /**
+     * To character key.
+     *
+     * @param inMap the in map
+     * @return the map
+     */
     private static Map<Character, String> toCharacterKey(Map<String, Character> inMap) {
         Map<Character, String> outMap = new HashMap<Character, String>();
         for (Map.Entry<String, Character> entry: inMap.entrySet()) {

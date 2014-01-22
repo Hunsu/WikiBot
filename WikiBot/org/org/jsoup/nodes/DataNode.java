@@ -5,6 +5,8 @@ package org.jsoup.nodes;
 
  @author Jonathan Hedley, jonathan@hedley.net */
 public class DataNode extends Node{
+    
+    /** The Constant DATA_KEY. */
     private static final String DATA_KEY = "data";
 
     /**
@@ -17,6 +19,9 @@ public class DataNode extends Node{
         attributes.put(DATA_KEY, data);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#nodeName()
+     */
     public String nodeName() {
         return "#data";
     }
@@ -39,12 +44,21 @@ public class DataNode extends Node{
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlHead(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         accum.append(getWholeData()); // data is not escaped in return from data nodes, so " in script, style is plain
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlTail(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out) {}
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#toString()
+     */
     public String toString() {
         return outerHtml();
     }

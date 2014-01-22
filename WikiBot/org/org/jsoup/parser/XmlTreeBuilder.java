@@ -7,15 +7,24 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * The Class XmlTreeBuilder.
+ *
  * @author Jonathan Hedley
  */
 public class XmlTreeBuilder extends TreeBuilder {
+    
+    /* (non-Javadoc)
+     * @see org.jsoup.parser.TreeBuilder#initialiseParse(java.lang.String, java.lang.String, org.jsoup.parser.ParseErrorList)
+     */
     @Override
     protected void initialiseParse(String input, String baseUri, ParseErrorList errors) {
         super.initialiseParse(input, baseUri, errors);
         stack.add(doc); // place the document onto the stack. differs from HtmlTreeBuilder (not on stack)
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.parser.TreeBuilder#process(org.jsoup.parser.Token)
+     */
     @Override
     protected boolean process(Token token) {
         // start tag, end tag, doctype, comment, character, eof
@@ -43,10 +52,21 @@ public class XmlTreeBuilder extends TreeBuilder {
         return true;
     }
 
+    /**
+     * Insert node.
+     *
+     * @param node the node
+     */
     private void insertNode(Node node) {
         currentElement().appendChild(node);
     }
 
+    /**
+     * Insert.
+     *
+     * @param startTag the start tag
+     * @return the element
+     */
     Element insert(Token.StartTag startTag) {
         Tag tag = Tag.valueOf(startTag.name());
         // todo: wonder if for xml parsing, should treat all tags as unknown? because it's not html.
@@ -62,6 +82,11 @@ public class XmlTreeBuilder extends TreeBuilder {
         return el;
     }
 
+    /**
+     * Insert.
+     *
+     * @param commentToken the comment token
+     */
     void insert(Token.Comment commentToken) {
         Comment comment = new Comment(commentToken.getData(), baseUri);
         Node insert = comment;
@@ -75,11 +100,21 @@ public class XmlTreeBuilder extends TreeBuilder {
         insertNode(insert);
     }
 
+    /**
+     * Insert.
+     *
+     * @param characterToken the character token
+     */
     void insert(Token.Character characterToken) {
         Node node = new TextNode(characterToken.getData(), baseUri);
         insertNode(node);
     }
 
+    /**
+     * Insert.
+     *
+     * @param d the d
+     */
     void insert(Token.Doctype d) {
         DocumentType doctypeNode = new DocumentType(d.getName(), d.getPublicIdentifier(), d.getSystemIdentifier(), baseUri);
         insertNode(doctypeNode);
@@ -89,7 +124,7 @@ public class XmlTreeBuilder extends TreeBuilder {
      * If the stack contains an element with this tag's name, pop up the stack to remove the first occurrence. If not
      * found, skips.
      *
-     * @param endTag
+     * @param endTag the end tag
      */
     private void popStackToClose(Token.EndTag endTag) {
         String elName = endTag.name();
@@ -118,6 +153,14 @@ public class XmlTreeBuilder extends TreeBuilder {
         }
     }
 
+    /**
+     * Parses the fragment.
+     *
+     * @param inputFragment the input fragment
+     * @param baseUri the base uri
+     * @param errors the errors
+     * @return the list
+     */
     List<Node> parseFragment(String inputFragment, String baseUri, ParseErrorList errors) {
         initialiseParse(inputFragment, baseUri, errors);
         runParser();

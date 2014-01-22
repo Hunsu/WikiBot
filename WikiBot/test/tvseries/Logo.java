@@ -11,30 +11,45 @@ import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+import Tools.Login;
+
+/**
+ * The Class Logo.
+ */
 public class Logo {
-	
+
+	/** The wiki. */
 	private static Wiki wiki = new Wiki("fr.wikipedia.org");
-	
+
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args){
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
-		} catch (FailedLoginException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
+		} catch (FailedLoginException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String title = "Lie to Me";
+		String title = "Frères Scott";
 		if(title.endsWith(" (série télévisée)"))
 			title = title.substring(0,title.length()-18);
-		addLogo(title,"Lie to Me.svg");
+		addLogo(title,"One Tree Hill logo.jpg");
 	}
 
+	/**
+	 * Adds the logo.
+	 *
+	 * @param title the title
+	 * @param imageTitle the image title
+	 */
 	private static void addLogo(String title, String imageTitle) {
 		String[] titles = new String[30];
 		for(int i=0;i<30;i++){
-			titles[i ]= "Saison " + i +" de "+title;
+			titles[i ]= "Saison " + i +" des "+title;
 		}
 		try {
 			boolean[] tests = wiki.exists(titles);
@@ -64,7 +79,7 @@ public class Logo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

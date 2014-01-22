@@ -36,6 +36,13 @@ import org.wikipedia.*;
  */
 public class ContributionSurveyor
 {
+    
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException
     {
         // placeholders

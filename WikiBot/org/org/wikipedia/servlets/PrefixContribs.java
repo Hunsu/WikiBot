@@ -34,6 +34,8 @@ import org.wikipedia.*;
  */
 public class PrefixContribs extends HttpServlet
 {
+    
+    /** The Constant enWiki. */
     private static final Wiki enWiki = new Wiki("en.wikipedia.org");
     
     /**
@@ -112,7 +114,10 @@ public class PrefixContribs extends HttpServlet
     }
     
     /**
-     *  Main for testing/offline stuff. Pipe the output to a HTML file.
+     * Main for testing/offline stuff. Pipe the output to a HTML file.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(String[] args) throws IOException
     {

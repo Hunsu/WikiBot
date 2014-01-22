@@ -9,7 +9,11 @@ import java.util.Map;
 
  @author Jonathan Hedley, jonathan@hedley.net */
 public class Attribute implements Map.Entry<String, String>, Cloneable  {
+    
+    /** The key. */
     private String key;
+    
+    /** The value. */
     private String value;
 
     /**
@@ -51,8 +55,10 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
     }
 
     /**
-     Set the attribute value.
-     @param value the new attribute value; must not be null
+     * Set the attribute value.
+     *
+     * @param value the new attribute value; must not be null
+     * @return the string
      */
     public String setValue(String value) {
         Validate.notNull(value);
@@ -69,6 +75,12 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
         return key + "=\"" + Entities.escape(value, (new Document("")).outputSettings()) + "\"";
     }
     
+    /**
+     * Html.
+     *
+     * @param accum the accum
+     * @param out the out
+     */
     protected void html(StringBuilder accum, Document.OutputSettings out) {
         accum
             .append(key)
@@ -96,10 +108,18 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
         return new Attribute(unencodedKey, value);
     }
 
+    /**
+     * Checks if is data attribute.
+     *
+     * @return true, if is data attribute
+     */
     protected boolean isDataAttribute() {
         return key.startsWith(Attributes.dataPrefix) && key.length() > Attributes.dataPrefix.length();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -113,6 +133,9 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int result = key != null ? key.hashCode() : 0;
@@ -120,6 +143,9 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Attribute clone() {
         try {

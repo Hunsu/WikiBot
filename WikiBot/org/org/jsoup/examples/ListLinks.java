@@ -12,6 +12,13 @@ import java.io.IOException;
  * Example program to list links from a URL.
  */
 public class ListLinks {
+    
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         Validate.isTrue(args.length == 1, "usage: supply url to fetch");
         String url = args[0];
@@ -43,10 +50,23 @@ public class ListLinks {
         }
     }
 
+    /**
+     * Prints the.
+     *
+     * @param msg the msg
+     * @param args the args
+     */
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
 
+    /**
+     * Trim.
+     *
+     * @param s the s
+     * @param width the width
+     * @return the string
+     */
     private static String trim(String s, int width) {
         if (s.length() > width)
             return s.substring(0, width-1) + ".";

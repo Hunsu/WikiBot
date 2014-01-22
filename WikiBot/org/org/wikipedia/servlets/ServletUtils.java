@@ -29,12 +29,15 @@ import javax.servlet.http.*;
  */
 public class ServletUtils
 {
+    
     /**
-     *  User agent blacklist (returns 403). robots.txt exists for a reason.
-     *  Follow it!
-     *  @param request the HTTP request
-     *  @param response the server response
-     *  @return hit if this is a bad useragent
+     * User agent blacklist (returns 403). robots.txt exists for a reason.
+     * Follow it!
+     *
+     * @param request the HTTP request
+     * @param response the server response
+     * @return hit if this is a bad useragent
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static boolean checkBlacklist(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
@@ -63,9 +66,11 @@ public class ServletUtils
     }
     
     /**
-     *  Generates a HTML head with the given title and optional content.
-     *  @param title the page title
-     *  @param optional the optional content
+     * Generates a HTML head with the given title and optional content.
+     *
+     * @param title the page title
+     * @param optional the optional content
+     * @return the string
      */
     public static String generateHead(String title, String optional)
     {
@@ -81,8 +86,10 @@ public class ServletUtils
     }
     
     /**
-     *  Generates a boilerplate GPLv3 footer given a tool name
-     *  @param toolname the name of the tool
+     * Generates a boilerplate GPLv3 footer given a tool name.
+     *
+     * @param toolname the name of the tool
+     * @return the string
      */
     public static String generateFooter(String toolname)
     {
@@ -106,12 +113,14 @@ public class ServletUtils
     }
     
     /**
-     *  Generates a HTML combo box.
-     *  @param param the form parameter for the combo box
-     *  @param options a map, where key = option value, value = what is displayed
-     *  to the user in the order that they are specified
-     *  @param selected the initially selected option value
-     *  @param disabled whether this element is disabled
+     * Generates a HTML combo box.
+     *
+     * @param param the form parameter for the combo box
+     * @param options a map, where key = option value, value = what is displayed
+     * to the user in the order that they are specified
+     * @param selected the initially selected option value
+     * @param disabled whether this element is disabled
+     * @return the string
      */
     public static String generateComboBox(String param, LinkedHashMap<String, String> options, String selected, boolean disabled)
     {

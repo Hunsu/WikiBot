@@ -25,11 +25,17 @@ public class DocumentType extends Node {
         attr("systemId", systemId);
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#nodeName()
+     */
     @Override
     public String nodeName() {
         return "#doctype";
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlHead(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     @Override
     void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         accum.append("<!DOCTYPE ").append(attr("name"));
@@ -40,6 +46,9 @@ public class DocumentType extends Node {
         accum.append('>');
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlTail(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     @Override
     void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out) {
     }

@@ -8,12 +8,23 @@ import javax.security.auth.login.LoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+/**
+ * The Class TranslatedFrom.
+ */
 public class TranslatedFrom {
 
+	/**
+	 * Instantiates a new translated from.
+	 */
 	public TranslatedFrom() {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args){
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {

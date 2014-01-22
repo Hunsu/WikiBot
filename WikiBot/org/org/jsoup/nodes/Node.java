@@ -18,10 +18,20 @@ import java.util.List;
 
  @author Jonathan Hedley, jonathan@hedley.net */
 public abstract class Node implements Cloneable {
+    
+    /** The parent node. */
     Node parentNode;
+    
+    /** The child nodes. */
     List<Node> childNodes;
+    
+    /** The attributes. */
     Attributes attributes;
+    
+    /** The base uri. */
     String baseUri;
+    
+    /** The sibling index. */
     int siblingIndex;
 
     /**
@@ -38,6 +48,11 @@ public abstract class Node implements Cloneable {
         this.attributes = attributes;
     }
 
+    /**
+     * Instantiates a new node.
+     *
+     * @param baseUri the base uri
+     */
     protected Node(String baseUri) {
         this(baseUri, new Attributes());
     }
@@ -235,6 +250,11 @@ public abstract class Node implements Cloneable {
         return childNodes.size();
     }
     
+    /**
+     * Child nodes as array.
+     *
+     * @return the node[]
+     */
     protected Node[] childNodesAsArray() {
         return childNodes.toArray(new Node[childNodeSize()]);
     }
@@ -326,6 +346,12 @@ public abstract class Node implements Cloneable {
         return this;
     }
 
+    /**
+     * Adds the sibling html.
+     *
+     * @param index the index
+     * @param html the html
+     */
     private void addSiblingHtml(int index, String html) {
         Validate.notNull(html);
         Validate.notNull(parentNode);
@@ -370,11 +396,12 @@ public abstract class Node implements Cloneable {
      * the node but keeping its children.
      * <p/>
      * For example, with the input html:<br/>
+     *
+     * @return the first child of this node, after the node has been unwrapped. Null if the node had no children.
      * {@code <div>One <span>Two <b>Three</b></span></div>}<br/>
      * Calling {@code element.unwrap()} on the {@code span} element will result in the html:<br/>
      * {@code <div>One Two <b>Three</b></div>}<br/>
      * and the {@code "Two "} {@link TextNode} being returned.
-     * @return the first child of this node, after the node has been unwrapped. Null if the node had no children.
      * @see #remove()
      * @see #wrap(String)
      */
@@ -389,6 +416,12 @@ public abstract class Node implements Cloneable {
         return firstChild;
     }
 
+    /**
+     * Gets the deep child.
+     *
+     * @param el the el
+     * @return the deep child
+     */
     private Element getDeepChild(Element el) {
         List<Element> children = el.children();
         if (children.size() > 0)
@@ -407,12 +440,23 @@ public abstract class Node implements Cloneable {
         parentNode.replaceChild(this, in);
     }
 
+    /**
+     * Sets the parent node.
+     *
+     * @param parentNode the new parent node
+     */
     protected void setParentNode(Node parentNode) {
         if (this.parentNode != null)
             this.parentNode.removeChild(this);
         this.parentNode = parentNode;
     }
 
+    /**
+     * Replace child.
+     *
+     * @param out the out
+     * @param in the in
+     */
     protected void replaceChild(Node out, Node in) {
         Validate.isTrue(out.parentNode == this);
         Validate.notNull(in);
@@ -426,6 +470,11 @@ public abstract class Node implements Cloneable {
         out.parentNode = null;
     }
 
+    /**
+     * Removes the child.
+     *
+     * @param out the out
+     */
     protected void removeChild(Node out) {
         Validate.isTrue(out.parentNode == this);
         int index = out.siblingIndex();
@@ -434,6 +483,11 @@ public abstract class Node implements Cloneable {
         out.parentNode = null;
     }
 
+    /**
+     * Adds the children.
+     *
+     * @param children the children
+     */
     protected void addChildren(Node... children) {
         //most used. short circuit addChildren(int), which hits reindex children and array copy
         for (Node child: children) {
@@ -443,6 +497,12 @@ public abstract class Node implements Cloneable {
         }
     }
 
+    /**
+     * Adds the children.
+     *
+     * @param index the index
+     * @param children the children
+     */
     protected void addChildren(int index, Node... children) {
         Validate.noNullElements(children);
         for (int i = children.length - 1; i >= 0; i--) {
@@ -453,12 +513,20 @@ public abstract class Node implements Cloneable {
         reindexChildren();
     }
 
+    /**
+     * Reparent child.
+     *
+     * @param child the child
+     */
     private void reparentChild(Node child) {
         if (child.parentNode != null)
             child.parentNode.removeChild(child);
         child.setParentNode(this);
     }
     
+    /**
+     * Reindex children.
+     */
     private void reindexChildren() {
         for (int i = 0; i < childNodes.size(); i++) {
             childNodes.get(i).setSiblingIndex(i);
@@ -526,6 +594,11 @@ public abstract class Node implements Cloneable {
         return siblingIndex;
     }
     
+    /**
+     * Sets the sibling index.
+     *
+     * @param siblingIndex the new sibling index
+     */
     protected void setSiblingIndex(int siblingIndex) {
         this.siblingIndex = siblingIndex;
     }
@@ -552,31 +625,64 @@ public abstract class Node implements Cloneable {
         return accum.toString();
     }
 
+    /**
+     * Outer html.
+     *
+     * @param accum the accum
+     */
     protected void outerHtml(StringBuilder accum) {
         new NodeTraversor(new OuterHtmlVisitor(accum, getOutputSettings())).traverse(this);
     }
 
     // if this node has no document (or parent), retrieve the default output settings
+    /**
+     * Gets the output settings.
+     *
+     * @return the output settings
+     */
     private Document.OutputSettings getOutputSettings() {
         return ownerDocument() != null ? ownerDocument().outputSettings() : (new Document("")).outputSettings();
     }
 
     /**
-     Get the outer HTML of this node.
-     @param accum accumulator to place HTML into
+     * Get the outer HTML of this node.
+     *
+     * @param accum accumulator to place HTML into
+     * @param depth the depth
+     * @param out the out
      */
     abstract void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out);
 
+    /**
+     * Outer html tail.
+     *
+     * @param accum the accum
+     * @param depth the depth
+     * @param out the out
+     */
     abstract void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out);
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return outerHtml();
     }
 
+    /**
+     * Indent.
+     *
+     * @param accum the accum
+     * @param depth the depth
+     * @param out the out
+     */
     protected void indent(StringBuilder accum, int depth, Document.OutputSettings out) {
         accum.append("\n").append(StringUtil.padding(depth * out.indentAmount()));
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -584,6 +690,9 @@ public abstract class Node implements Cloneable {
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int result = parentNode != null ? parentNode.hashCode() : 0;
@@ -625,6 +734,12 @@ public abstract class Node implements Cloneable {
      * Return a clone of the node using the given parent (which can be null).
      * Not a deep copy of children.
      */
+    /**
+     * Do clone.
+     *
+     * @param parent the parent
+     * @return the node
+     */
     protected Node doClone(Node parent) {
         Node clone;
 
@@ -646,19 +761,38 @@ public abstract class Node implements Cloneable {
         return clone;
     }
 
+    /**
+     * The Class OuterHtmlVisitor.
+     */
     private static class OuterHtmlVisitor implements NodeVisitor {
+        
+        /** The accum. */
         private StringBuilder accum;
+        
+        /** The out. */
         private Document.OutputSettings out;
 
+        /**
+         * Instantiates a new outer html visitor.
+         *
+         * @param accum the accum
+         * @param out the out
+         */
         OuterHtmlVisitor(StringBuilder accum, Document.OutputSettings out) {
             this.accum = accum;
             this.out = out;
         }
 
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#head(org.jsoup.nodes.Node, int)
+         */
         public void head(Node node, int depth) {
             node.outerHtmlHead(accum, depth, out);
         }
 
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#tail(org.jsoup.nodes.Node, int)
+         */
         public void tail(Node node, int depth) {
             if (!node.nodeName().equals("#text")) // saves a void hit.
                 node.outerHtmlTail(accum, depth, out);

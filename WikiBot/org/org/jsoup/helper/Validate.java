@@ -5,10 +5,14 @@ package org.jsoup.helper;
  */
 public final class Validate {
     
+    /**
+     * Instantiates a new validate.
+     */
     private Validate() {}
 
     /**
-     * Validates that the object is not null
+     * Validates that the object is not null.
+     *
      * @param obj object to test
      */
     public static void notNull(Object obj) {
@@ -17,7 +21,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the object is not null
+     * Validates that the object is not null.
+     *
      * @param obj object to test
      * @param msg message to output if validation fails
      */
@@ -27,7 +32,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the value is true
+     * Validates that the value is true.
+     *
      * @param val object to test
      */
     public static void isTrue(boolean val) {
@@ -36,7 +42,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the value is true
+     * Validates that the value is true.
+     *
      * @param val object to test
      * @param msg message to output if validation fails
      */
@@ -46,7 +53,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the value is false
+     * Validates that the value is false.
+     *
      * @param val object to test
      */
     public static void isFalse(boolean val) {
@@ -55,7 +63,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the value is false
+     * Validates that the value is false.
+     *
      * @param val object to test
      * @param msg message to output if validation fails
      */
@@ -65,7 +74,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the array contains no null elements
+     * Validates that the array contains no null elements.
+     *
      * @param objects the array to test
      */
     public static void noNullElements(Object[] objects) {
@@ -73,7 +83,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the array contains no null elements
+     * Validates that the array contains no null elements.
+     *
      * @param objects the array to test
      * @param msg message to output if validation fails
      */
@@ -84,7 +95,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the string is not empty
+     * Validates that the string is not empty.
+     *
      * @param string the string to test
      */
     public static void notEmpty(String string) {
@@ -93,7 +105,8 @@ public final class Validate {
     }
 
     /**
-     * Validates that the string is not empty
+     * Validates that the string is not empty.
+     *
      * @param string the string to test
      * @param msg message to output if validation fails
      */

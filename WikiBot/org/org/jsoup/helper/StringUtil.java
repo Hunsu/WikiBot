@@ -8,10 +8,12 @@ import java.util.Iterator;
  */
 public final class StringUtil {
     // memoised padding up to 10
+    /** The Constant padding. */
     private static final String[] padding = {"", " ", "  ", "   ", "    ", "     ", "      ", "       ", "        ", "         ", "          "};
 
     /**
-     * Join a collection of strings by a seperator
+     * Join a collection of strings by a seperator.
+     *
      * @param strings collection of string objects
      * @param sep string to place between strings
      * @return joined string
@@ -21,7 +23,8 @@ public final class StringUtil {
     }
 
     /**
-     * Join a collection of strings by a seperator
+     * Join a collection of strings by a seperator.
+     *
      * @param strings iterator of string objects
      * @param sep string to place between strings
      * @return joined string
@@ -43,7 +46,8 @@ public final class StringUtil {
     }
 
     /**
-     * Returns space padding
+     * Returns space padding.
+     *
      * @param width amount of padding desired
      * @return string of spaces * width
      */
@@ -61,7 +65,8 @@ public final class StringUtil {
     }
 
     /**
-     * Tests if a string is blank: null, emtpy, or only whitespace (" ", \r\n, \t, etc)
+     * Tests if a string is blank: null, emtpy, or only whitespace (" ", \r\n, \t, etc).
+     *
      * @param string string to test
      * @return if string is blank
      */
@@ -103,6 +108,12 @@ public final class StringUtil {
         return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r';
     }
 
+    /**
+     * Normalise whitespace.
+     *
+     * @param string the string
+     * @return the string
+     */
     public static String normaliseWhitespace(String string) {
         StringBuilder sb = new StringBuilder(string.length());
 
@@ -131,6 +142,13 @@ public final class StringUtil {
         return modified ? sb.toString() : string;
     }
 
+    /**
+     * In.
+     *
+     * @param needle the needle
+     * @param haystack the haystack
+     * @return true, if successful
+     */
     public static boolean in(String needle, String... haystack) {
         for (String hay : haystack) {
             if (hay.equals(needle))

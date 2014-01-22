@@ -17,6 +17,10 @@ import java.net.URL;
 
  @author Jonathan Hedley */
 public class Jsoup {
+    
+    /**
+     * Instantiates a new jsoup.
+     */
     private Jsoup() {}
 
     /**
@@ -46,13 +50,12 @@ public class Jsoup {
     }
 
     /**
-     Parse HTML into a Document. As no base URI is specified, absolute URL detection relies on the HTML including a
-     {@code <base href>} tag.
-
-     @param html HTML to parse
-     @return sane HTML
-
-     @see #parse(String, String)
+     * Parse HTML into a Document. As no base URI is specified, absolute URL detection relies on the HTML including a
+     *
+     * @param html HTML to parse
+     * @return sane HTML
+     * {@code <base href>} tag.
+     * @see #parse(String, String)
      */
     public static Document parse(String html) {
         return Parser.parse(html, "");
@@ -161,21 +164,15 @@ public class Jsoup {
     }
 
     /**
-     Fetch a URL, and parse it as HTML. Provided for compatibility; in most cases use {@link #connect(String)} instead.
-     <p>
-     The encoding character set is determined by the content-type header or http-equiv meta tag, or falls back to {@code UTF-8}.
-
-     @param url           URL to fetch (with a GET). The protocol must be {@code http} or {@code https}.
-     @param timeoutMillis Connection and read timeout, in milliseconds. If exceeded, IOException is thrown.
-     @return The parsed HTML.
-
-     @throws java.net.MalformedURLException if the request URL is not a HTTP or HTTPS URL, or is otherwise malformed
-     @throws HttpStatusException if the response is not OK and HTTP response errors are not ignored
-     @throws UnsupportedMimeTypeException if the response mime type is not supported and those errors are not ignored
-     @throws java.net.SocketTimeoutException if the connection times out
-     @throws IOException if a connection or read error occurs
-
-     @see #connect(String)
+     * Fetch a URL, and parse it as HTML. Provided for compatibility; in most cases use {@link #connect(String)} instead.
+     * <p>
+     * The encoding character set is determined by the content-type header or http-equiv meta tag, or falls back to {@code UTF-8}.
+     *
+     * @param url           URL to fetch (with a GET). The protocol must be {@code http} or {@code https}.
+     * @param timeoutMillis Connection and read timeout, in milliseconds. If exceeded, IOException is thrown.
+     * @return The parsed HTML.
+     * @throws IOException if a connection or read error occurs
+     * @see #connect(String)
      */
     public static Document parse(URL url, int timeoutMillis) throws IOException {
         Connection con = HttpConnection.connect(url);

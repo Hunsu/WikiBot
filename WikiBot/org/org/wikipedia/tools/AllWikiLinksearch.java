@@ -41,15 +41,33 @@ import org.wikipedia.*;
  */
 public class AllWikiLinksearch
 {
+    
+    /** The queue. */
     private static Queue<Wiki> queue = new ConcurrentLinkedQueue();
+    
+    /** The out. */
     private static FileWriter out = null;
+    
+    /** The monitor. */
     private static ProgressMonitor monitor;
+    
+    /** The progress. */
     private static int progress = 0;
 
+    /**
+     * The Class LinksearchThread.
+     */
     private static class LinksearchThread extends Thread
     {
+        
+        /** The domain. */
         private String domain;
 
+        /**
+         * Instantiates a new linksearch thread.
+         *
+         * @param domain the domain
+         */
         public LinksearchThread(String domain)
         {
             this.domain = domain;
@@ -124,6 +142,12 @@ public class AllWikiLinksearch
         }
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException
     {
         // retrieve site matrix

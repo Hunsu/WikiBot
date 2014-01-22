@@ -21,6 +21,8 @@ import java.util.List;
  Rather than interacting directly with a Cleaner object, generally see the {@code clean} methods in {@link org.jsoup.Jsoup}.
  */
 public class Cleaner {
+    
+    /** The whitelist. */
     private Whitelist whitelist;
 
     /**
@@ -70,15 +72,30 @@ public class Cleaner {
      Iterates the input and copies trusted nodes (tags, attributes, text) into the destination.
      */
     private final class CleaningVisitor implements NodeVisitor {
+        
+        /** The num discarded. */
         private int numDiscarded = 0;
+        
+        /** The root. */
         private final Element root;
+        
+        /** The destination. */
         private Element destination; // current element to append nodes to
 
+        /**
+         * Instantiates a new cleaning visitor.
+         *
+         * @param root the root
+         * @param destination the destination
+         */
         private CleaningVisitor(Element root, Element destination) {
             this.root = root;
             this.destination = destination;
         }
 
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#head(org.jsoup.nodes.Node, int)
+         */
         public void head(Node source, int depth) {
             if (source instanceof Element) {
                 Element sourceEl = (Element) source;
@@ -102,6 +119,9 @@ public class Cleaner {
             }
         }
 
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#tail(org.jsoup.nodes.Node, int)
+         */
         public void tail(Node source, int depth) {
             if (source instanceof Element && whitelist.isSafeTag(source.nodeName())) {
                 destination = destination.parent(); // would have descended, so pop destination stack
@@ -109,6 +129,13 @@ public class Cleaner {
         }
     }
 
+    /**
+     * Copy safe nodes.
+     *
+     * @param source the source
+     * @param dest the dest
+     * @return the int
+     */
     private int copySafeNodes(Element source, Element dest) {
         CleaningVisitor cleaningVisitor = new CleaningVisitor(source, dest);
         NodeTraversor traversor = new NodeTraversor(cleaningVisitor);
@@ -116,6 +143,12 @@ public class Cleaner {
         return cleaningVisitor.numDiscarded;
     }
 
+    /**
+     * Creates the safe element.
+     *
+     * @param sourceEl the source el
+     * @return the element meta
+     */
     private ElementMeta createSafeElement(Element sourceEl) {
         String sourceTag = sourceEl.tagName();
         Attributes destAttrs = new Attributes();
@@ -135,10 +168,23 @@ public class Cleaner {
         return new ElementMeta(dest, numDiscarded);
     }
 
+    /**
+     * The Class ElementMeta.
+     */
     private static class ElementMeta {
+        
+        /** The el. */
         Element el;
+        
+        /** The num attribs discarded. */
         int numAttribsDiscarded;
 
+        /**
+         * Instantiates a new element meta.
+         *
+         * @param el the el
+         * @param numAttribsDiscarded the num attribs discarded
+         */
         ElementMeta(Element el, int numAttribsDiscarded) {
             this.el = el;
             this.numAttribsDiscarded = numAttribsDiscarded;

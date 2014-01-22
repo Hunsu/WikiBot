@@ -35,6 +35,7 @@ import org.wikipedia.Wiki;
 public class XWikiLinksearch extends HttpServlet
 {
     // wiki groups
+    /** The Constant importantwikis. */
     public static final Wiki[] top20wikis, top40wikis, importantwikis;
     
     /**
@@ -80,9 +81,13 @@ public class XWikiLinksearch extends HttpServlet
             tempwiki.setMaxLag(-1);
         }
     }
+    
     /**
-     *  Main for testing/offline stuff. The results are found in results.html,
-     *  which is in either the current or home directory.
+     * Main for testing/offline stuff. The results are found in results.html,
+     * which is in either the current or home directory.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(String[] args) throws IOException
     {
@@ -98,13 +103,18 @@ public class XWikiLinksearch extends HttpServlet
     }
 
     /**
-     *  This servlet is intended to run on Google App Engine, see { @link
-     *  https://code.google.com/appengine/docs/quotas.html here } and { @link
-     *  https://code.google.com/appengine/docs/java/runtime.html#The_Sandbox
-     *  here } for what you can and cannot do in this environment. More
-     *  precisely, at ~1s / wiki, we cannot search more than 40 wikis.
-     *  <p>
-     *  This servlet runs at { @link https://wikipediatools.appspot.com/linksearch.jsp }.
+     * This servlet is intended to run on Google App Engine, see { @link
+     * https://code.google.com/appengine/docs/quotas.html here } and { @link
+     * https://code.google.com/appengine/docs/java/runtime.html#The_Sandbox
+     * here } for what you can and cannot do in this environment. More
+     * precisely, at ~1s / wiki, we cannot search more than 40 wikis.
+     * <p>
+     * This servlet runs at { @link https://wikipediatools.appspot.com/linksearch.jsp }.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -224,6 +234,17 @@ public class XWikiLinksearch extends HttpServlet
         out.close();
     }
 
+    /**
+     * Linksearch.
+     *
+     * @param domain the domain
+     * @param buffer the buffer
+     * @param wikis the wikis
+     * @param https the https
+     * @param mailto the mailto
+     * @param ns the ns
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void linksearch(String domain, StringBuilder buffer, Wiki[] wikis, boolean https, boolean mailto,
         int... ns) throws IOException
     {

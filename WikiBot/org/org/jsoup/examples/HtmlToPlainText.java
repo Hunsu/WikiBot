@@ -22,6 +22,13 @@ import java.io.IOException;
  * @author Jonathan Hedley, jonathan@hedley.net
  */
 public class HtmlToPlainText {
+    
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String... args) throws IOException {
         Validate.isTrue(args.length == 1, "usage: supply url to fetch");
         String url = args[0];
@@ -35,7 +42,8 @@ public class HtmlToPlainText {
     }
 
     /**
-     * Format an Element to plain-text
+     * Format an Element to plain-text.
+     *
      * @param element the root element to format
      * @return formatted text
      */
@@ -48,12 +56,24 @@ public class HtmlToPlainText {
     }
 
     // the formatting rules, implemented in a breadth-first DOM traverse
+    /**
+     * The Class FormattingVisitor.
+     */
     private class FormattingVisitor implements NodeVisitor {
+        
+        /** The Constant maxWidth. */
         private static final int maxWidth = 80;
+        
+        /** The width. */
         private int width = 0;
+        
+        /** The accum. */
         private StringBuilder accum = new StringBuilder(); // holds the accumulated text
 
         // hit when the node is first seen
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#head(org.jsoup.nodes.Node, int)
+         */
         public void head(Node node, int depth) {
             String name = node.nodeName();
             if (node instanceof TextNode)
@@ -63,6 +83,9 @@ public class HtmlToPlainText {
         }
 
         // hit when all of the node's children (if any) have been visited
+        /* (non-Javadoc)
+         * @see org.jsoup.select.NodeVisitor#tail(org.jsoup.nodes.Node, int)
+         */
         public void tail(Node node, int depth) {
             String name = node.nodeName();
             if (name.equals("br"))
@@ -74,6 +97,11 @@ public class HtmlToPlainText {
         }
 
         // appends text to the string builder with a simple word wrap method
+        /**
+         * Append.
+         *
+         * @param text the text
+         */
         private void append(String text) {
             if (text.startsWith("\n"))
                 width = 0; // reset counter if starts with a newline. only from formats above, not in natural text
@@ -102,6 +130,9 @@ public class HtmlToPlainText {
             }
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
         public String toString() {
             return accum.toString();
         }

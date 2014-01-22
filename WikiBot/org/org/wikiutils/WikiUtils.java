@@ -21,7 +21,7 @@ public class WikiUtils
 {
 
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private WikiUtils()
 	{
@@ -52,14 +52,13 @@ public class WikiUtils
 	}
 
 	/**
-	 * Deletes all the elements in an array and their associated talk pages
-	 * 
+	 * Deletes all the elements in an array and their associated talk pages.
+	 *
 	 * @param list The array to use
 	 * @param reason The reason to use while deleting
 	 * @param talkReason The reason to use when deleting talk pages of the pages we're deleting.
-	 *           Specify "null" if talk pages are not to be deleted
+	 * Specify "null" if talk pages are not to be deleted
 	 * @param wiki The wiki object to use.
-	 * 
 	 * @return An array containing the elements we were unable to delete.
 	 */
 

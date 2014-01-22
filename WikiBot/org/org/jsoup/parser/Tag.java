@@ -11,19 +11,45 @@ import java.util.Map;
  * @author Jonathan Hedley, jonathan@hedley.net
  */
 public class Tag {
+    
+    /** The Constant tags. */
     private static final Map<String, Tag> tags = new HashMap<String, Tag>(); // map of known tags
 
+    /** The tag name. */
     private String tagName;
+    
+    /** The is block. */
     private boolean isBlock = true; // block or inline
+    
+    /** The format as block. */
     private boolean formatAsBlock = true; // should be formatted as a block
+    
+    /** The can contain block. */
     private boolean canContainBlock = true; // Can this tag hold block level tags?
+    
+    /** The can contain inline. */
     private boolean canContainInline = true; // only pcdata if not
+    
+    /** The empty. */
     private boolean empty = false; // can hold nothing; e.g. img
+    
+    /** The self closing. */
     private boolean selfClosing = false; // can self close (<foo />). used for unknown tags that self close, without forcing them as empty.
+    
+    /** The preserve whitespace. */
     private boolean preserveWhitespace = false; // for pre, textarea, script etc
+    
+    /** The form list. */
     private boolean formList = false; // a control that appears in forms: input, textarea, output etc
+    
+    /** The form submit. */
     private boolean formSubmit = false; // a control that can be submitted in a form: input etc
 
+    /**
+     * Instantiates a new tag.
+     *
+     * @param tagName the tag name
+     */
     private Tag(String tagName) {
         this.tagName = tagName.toLowerCase();
     }
@@ -74,7 +100,7 @@ public class Tag {
     }
 
     /**
-     * Gets if this tag should be formatted as a block (or as inline)
+     * Gets if this tag should be formatted as a block (or as inline).
      *
      * @return if should be formatted as block or inline
      */
@@ -110,7 +136,7 @@ public class Tag {
     }
 
     /**
-     * Get if this is an empty tag
+     * Get if this is an empty tag.
      *
      * @return if this is an empty tag
      */
@@ -171,11 +197,19 @@ public class Tag {
         return formSubmit;
     }
 
+    /**
+     * Sets the self closing.
+     *
+     * @return the tag
+     */
     Tag setSelfClosing() {
         selfClosing = true;
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -197,6 +231,9 @@ public class Tag {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int result = tagName.hashCode();
@@ -212,12 +249,16 @@ public class Tag {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return tagName;
     }
 
     // internal static initialisers:
     // prepped from http://www.w3.org/TR/REC-html40/sgml/dtd.html and other sources
+    /** The Constant blockTags. */
     private static final String[] blockTags = {
             "html", "head", "body", "frameset", "script", "noscript", "style", "meta", "link", "title", "frame",
             "noframes", "section", "nav", "aside", "hgroup", "header", "footer", "p", "h1", "h2", "h3", "h4", "h5", "h6",
@@ -225,6 +266,8 @@ public class Tag {
             "del", "s", "dl", "dt", "dd", "li", "table", "caption", "thead", "tfoot", "tbody", "colgroup", "col", "tr", "th",
             "td", "video", "audio", "canvas", "details", "menu", "plaintext"
     };
+    
+    /** The Constant inlineTags. */
     private static final String[] inlineTags = {
             "object", "base", "font", "tt", "i", "b", "u", "big", "small", "em", "strong", "dfn", "code", "samp", "kbd",
             "var", "cite", "abbr", "time", "acronym", "mark", "ruby", "rt", "rp", "a", "img", "br", "wbr", "map", "q",
@@ -232,21 +275,30 @@ public class Tag {
             "option", "legend", "datalist", "keygen", "output", "progress", "meter", "area", "param", "source", "track",
             "summary", "command", "device"
     };
+    
+    /** The Constant emptyTags. */
     private static final String[] emptyTags = {
             "meta", "link", "base", "frame", "img", "br", "wbr", "embed", "hr", "input", "keygen", "col", "command",
             "device"
     };
+    
+    /** The Constant formatAsInlineTags. */
     private static final String[] formatAsInlineTags = {
             "title", "a", "p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "address", "li", "th", "td", "script", "style",
             "ins", "del", "s"
     };
+    
+    /** The Constant preserveWhitespaceTags. */
     private static final String[] preserveWhitespaceTags = {
             "pre", "plaintext", "title", "textarea"
     };
     // todo: I think we just need submit tags, and can scrub listed
+    /** The Constant formListedTags. */
     private static final String[] formListedTags = {
             "button", "fieldset", "input", "keygen", "object", "output", "select", "textarea"
     };
+    
+    /** The Constant formSubmitTags. */
     private static final String[] formSubmitTags = {
             "input", "keygen", "object", "select", "textarea"
     };
@@ -299,6 +351,11 @@ public class Tag {
         }
     }
 
+    /**
+     * Register.
+     *
+     * @param tag the tag
+     */
     private static void register(Tag tag) {
         tags.put(tag.tagName, tag);
     }

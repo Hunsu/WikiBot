@@ -12,12 +12,23 @@ import javax.security.auth.login.LoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+/**
+ * The Class Refernces.
+ */
 public class Refernces {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		correctRefslist();
 	}
 
+	/**
+	 * Correct refslist.
+	 */
 	public static void correctRefslist() {
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {
@@ -82,6 +93,9 @@ public class Refernces {
 		}
 	}
 
+	/**
+	 * Coorect refs.
+	 */
 	public static void coorectRefs() {
 		try {
 			FileInputStream fstream = new FileInputStream("titles.txt");

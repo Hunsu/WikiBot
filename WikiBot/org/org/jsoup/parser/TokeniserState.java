@@ -4,6 +4,8 @@ package org.jsoup.parser;
  * States and transition activations for the Tokeniser.
  */
 enum TokeniserState {
+    
+    /** The Data. */
     Data {
         // in data state, gather characters until a character reference or tag is found
         void read(Tokeniser t, CharacterReader r) {
@@ -28,6 +30,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Character reference in data. */
     CharacterReferenceInData {
         // from & in data
         void read(Tokeniser t, CharacterReader r) {
@@ -39,6 +43,8 @@ enum TokeniserState {
             t.transition(Data);
         }
     },
+    
+    /** The Rcdata. */
     Rcdata {
         /// handles data in title, textarea etc
         void read(Tokeniser t, CharacterReader r) {
@@ -64,6 +70,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Character reference in rcdata. */
     CharacterReferenceInRcdata {
         void read(Tokeniser t, CharacterReader r) {
             char[] c = t.consumeCharacterReference(null, false);
@@ -74,6 +82,8 @@ enum TokeniserState {
             t.transition(Rcdata);
         }
     },
+    
+    /** The Rawtext. */
     Rawtext {
         void read(Tokeniser t, CharacterReader r) {
             switch (r.current()) {
@@ -95,6 +105,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data. */
     ScriptData {
         void read(Tokeniser t, CharacterReader r) {
             switch (r.current()) {
@@ -116,6 +128,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The plaintext. */
     PLAINTEXT {
         void read(Tokeniser t, CharacterReader r) {
             switch (r.current()) {
@@ -134,6 +148,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Tag open. */
     TagOpen {
         // from < in data
         void read(Tokeniser t, CharacterReader r) {
@@ -160,6 +176,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The End tag open. */
     EndTagOpen {
         void read(Tokeniser t, CharacterReader r) {
             if (r.isEmpty()) {
@@ -178,6 +196,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Tag name. */
     TagName {
         // from < or </ in data, will have start or end tag pending
         void read(Tokeniser t, CharacterReader r) {
@@ -210,6 +230,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Rcdata lessthan sign. */
     RcdataLessthanSign {
         // from < in rcdata
         void read(Tokeniser t, CharacterReader r) {
@@ -229,6 +251,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The RCDATA end tag open. */
     RCDATAEndTagOpen {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -242,6 +266,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The RCDATA end tag name. */
     RCDATAEndTagName {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -288,6 +314,8 @@ enum TokeniserState {
             t.transition(Rcdata);
         }
     },
+    
+    /** The Rawtext lessthan sign. */
     RawtextLessthanSign {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matches('/')) {
@@ -299,6 +327,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Rawtext end tag open. */
     RawtextEndTagOpen {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -310,11 +340,15 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Rawtext end tag name. */
     RawtextEndTagName {
         void read(Tokeniser t, CharacterReader r) {
             handleDataEndTag(t, r, Rawtext);
         }
     },
+    
+    /** The Script data lessthan sign. */
     ScriptDataLessthanSign {
         void read(Tokeniser t, CharacterReader r) {
             switch (r.consume()) {
@@ -333,6 +367,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data end tag open. */
     ScriptDataEndTagOpen {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -345,11 +381,15 @@ enum TokeniserState {
 
         }
     },
+    
+    /** The Script data end tag name. */
     ScriptDataEndTagName {
         void read(Tokeniser t, CharacterReader r) {
             handleDataEndTag(t, r, ScriptData);
         }
     },
+    
+    /** The Script data escape start. */
     ScriptDataEscapeStart {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matches('-')) {
@@ -360,6 +400,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escape start dash. */
     ScriptDataEscapeStartDash {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matches('-')) {
@@ -370,6 +412,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escaped. */
     ScriptDataEscaped {
         void read(Tokeniser t, CharacterReader r) {
             if (r.isEmpty()) {
@@ -397,6 +441,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escaped dash. */
     ScriptDataEscapedDash {
         void read(Tokeniser t, CharacterReader r) {
             if (r.isEmpty()) {
@@ -425,6 +471,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escaped dash dash. */
     ScriptDataEscapedDashDash {
         void read(Tokeniser t, CharacterReader r) {
             if (r.isEmpty()) {
@@ -456,6 +504,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escaped lessthan sign. */
     ScriptDataEscapedLessthanSign {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -472,6 +522,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escaped end tag open. */
     ScriptDataEscapedEndTagOpen {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -485,16 +537,22 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data escaped end tag name. */
     ScriptDataEscapedEndTagName {
         void read(Tokeniser t, CharacterReader r) {
             handleDataEndTag(t, r, ScriptDataEscaped);
         }
     },
+    
+    /** The Script data double escape start. */
     ScriptDataDoubleEscapeStart {
         void read(Tokeniser t, CharacterReader r) {
             handleDataDoubleEscapeTag(t, r, ScriptDataDoubleEscaped, ScriptDataEscaped);
         }
     },
+    
+    /** The Script data double escaped. */
     ScriptDataDoubleEscaped {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.current();
@@ -522,6 +580,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data double escaped dash. */
     ScriptDataDoubleEscapedDash {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -549,6 +609,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data double escaped dash dash. */
     ScriptDataDoubleEscapedDashDash {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -579,6 +641,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data double escaped lessthan sign. */
     ScriptDataDoubleEscapedLessthanSign {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matches('/')) {
@@ -590,11 +654,15 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Script data double escape end. */
     ScriptDataDoubleEscapeEnd {
         void read(Tokeniser t, CharacterReader r) {
             handleDataDoubleEscapeTag(t,r, ScriptDataEscaped, ScriptDataDoubleEscaped);
         }
     },
+    
+    /** The Before attribute name. */
     BeforeAttributeName {
         // from tagname <xxx
         void read(Tokeniser t, CharacterReader r) {
@@ -639,6 +707,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Attribute name. */
     AttributeName {
         // from before attribute name
         void read(Tokeniser t, CharacterReader r) {
@@ -681,6 +751,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The After attribute name. */
     AfterAttributeName {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -726,6 +798,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Before attribute value. */
     BeforeAttributeValue {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -774,6 +848,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Attribute value_double quoted. */
     AttributeValue_doubleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             String value = r.consumeToAny('"', '&', nullChar);
@@ -804,6 +880,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Attribute value_single quoted. */
     AttributeValue_singleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             String value = r.consumeToAny('\'', '&', nullChar);
@@ -834,6 +912,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Attribute value_unquoted. */
     AttributeValue_unquoted {
         void read(Tokeniser t, CharacterReader r) {
             String value = r.consumeToAny('\t', '\n', '\r', '\f', ' ', '&', '>', nullChar, '"', '\'', '<', '=', '`');
@@ -882,6 +962,7 @@ enum TokeniserState {
         }
     },
     // CharacterReferenceInAttributeValue state handled inline
+    /** The After attribute value_quoted. */
     AfterAttributeValue_quoted {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -912,6 +993,8 @@ enum TokeniserState {
 
         }
     },
+    
+    /** The Self closing start tag. */
     SelfClosingStartTag {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -931,6 +1014,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Bogus comment. */
     BogusComment {
         void read(Tokeniser t, CharacterReader r) {
             // todo: handle bogus comment starting from eof. when does that trigger?
@@ -944,6 +1029,8 @@ enum TokeniserState {
             t.advanceTransition(Data);
         }
     },
+    
+    /** The Markup declaration open. */
     MarkupDeclarationOpen {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchConsume("--")) {
@@ -962,6 +1049,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Comment start. */
     CommentStart {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -990,6 +1079,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Comment start dash. */
     CommentStartDash {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1018,6 +1109,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Comment. */
     Comment {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.current();
@@ -1040,6 +1133,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Comment end dash. */
     CommentEndDash {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1063,6 +1158,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Comment end. */
     CommentEnd {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1096,6 +1193,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Comment end bang. */
     CommentEndBang {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1124,6 +1223,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Doctype. */
     Doctype {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1148,6 +1249,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Before doctype name. */
     BeforeDoctypeName {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -1182,6 +1285,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Doctype name. */
     DoctypeName {
         void read(Tokeniser t, CharacterReader r) {
             if (r.matchesLetter()) {
@@ -1217,6 +1322,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The After doctype name. */
     AfterDoctypeName {
         void read(Tokeniser t, CharacterReader r) {
             if (r.isEmpty()) {
@@ -1243,6 +1350,8 @@ enum TokeniserState {
 
         }
     },
+    
+    /** The After doctype public keyword. */
     AfterDoctypePublicKeyword {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1283,6 +1392,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Before doctype public identifier. */
     BeforeDoctypePublicIdentifier {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1320,6 +1431,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Doctype public identifier_double quoted. */
     DoctypePublicIdentifier_doubleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1348,6 +1461,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Doctype public identifier_single quoted. */
     DoctypePublicIdentifier_singleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1376,6 +1491,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The After doctype public identifier. */
     AfterDoctypePublicIdentifier {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1414,6 +1531,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Between doctype public and system identifiers. */
     BetweenDoctypePublicAndSystemIdentifiers {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1451,6 +1570,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The After doctype system keyword. */
     AfterDoctypeSystemKeyword {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1491,6 +1612,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Before doctype system identifier. */
     BeforeDoctypeSystemIdentifier {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1528,6 +1651,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Doctype system identifier_double quoted. */
     DoctypeSystemIdentifier_doubleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1556,6 +1681,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Doctype system identifier_single quoted. */
     DoctypeSystemIdentifier_singleQuoted {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1584,6 +1711,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The After doctype system identifier. */
     AfterDoctypeSystemIdentifier {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1611,6 +1740,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Bogus doctype. */
     BogusDoctype {
         void read(Tokeniser t, CharacterReader r) {
             char c = r.consume();
@@ -1629,6 +1760,8 @@ enum TokeniserState {
             }
         }
     },
+    
+    /** The Cdata section. */
     CdataSection {
         void read(Tokeniser t, CharacterReader r) {
             String data = r.consumeTo("]]>");
@@ -1639,16 +1772,33 @@ enum TokeniserState {
     };
 
 
+    /**
+     * Read.
+     *
+     * @param t the t
+     * @param r the r
+     */
     abstract void read(Tokeniser t, CharacterReader r);
 
+    /** The Constant nullChar. */
     private static final char nullChar = '\u0000';
+    
+    /** The Constant replacementChar. */
     private static final char replacementChar = Tokeniser.replacementChar;
+    
+    /** The Constant replacementStr. */
     private static final String replacementStr = String.valueOf(Tokeniser.replacementChar);
+    
+    /** The Constant eof. */
     private static final char eof = CharacterReader.EOF;
 
     /**
      * Handles RawtextEndTagName, ScriptDataEndTagName, and ScriptDataEscapedEndTagName. Same body impl, just
      * different else exit transitions.
+     *
+     * @param t the t
+     * @param r the r
+     * @param elseTransition the else transition
      */
     private static final void handleDataEndTag(Tokeniser t, CharacterReader r, TokeniserState elseTransition) {
         if (r.matchesLetter()) {
@@ -1690,6 +1840,14 @@ enum TokeniserState {
         }
     }
 
+    /**
+     * Handle data double escape tag.
+     *
+     * @param t the t
+     * @param r the r
+     * @param primary the primary
+     * @param fallback the fallback
+     */
     private static final void handleDataDoubleEscapeTag(Tokeniser t, CharacterReader r, TokeniserState primary, TokeniserState fallback) {
         if (r.matchesLetter()) {
             String name = r.consumeLetterSequence();

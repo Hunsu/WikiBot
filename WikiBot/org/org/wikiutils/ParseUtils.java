@@ -23,8 +23,9 @@ import org.wikipedia.Wiki;
  * @see org.wikiutils.WikiUtils
  */
 public class ParseUtils {
+
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private ParseUtils() {
 	}
@@ -33,17 +34,10 @@ public class ParseUtils {
 	 * Gets the target of the redirect page. </br><b>PRECONDITION</b>:
 	 * <tt>redirect</tt> must be a Redirect.
 	 *
-	 * @param redirect
-	 *            The title of the redirect to get the target for.
-	 * @param wiki
-	 *            The wiki object to use.
-	 *
+	 * @param redirect The title of the redirect to get the target for.
+	 * @param wiki The wiki object to use.
 	 * @return String The title of the redirect's target.
-	 *
-	 * @throws UnsupportedOperationException
-	 *             If the page was not a redirect page.
-	 * @throws IOException
-	 *             If network error
+	 * @throws IOException If network error
 	 */
 
 	public static String getRedirectTarget(String redirect, Wiki wiki)
@@ -110,21 +104,13 @@ public class ParseUtils {
 	}
 
 	/**
-	 * Replaces all transclusions of a template/page with specified text
+	 * Replaces all transclusions of a template/page with specified text.
 	 *
-	 * @param template
-	 *            The template (including namespace prefix) to be replaced
-	 * @param replacementText
-	 *            The text to replace the template with (can include subst:XXXX)
-	 * @param reason
-	 *            Edit summary to use
-	 * @param wiki
-	 *            The wiki object to use.
-	 *
-	 * @throws IOException
-	 *             If network error.
-	 *
-	 *
+	 * @param template The template (including namespace prefix) to be replaced
+	 * @param replacementText The text to replace the template with (can include subst:XXXX)
+	 * @param reason Edit summary to use
+	 * @param wiki The wiki object to use.
+	 * @throws IOException If network error.
 	 */
 
 	public static void templateReplace(String template, String replacementText,
@@ -198,18 +184,14 @@ public class ParseUtils {
 	}
 
 	/**
-	 * Attempts to parse out a template parameter based on specification
+	 * Attempts to parse out a template parameter based on specification.
 	 *
-	 * @param template
-	 *            The template to work on. Must be entered in format
-	 *            {{NAME|PARM1|PARAM2|...}}
-	 * @param param
-	 *            The parameter to retrieve, without "=".
-	 * @param trim
-	 *
+	 * @param template The template to work on. Must be entered in format
+	 * {{NAME|PARM1|PARAM2|...}}
+	 * @param param The parameter to retrieve, without "=".
+	 * @param trim the trim
 	 * @return The param we parsed out or null if we didn't find a param
-	 *         matching the specified criteria
-	 *
+	 * matching the specified criteria
 	 */
 
 	public static String getTemplateParam(String template, String param, boolean trim) {
@@ -225,6 +207,13 @@ public class ParseUtils {
 		return null; // if nothing matched
 	}
 
+	/**
+	 * Count occurrences of substring.
+	 *
+	 * @param text the string
+	 * @param substring the substring
+	 * @return the number of occurences
+	 */
 	public static int countOccurrences(String text, String substring) {
 		Pattern p = Pattern.compile(Pattern.quote(substring));
 		Matcher m = p.matcher(text);
@@ -235,6 +224,13 @@ public class ParseUtils {
 		return count;
 	}
 
+	/**
+	 * Removes the template param.
+	 *
+	 * @param template the template
+	 * @param param the param
+	 * @return the new template
+	 */
 	public static String removeTemplateParam(String template, String param) {
 		LinkedHashMap<String,String> map = getTemplateParametersWithValue(template);
 		if(map == null)
@@ -248,6 +244,13 @@ public class ParseUtils {
 		return template;
 	}
 
+	/**
+	 * Removes the template param.
+	 *
+	 * @param template the template
+	 * @param number the param number
+	 * @return the new template
+	 */
 	public static String removeTemplateParam(String template, int number) {
 		String param = String.valueOf(number);
 		int i = number;
@@ -272,6 +275,12 @@ public class ParseUtils {
 
 
 
+	/**
+	 * Gets the template paramerters.
+	 *
+	 * @param template the template
+	 * @return the template paramerters
+	 */
 	public static ArrayList<String> getTemplateParamerters(String template){
 		ArrayList<String> f = new ArrayList<String>();
 		int i = template.indexOf('|');
@@ -371,6 +380,13 @@ public class ParseUtils {
 			return null;
 	}
 
+	/**
+	 * Add the character c at the end of the string its length will be len.
+	 *
+	 * @param c the character to add
+	 * @param len the final length
+	 * @return the string
+	 */
 	public static String getString(char c, int len) {
 		if (len == 0)
 			return "";
@@ -381,21 +397,31 @@ public class ParseUtils {
 
 	}
 
-	/*public static String Remove(String str, int beginIndex, int len) {
-		return str.substring(0, beginIndex) + str.substring(beginIndex + len);
-	}*/
-
+	/**
+	 * Insert.
+	 *
+	 * @param s1 the s1
+	 * @param s2 the s2
+	 * @param index the index
+	 * @return the string
+	 */
 	public static String insert(String s1, String s2, int index) {
 		String bagBegin = s1.substring(0, index);
 		String bagEnd = s1.substring(index);
 		return bagBegin + s2 + bagEnd;
 	}
 
+	/**
+	 * Gets all the templates <i>template</i> contained in text.
+	 *
+	 * @param template the template name
+	 * @param text the text
+	 * @return the templates
+	 */
 	public static ArrayList<String> getTemplates(String template,
 			String text) {
 		HashMap<Integer,Integer> noWiki = getIgnorePositions(text,"<nowiki>","</nowiki>");
 		HashMap<Integer,Integer> comment = getIgnorePositions(text,"<!-","->");
-		//text = removeComments(text);
 		ArrayList<String> al = new ArrayList<String>();
 		char firstChar = template.charAt(0);
 		template = template.substring(1);
@@ -435,6 +461,12 @@ public class ParseUtils {
 		return al;
 	}
 
+	/**
+	 * Removes the comments and no wiki text from text.
+	 *
+	 * @param text the text
+	 * @return the new text
+	 */
 	public static String removeCommentsAndNoWikiText(String text) {
 		if(text == null)
 			return null;
@@ -442,6 +474,14 @@ public class ParseUtils {
 		return text.replaceAll("(?s)<!--.*?-->", "");
 	}
 
+	/**
+	 * Checks if is ignore position. Useful to not change
+	 * text between noWiki tags or comments text
+	 *
+	 * @param map the map that contains position to ignore
+	 * @param position the position
+	 * @return true, if the position will be ignored
+	 */
 	private static boolean isIgnorePosition(HashMap<Integer, Integer> map,
 			int position) {
 		if(map == null)
@@ -453,6 +493,14 @@ public class ParseUtils {
 		return false;
 	}
 
+	/**
+	 * Gets the begin and end positions of noWiki tags.
+	 *
+	 * @param text the text
+	 * @param start the start
+	 * @param end the end
+	 * @return the ignore positions
+	 */
 	private static HashMap<Integer, Integer> getIgnorePositions(String text,String start,String end) {
 		int startPos = text.indexOf(start);
 		if(startPos == -1)
@@ -470,22 +518,13 @@ public class ParseUtils {
 		return noWikiPos;
 	}
 
-	public static String getTemplateParameter(String template, String parameter) {
-		int i = template.indexOf('|');
-		while (i != -1) {
-			int j = template.indexOf('=');
-			if (j == -1)
-				return null;
-			String param = template.substring(i + 1, j).trim();
-			if (param.equals(parameter)) {
-				return getParamValue(template, j + 1);
-			}
-		}
-		return null;
 
-	}
-
-
+    /**
+     * Gets the internal links contained text.
+     *
+     * @param text the text
+     * @return the internal links
+     */
     public static ArrayList<String> getInternalLinks(String text){
 		ArrayList<String> al = new ArrayList<String>();
 		text = removeCommentsAndNoWikiText(text);
@@ -497,38 +536,22 @@ public class ParseUtils {
 		return al;
 	}
 
-	private static String getParamValue(String template, int index) {
-		int len = template.length()-2;
-		if (index > len - 2)
-			return null;
-		template = template.substring(0, len);
-		int nb = 0;
-		for (int i = index; i < len - 1; i++) {
-			char currentChar = template.charAt(i);
-			char nextChar = template.charAt(i + 1);
-			if (currentChar == '|' && nb == 0)
-				return template.substring(index, i);
-			if ((currentChar == '{' && nextChar == '{')
-					|| (currentChar == '[' && nextChar == '['))
-				nb++;
-			else {
-				if ((currentChar == '{' && nextChar == '{')
-						|| (currentChar == '[' && nextChar == '['))
-					nb--;
-			}
-		}
-		if (nb == 0)
-			return template.substring(index); // last parameter like |parm=value
-		return "";
-	}
 
+	/**
+	 * Sets the template param.
+	 *
+	 * @param template the template
+	 * @param param the param
+	 * @param value the value
+	 * @param adjust if we should adjust param length
+	 * @return the string
+	 */
 	public static String setTemplateParam(String template,String param,String value,boolean adjust) {
 
 		LinkedHashMap<String,String> map = getTemplateParametersWithValue(template);
 		if(map == null)
 			return null;
 		boolean added = false;
-	    //HashMap<String,String> newMap = new HashMap<String,String>();
 		for(String key : map.keySet()){
 			if(!key.trim().equals(param.trim())){
 				continue;
@@ -536,6 +559,7 @@ public class ParseUtils {
 			else{
 				map.put(key, value);
 				added = true;
+				//adjust = false;
 			}
 		}
 		if(!added)
@@ -546,6 +570,12 @@ public class ParseUtils {
 			return templateFromMap(map);
 	}
 
+	/**
+	 * Construct a template from map that contains its parameters and their values.
+	 *
+	 * @param map the map
+	 * @return the template
+	 */
 	public static String templateFromMap(HashMap<String, String> map) {
 		String template = "{{" + map.get("templateName");
 		for(String key : map.keySet()){
@@ -560,6 +590,15 @@ public class ParseUtils {
 		return template;
 	}
 
+	/**
+	 * Rename a template param.
+	 *
+	 * @param template the template
+	 * @param param the param to rename
+	 * @param name the new name
+	 * @param adjust if we should adjust the parameters length
+	 * @return the new template
+	 */
 	public static String renameTemplateParam(String template,String param,String name, boolean adjust){
 		LinkedHashMap<String,String> map = getTemplateParametersWithValue(template);
 		if(map == null)
@@ -578,11 +617,18 @@ public class ParseUtils {
 			return templateFromMap(newMap);
 	}
 
+	/**
+	 * Make that all the parameters have the same length. Useful with Infobox template
+	 *
+	 * @param map the map that contains the parameters
+	 * @return the new map
+	 */
 	private static LinkedHashMap<String, String> adjust(
 			LinkedHashMap<String, String> map) {
 		LinkedHashMap<String,String> newMap = new LinkedHashMap<String,String>();
 		int length = 0;
 		for(String key : map.keySet()){
+			key = key.replace("\t", "    "); //replace tabs whith four spaces
 			if(key.trim().equals("templateName"))
 				continue;
 			if(key.length() > length)
@@ -597,7 +643,15 @@ public class ParseUtils {
 		return newMap;
 	}
 
+	/**
+	 * Add spaces at the end of the file until its length will be length.
+	 *
+	 * @param key the string
+	 * @param length the length
+	 * @return the new key
+	 */
 	private static String adjust(String key, int length) {
+		key = key.replace("\t", "    ");
 		int len = key.length();
 		for(int i=0;i<length-len;i++){
 			key += " ";
@@ -605,6 +659,12 @@ public class ParseUtils {
 		return key;
 	}
 
+	/**
+	 * Gets the template parameters with their value.
+	 *
+	 * @param template the template
+	 * @return the template parameters with value
+	 */
 	public static LinkedHashMap<String, String> getTemplateParametersWithValue(
 			String template) {
 		if(template == null)
@@ -638,6 +698,14 @@ public class ParseUtils {
 		return map;
 	}
 
+	/**
+	 * Gets the template param.
+	 *
+	 * @param map the map
+	 * @param param the param
+	 * @param trim the trim
+	 * @return the template param
+	 */
 	public static String getTemplateParam(LinkedHashMap<String, String> map,
 			String param,boolean trim) {
 		for(String key : map.keySet())
@@ -651,6 +719,12 @@ public class ParseUtils {
 		return null;
 	}
 
+	/**
+	 * Gets the template name.
+	 *
+	 * @param template the template
+	 * @return the template name
+	 */
 	public static String getTemplateName(String template) {
 		if(template == null)
 			return null;

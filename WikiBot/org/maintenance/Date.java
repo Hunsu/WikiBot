@@ -14,6 +14,9 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.security.auth.login.FailedLoginException;
 
@@ -21,12 +24,26 @@ import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+import com.inet.jortho.Dictionary;
+import com.inet.jortho.Suggestion;
+
+/**
+ * The Class Date.
+ */
 public class Date {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		date();
 	}
 
+	/**
+	 * Date.
+	 */
 	public static void date() {
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {
@@ -46,12 +63,14 @@ public class Date {
 					.getCategoryMembers("Page utilisant le modèle date avec une syntaxe erronée");
 			for (i = 0; i < titles.length; i++) {
 				try {
-
+					if(titles[i].startsWith("Modèle:"))
+						continue;
 					String text = wiki.getPageText(titles[i]);
 					System.out.println(titles[i]);
 					String oldtext = text;
 					ArrayList<String> al = ParseUtils
 							.getTemplates("Date", text);
+					al.addAll(ParseUtils.getTemplates("date de naissance", text));
 					int nb = al.size();
 					for (int k = 0; k < nb; k++) {
 						String c = correctDate(al.get(k));
@@ -105,6 +124,12 @@ public class Date {
 		}
 	}
 
+	/**
+	 * Correct date.
+	 *
+	 * @param template the template
+	 * @return the string
+	 */
 	public static String correctDate(String template) {
 		if (template.contains("de décès")) {
 			return template.replace("de décès", "")
@@ -122,8 +147,8 @@ public class Date {
 			;
 		}
 		int day1 = 1, month1 = 2;
-		if ((d.trim().equals("") && isInteger(m) && !isYear(m) && (!isYear(y)))
-				|| isInteger(param) && isMonth(y)) {
+		if ((d.trim().equals("") && isInteger(m) && (isYear(param)))
+				|| isInteger(param) && parseMonth(y) != null) {
 			return template;
 			/*
 			 * day1++; month1++; y = param;
@@ -133,116 +158,115 @@ public class Date {
 		}
 
 		String age = ParseUtils.getTemplateParam(template, "age", false);
-		if (age != null)
-			return template.replace("{{date", "{{date de naissance").replace(
-					"{{Date", "Date de naissance");
+		if(age == null)
+			age = ParseUtils.getTemplateParam(template, "âge", false);
 
 		HashMap<String, String> day = processDay(ParseUtils.getTemplateParam(
 				template, day1));
 		HashMap<String, String> month = processMonth(ParseUtils
 				.getTemplateParam(template, month1));
 		HashMap<String, String> year = processYaer(y);
+		if (age != null)
+			year.put("âge", age);
 
 		return buildTemplate(ParseUtils.getTemplateName(template), day, month,
 				year, param);
 	}
 
+	/**
+	 * Builds the template.
+	 *
+	 * @param templateName the template name
+	 * @param day the day
+	 * @param month the month
+	 * @param year the year
+	 * @param qualificatif the qualificatif
+	 * @return the string
+	 */
 	private static String buildTemplate(String templateName,
 			HashMap<String, String> day, HashMap<String, String> month,
 			HashMap<String, String> year, String qualificatif) {
 		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
 		String out = "";
-
-		if (day.get("day") != null && !day.get("day").equals("")) {
-			if (day.get("out") == null)
-				map.put("ParamWithoutName1", day.get("day"));
-			else {
-				map.put("ParamWithoutName1", "");
-				out = day.get("day").trim() + " ";
+		String day1, month1, year1;
+		if(day.get("day") != null && !day.get("day").equals(""))
+			day1 = day.get("day");
+		else{
+			if(day.get("out") != null){
+				out = day.get("out") + " ";
+				day1 = "";
 			}
-		} else {
-			if (month.get("day") != null)
-				map.put("ParamWithoutName1", month.get("day"));
-			else
-				map.put("ParamWithoutName1", "");
+			else{
+				if(month.get("day") != null)
+					day1 = month.get("day");
+				else{
+					if(year.get("day") != null)
+						day1 = year.get("day");
+					else
+						day1 = "";
+				}
+			}
 		}
-		if (out.equals("") && month.get("out") != null)
-			out = month.get("out") + " ";
-		if (month.get("month") == null || month.get("month").trim().equals("")) {
-			if (day.get("month") != null)
-				map.put("ParamWithoutName2", day.get("month"));
-			else {
-				if (month.get("month") != null)
-					map.put("ParamWithoutName2", month.get("month"));
+
+
+		if(month.get("month") != null && !month.get("month").equals(""))
+			month1 = month.get("month");
+		else{
+			if(month.get("out") != null && out.equals("")){
+				out = month.get("out") + " ";
+				month1 = "";
+			}
+			else{
+				if(day.get("month") != null)
+					month1 = day.get("month");
+				else{
+					if(year.get("month") != null)
+						month1 = year.get("month");
+					else
+						month1 = "";
+				}
+			}
+		}
+
+
+		if(year.get("year") != null && !year.get("year").equals("")){
+				year1 = year.get("year");
+		}
+		else{
+			if(day.get("year") != null)
+				year1 = day.get("year");
+			else{
+				if(month.get("year") != null)
+					year1 = month.get("year");
 				else
-					map.put("ParamWithoutName2", "");
+					year1 = "";
 			}
 
-		} else {
-			if (day.get("year") != null && !isMonth(month.get("month"))) {
-				map.put("ParamWithoutName2", "");
-				qualificatif = month.get("month");
-			} else
-				map.put("ParamWithoutName2", month.get("month"));
 		}
 
-		if (!map.get("ParamWithoutName1").trim().equals("")) {
-			map.put("ParamWithoutName2", map.get("ParamWithoutName2")
-					.toLowerCase());
+
+		if(qualificatif == null){
+			if(year.get("qualificatif") != null)
+				qualificatif = year.get("qualificatif");
+			else
+				if(month.get("qualificatif") != null)
+					qualificatif = month.get("qualificatif");
 		}
-
-		if (year.get("year") == null
-				|| year.get("year").trim().equals("")
-				|| (year.get("noerror") == null && !isInteger(year.get("year")))) {
-			if (!isYear(year.get("year")))
-				qualificatif = year.get("year");
-			if (day.get("year") != null && month.get("year") == null)
-				map.put("ParamWithoutName3", day.get("year"));
-			if (day.get("year") == null && month.get("year") != null)
-				map.put("ParamWithoutName3", month.get("year"));
-			if (day.get("year") == null && month.get("year") == null
-					&& year.get("year") == null)
-				map.put("ParamWithoutName3", "");
-			if (day.get("year") == null && month.get("year") == null
-					&& year.get("year") != null)
-				map.put("ParamWithoutName3", year.get("year"));
-			if ((day.get("year") != null || month.get("year") != null)
-					&& year.get("year") != null)
-				map.put("ParamWithoutName4", year.get("year"));
-
-		} else
-			map.put("ParamWithoutName3", year.get("year"));
-
-		if (qualificatif == null || qualificatif.trim().equals("")) {
-			if (year.get("qualificatif") != null)
-				map.put("ParamWithoutName4", year.get("qualificatif"));
-		} else
-			map.put("ParamWithoutName4", qualificatif);
-		String template = "";
-		if (!map.isEmpty())
-			map.put("templateName", templateName);
-
-		if ((map.get("ParamWithoutName1") == null || map
-				.get("ParamWithoutName1").trim().equals(""))
-				&& (map.get("ParamWithoutName2") == null || map
-						.get("ParamWithoutName2").trim().equals(""))) {
-			if (!map.get("ParamWithoutName3").trim().equals("")
-					&& (map.get("ParamWithoutName4") == null || map
-							.get("ParamWithoutName4").trim().equals("")))
-				return out + "[[" + map.get("ParamWithoutName3") + "]]";
-			if (map.get("ParamWithoutName3").trim().equals("")
-					&& out.equals(""))
-				return "";
-		}
-
-		String day1 = map.get("ParamWithoutName1");
-		String month1 = map.get("ParamWithoutName2");
-		String year1 = map.get("ParamWithoutName3");
 
 		if ((!day1.equals("") && !isInteger(day1))
-				|| (!month1.equals("") && !isMonth(month1))
+				|| (!month1.equals("") && parseMonth(month1) == null)
 				|| (!year1.equals("") && !isInteger(year1)))
 			return null;
+		map.put("ParamWithoutName1", day1);
+		map.put("ParamWithoutName2", month1);
+		map.put("ParamWithoutName3", year1);
+		map.put("templateName", templateName);
+		if(qualificatif != null)
+			map.put("ParamWithoutName4", qualificatif.trim());
+		if(year.get("âge") != null)
+			map.put("âge", year.get("âge"));
+
+		String template = "";
 
 		if (map.containsKey("ParamWithoutName1")
 				|| map.containsKey("ParamWithoutName2")
@@ -258,12 +282,18 @@ public class Date {
 		return out + template;
 	}
 
+	/**
+	 * Process yaer.
+	 *
+	 * @param year the year
+	 * @return the hash map
+	 */
 	private static HashMap<String, String> processYaer(String year) {
 		HashMap<String, String> s = new HashMap<String, String>();
 		if (year == null) {
 			return s;
 		}
-		if (year.trim().equals("") || year.toLowerCase().contains("an")
+		if (year.trim().equals("") || year.contains("I")
 				|| year.toLowerCase().contains("av.")) {
 			s.put("noerror", "tre");
 			s.put("year", year);
@@ -276,19 +306,37 @@ public class Date {
 				|| yearTrimed.startsWith("--")
 				|| yearTrimed.toLowerCase().startsWith("x"))
 			return s;
-		int index = yearTrimed.indexOf(" ");
-		if (index != -1) {
-			if (isInteger(yearTrimed.substring(0, index))) {
-				s.put("year", yearTrimed.substring(0, index));
-				s.put("qualificatif", yearTrimed.substring(index + 1));
-			} else {
-				s.put("qualificatif", year);
-			}
-		} else
-			s.put("year", year);
+
+		String month = parseMonth(yearTrimed);
+		if(month != null){
+			s.put("month", month);
+			yearTrimed = yearTrimed.replace(month, "");
+		}
+		String yearTest = parseYear(yearTrimed);
+		if(yearTest != null){
+			s.put("year", yearTest);
+			yearTrimed = yearTrimed.replace(yearTest, "");
+			if(yearTrimed.contains("ans"))
+				s.put("âge", "oui");
+			else
+				s.put("qualificatif", yearTrimed);
+		}
+		else{
+			if(yearTrimed.contains("ans"))
+				s.put("âge", "oui");
+			else
+				s.put("qualificatif", yearTrimed);
+		}
+
 		return s;
 	}
 
+	/**
+	 * Process month.
+	 *
+	 * @param month the month
+	 * @return the hash map
+	 */
 	private static HashMap<String, String> processMonth(String month) {
 		HashMap<String, String> s = new HashMap<String, String>();
 		if (month == null) {
@@ -310,7 +358,9 @@ public class Date {
 			return s;
 		}
 		if (monthTrimed.equals("automne")
-				|| monthTrimed.toLowerCase().equals("été")) {
+				|| monthTrimed.toLowerCase().equals("été")
+				|| monthTrimed.toLowerCase().equals("printemps")
+				|| monthTrimed.toLowerCase().equals("hiver")) {
 			s.put("out", "[[" + monthTrimed + "]]");
 			return s;
 		}
@@ -321,44 +371,32 @@ public class Date {
 			if (test > 0 && test < 13) {
 				s.put("month", new DateFormatSymbols().getMonths()[test - 1]);
 				return s;
-			} else {
-				System.out.println("Possible error!");
-				s.put("year", monthTrimed);
-				return s;
 			}
 		} catch (Exception e) {
 		}
 
-		String[] str = monthTrimed.split(" ");
-		if (str.length == 1) {
-			if (isMonth(str[0])) {
-				s.put("month", month);
-				return s;
-			} else {
-				System.out.println("Possible error");
-				s.put("month", month);
-				return s;
-			}
+		String monthTest = parseMonth(monthTrimed);
+		if(monthTest != null)
+			s.put("month", monthTest);
+		else
+			if(month.startsWith("au") || month.startsWith("en"))
+				s.put("qualificatif", month);
+		String day = parseDay(monthTrimed);
+		if(day != null)
+			s.put("day", day);
+		String year = parseYear(monthTrimed);
+		if(year != null && !year.equals(day))
+			s.put("year", year);
 
-		}
-		if (str.length == 2) {
-			if (isInteger(str[1]) && isMonth(str[0])) {
-				s.put("month", str[0]);
-				s.put("year", str[1]);
-				return s;
-			}
-			if (isInteger(str[0]) && isMonth(str[1])) {
-				s.put("month", str[1]);
-				s.put("day", str[0]);
-				return s;
-			}
-		}
-
-		s.put("month", month);
-		s.put("error", "no");
 		return s;
 	}
 
+	/**
+	 * Process day.
+	 *
+	 * @param day the day
+	 * @return the hash map
+	 */
 	private static HashMap<String, String> processDay(String day) {
 		HashMap<String, String> s = new HashMap<String, String>();
 		if (day == null) {
@@ -369,11 +407,6 @@ public class Date {
 			return s;
 		}
 		String dayTrimed = day.trim();
-
-		if (dayTrimed.equals("1{{er}}")) {
-			s.put("day", "1er");
-			return s;
-		}
 
 		if (dayTrimed.startsWith("..") || dayTrimed.startsWith("00")
 				|| dayTrimed.equals("0") || dayTrimed.startsWith("?")
@@ -386,68 +419,85 @@ public class Date {
 			HashMap<String, String> map = transformDate(dayTrimed);
 			if (map != null && !map.isEmpty())
 				return s;
-			s.put("day", dayTrimed);
-			s.put("out", "true");
-			return s;
-		}
-		try {
-			int test = Integer.parseInt(dayTrimed);
-			if (test == 0)
-				return s;
-			if (test > 0 && test < 32) {
-				s.put("day", String.valueOf(test));
-				return s;
-			} else {
-				s.put("year", dayTrimed);
-				return s;
-			}
-		} catch (Exception e) {
-		}
-
-		String[] str = dayTrimed.split(" ");
-		if (str.length == 1) {
-			if (isMonth(str[0])) {
-				String temp = str[0];
-				s.put("month", temp);
-				return s;
-			} else {
-				s.put("day", day);
-				return s;
-			}
-
-		}
-		if (str.length == 2) {
-			if (isInteger(str[0]) && isMonth(str[1])) {
-				if (str[0].startsWith("0"))
-					str[0] = str[0].replaceAll("^0", "");
-				s.put("day", str[0]);
-				s.put("month", str[1]);
-				return s;
-			}
-		}
-		if ((str.length == 3 || str.length == 4) && isInteger(str[0])
-				&& isMonth(str[1]) && isYear(str[2])) {
-			s.put("day", str[0]);
-			s.put("month", str[1]);
-			s.put("year", str[2]);
+			s.put("out", dayTrimed);
 			return s;
 		}
 
-		s.put("day", day);
-		s.put("error", "no");
+		String month = parseMonth(dayTrimed);
+		if(month != null)
+			s.put("month", month);
+		String dayTest = parseDay(dayTrimed);
+		if(dayTest != null)
+			s.put("day", dayTest);
+		String year = parseYear(dayTrimed);
+		if(year != null && !year.equals(dayTest))
+			s.put("year", year);
 		return s;
 	}
 
-	private static boolean isMonth(String str) {
-		str = str.trim().toLowerCase();
-		String[] s = new DateFormatSymbols().getMonths();
-		for (int i = 0; i < 12; i++) {
-			if (s[i].equals(str))
-				return true;
-		}
-		return false;
+	/**
+	 * Parses the year.
+	 *
+	 * @param str the str
+	 * @return the string
+	 */
+	private static String parseYear(String str) {
+		Pattern p = Pattern.compile("-?\\d\\d?\\d?\\d?");
+		Matcher m = p.matcher(str);
+		if(m.find())
+			return m.group();
+		return null;
 	}
 
+	/**
+	 * Parses the day.
+	 *
+	 * @param str the str
+	 * @return the string
+	 */
+	private static String parseDay(String str) {
+		Pattern p = Pattern.compile("^(\\d\\d?)([^\\d]|$)");
+		Matcher m = p.matcher(str);
+		if(m.find()){
+			int test = Integer.parseInt(m.group(1));
+			if(test < 32 && test > 0)
+				return m.group();
+		}
+		return null;
+	}
+
+	/**
+	 * Parses the month.
+	 *
+	 * @param str the str
+	 * @return the string
+	 */
+	private static String parseMonth(String str) {
+		str = str.trim().toLowerCase();
+
+		Dictionary dic = new Dictionary();
+		try {
+			dic.load("dic.ortho");
+			List<Suggestion> list = dic.searchSuggestions(str);
+			if (list.size() == 1)
+				str = list.get(0).toString();
+		} catch (IOException e) {
+		}
+
+		String[] s = new DateFormatSymbols().getMonths();
+		for (int i = 0; i < 12; i++) {
+			if (str.toLowerCase().contains(s[i]))
+				return s[i];
+		}
+		return null;
+	}
+
+	/**
+	 * Transform date.
+	 *
+	 * @param day the day
+	 * @return the hash map
+	 */
 	private static HashMap<String, String> transformDate(String day) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		try {
@@ -475,6 +525,12 @@ public class Date {
 		return null;
 	}
 
+	/**
+	 * Checks if is integer.
+	 *
+	 * @param str the str
+	 * @return true, if is integer
+	 */
 	public static boolean isInteger(String str) {
 		try {
 			Integer.parseInt(str);
@@ -484,6 +540,12 @@ public class Date {
 		return false;
 	}
 
+	/**
+	 * Checks if is year.
+	 *
+	 * @param day1 the day1
+	 * @return true, if is year
+	 */
 	private static boolean isYear(String day1) {
 		if (day1 == null)
 			return false;
@@ -499,6 +561,12 @@ public class Date {
 		}
 	}
 
+	/**
+	 * Correct rep date.
+	 *
+	 * @param template the template
+	 * @return the string
+	 */
 	public static String correctRepDate(String template) {
 		String year = ParseUtils.getTemplateParam(template, 3);
 		if (year != null && year.contains("an "))

@@ -19,7 +19,11 @@ import java.util.regex.PatternSyntaxException;
  * @author Jonathan Hedley, jonathan@hedley.net
  */
 public class Element extends Node {
+    
+    /** The tag. */
     private Tag tag;
+    
+    /** The class names. */
     private Set<String> classNames;
     
     /**
@@ -50,6 +54,9 @@ public class Element extends Node {
         this(tag, baseUri, new Attributes());
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#nodeName()
+     */
     @Override
     public String nodeName() {
         return tag.getName();
@@ -66,10 +73,10 @@ public class Element extends Node {
 
     /**
      * Change the tag of this element. For example, convert a {@code <span>} to a {@code <div>} with
-     * {@code el.tagName("div");}.
      *
      * @param tagName new tag name for this element
      * @return this element, for chaining
+     * {@code el.tagName("div");}.
      */
     public Element tagName(String tagName) {
         Validate.notEmpty(tagName, "Tag name must not be empty.");
@@ -88,9 +95,9 @@ public class Element extends Node {
     
     /**
      * Test if this element is a block-level element. (E.g. {@code <div> == true} or an inline element
-     * {@code <p> == false}).
-     * 
+     *
      * @return true if block, false if not (and thus inline)
+     * {@code <p> == false}).
      */
     public boolean isBlock() {
         return tag.isBlock();
@@ -109,7 +116,9 @@ public class Element extends Node {
     /**
      * Set an attribute value on this element. If this element already has an attribute with the
      * key, its value is updated; otherwise, a new attribute is added.
-     * 
+     *
+     * @param attributeKey the attribute key
+     * @param attributeValue the attribute value
      * @return this element
      */
     public Element attr(String attributeKey, String attributeValue) {
@@ -122,18 +131,22 @@ public class Element extends Node {
      * starting with "data-" is included the dataset.
      * <p>
      * E.g., the element {@code <div data-package="jsoup" data-language="Java" class="group">...} has the dataset
+     *
+     * @return a map of {@code key=value} custom data attributes.
      * {@code package=jsoup, language=java}.
      * <p>
      * This map is a filtered view of the element's attribute map. Changes to one map (add, remove, update) are reflected
      * in the other map.
      * <p>
      * You can find elements that have data attributes using the {@code [^data-]} attribute key prefix selector.
-     * @return a map of {@code key=value} custom data attributes.
      */
     public Map<String, String> dataset() {
         return attributes.dataset();
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#parent()
+     */
     @Override
     public final Element parent() {
         return (Element) parentNode;
@@ -149,6 +162,12 @@ public class Element extends Node {
         return parents;
     }
 
+    /**
+     * Accumulate parents.
+     *
+     * @param el the el
+     * @param parents the parents
+     */
     private static void accumulateParents(Element el, Elements parents) {
         Element parent = el.parent();
         if (parent != null && !parent.tagName().equals("#root")) {
@@ -517,14 +536,23 @@ public class Element extends Node {
     }
 
     /**
-     * Gets the last element sibling of this element
-     * @return the last sibling that is an element (aka the parent's last element child) 
+     * Gets the last element sibling of this element.
+     *
+     * @return the last sibling that is an element (aka the parent's last element child)
      */
     public Element lastElementSibling() {
         List<Element> siblings = parent().children();
         return siblings.size() > 1 ? siblings.get(siblings.size() - 1) : null;
     }
     
+    /**
+     * Index in list.
+     *
+     * @param <E> the element type
+     * @param search the search
+     * @param elements the elements
+     * @return the integer
+     */
     private static <E extends Element> Integer indexInList(Element search, List<E> elements) {
         Validate.notNull(search);
         Validate.notNull(elements);
@@ -853,6 +881,11 @@ public class Element extends Node {
         return sb.toString().trim();
     }
 
+    /**
+     * Own text.
+     *
+     * @param accum the accum
+     */
     private void ownText(StringBuilder accum) {
         for (Node child : childNodes) {
             if (child instanceof TextNode) {
@@ -864,6 +897,12 @@ public class Element extends Node {
         }
     }
 
+    /**
+     * Append normalised text.
+     *
+     * @param accum the accum
+     * @param textNode the text node
+     */
     private static void appendNormalisedText(StringBuilder accum, TextNode textNode) {
         String text = textNode.getWholeText();
 
@@ -875,11 +914,23 @@ public class Element extends Node {
         accum.append(text);
     }
 
+    /**
+     * Append whitespace if br.
+     *
+     * @param element the element
+     * @param accum the accum
+     */
     private static void appendWhitespaceIfBr(Element element, StringBuilder accum) {
         if (element.tag.getName().equals("br") && !TextNode.lastCharIsWhitespace(accum))
             accum.append(" ");
     }
 
+    /**
+     * Preserve whitespace.
+     *
+     * @param node the node
+     * @return true, if successful
+     */
     static boolean preserveWhitespace(Node node) {
         // looks only at this element and one level up, to prevent recursion & needless stack searches
         if (node != null && node instanceof Element) {
@@ -1066,6 +1117,9 @@ public class Element extends Node {
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlHead(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlHead(StringBuilder accum, int depth, Document.OutputSettings out) {
         if (accum.length() > 0 && out.prettyPrint() && (tag.formatAsBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline()) )
             indent(accum, depth, out);
@@ -1080,6 +1134,9 @@ public class Element extends Node {
             accum.append(">");
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtmlTail(java.lang.StringBuilder, int, org.jsoup.nodes.Document.OutputSettings)
+     */
     void outerHtmlTail(StringBuilder accum, int depth, Document.OutputSettings out) {
         if (!(childNodes.isEmpty() && tag.isSelfClosing())) {
             if (out.prettyPrint() && (!childNodes.isEmpty() && (
@@ -1092,9 +1149,9 @@ public class Element extends Node {
 
     /**
      * Retrieves the element's inner HTML. E.g. on a {@code <div>} with one empty {@code <p>}, would return
-     * {@code <p></p>}. (Whereas {@link #outerHtml()} would return {@code <div><p></p></div>}.)
-     * 
+     *
      * @return String of HTML.
+     * {@code <p></p>}. (Whereas {@link #outerHtml()} would return {@code <div><p></p></div>}.)
      * @see #outerHtml()
      */
     public String html() {
@@ -1103,6 +1160,11 @@ public class Element extends Node {
         return accum.toString().trim();
     }
 
+    /**
+     * Html.
+     *
+     * @param accum the accum
+     */
     private void html(StringBuilder accum) {
         for (Node node : childNodes)
             node.outerHtml(accum);
@@ -1120,15 +1182,24 @@ public class Element extends Node {
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#toString()
+     */
     public String toString() {
         return outerHtml();
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         return this == o;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#hashCode()
+     */
     @Override
     public int hashCode() {
         // todo: fixup, not very useful
@@ -1137,6 +1208,9 @@ public class Element extends Node {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#clone()
+     */
     @Override
     public Element clone() {
         Element clone = (Element) super.clone();

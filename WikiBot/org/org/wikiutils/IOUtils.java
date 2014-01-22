@@ -29,8 +29,9 @@ import org.wikipedia.Wiki;
  */
 public class IOUtils
 {
+	
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private IOUtils(){}
 
@@ -39,11 +40,10 @@ public class IOUtils
 	 * Creates a HashMap from a file. Key and Value must be separated by colons. One newline per
 	 * entry. Example line: "KEY:VALUE". Useful for storing deletion/editing reasons.  The text file to read
 	 * from must be in UTF-8 encoding.
-	 * 
+	 *
 	 * @param path The path of the file to read from
-	 * 
 	 * @return The HashMap we created by parsing the file
-	 * 
+	 * @throws FileNotFoundException the file not found exception
 	 */
 
 	public static HashMap<String, String> buildReasonCollection(String path) throws FileNotFoundException
@@ -147,20 +147,17 @@ public class IOUtils
 	}
 	
 	/**
-	 * Downloads a file
-	 * 
+	 * Downloads a file.
+	 *
 	 * @param title The title of the file to download <ins>on the Wiki</ins> <b>excluding</b> the "
-	 *           <tt>File:</tt>" prefix.
+	 * <tt>File:</tt>" prefix.
 	 * @param localpath The pathname to save this file to (e.g. "<tt>/Users/Fastily/Example.jpg</tt>
-	 *           "). Note that if a file with that name already exists at that pathname, it <span
-	 *           style="color:Red;font-weight:bold">will</span> be overwritten!
+	 * "). Note that if a file with that name already exists at that pathname, it <span
+	 * style="color:Red;font-weight:bold">will</span> be overwritten!
 	 * @param wiki The wiki object to use.
-	 * 
 	 * @throws IOException If we had a network error
 	 * @throws FileNotFoundException If <tt>localpath</tt> cannot be resolved to a pathname on the
-	 *            local system.
-	 * 
-	 * 
+	 * local system.
 	 */
 	public static void downloadFile(String title, String localpath, Wiki wiki) throws IOException, FileNotFoundException
 	{

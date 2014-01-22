@@ -8,6 +8,8 @@ import org.jsoup.nodes.Node;
  * This implementation does not use recursion, so a deep DOM does not risk blowing the stack.
  */
 public class NodeTraversor {
+    
+    /** The visitor. */
     private NodeVisitor visitor;
 
     /**

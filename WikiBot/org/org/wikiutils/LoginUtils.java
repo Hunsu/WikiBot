@@ -9,10 +9,9 @@ import javax.swing.JTextField;
 import org.wikipedia.Wiki;
 
 /**
- * Contains a few useful login methods
- * 
+ * Contains a few useful login methods.
+ *
  * @author Fastily
- * 
  * @see org.wikiutils.CollectionUtils
  * @see org.wikiutils.DateUtils
  * @see org.wikiutils.GUIUtils
@@ -25,7 +24,7 @@ public class LoginUtils
 {
 	
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private LoginUtils()
 	{

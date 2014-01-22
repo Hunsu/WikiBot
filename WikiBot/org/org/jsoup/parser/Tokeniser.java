@@ -10,28 +10,62 @@ import java.util.List;
  * Readers the input stream into tokens.
  */
 class Tokeniser {
+    
+    /** The Constant replacementChar. */
     static final char replacementChar = '\uFFFD'; // replaces null character
 
+    /** The reader. */
     private CharacterReader reader; // html input
+    
+    /** The errors. */
     private ParseErrorList errors; // errors found while tokenising
 
+    /** The state. */
     private TokeniserState state = TokeniserState.Data; // current tokenisation state
+    
+    /** The emit pending. */
     private Token emitPending; // the token we are about to emit on next read
+    
+    /** The is emit pending. */
     private boolean isEmitPending = false;
+    
+    /** The char buffer. */
     private StringBuilder charBuffer = new StringBuilder(); // buffers characters to output as one token
+    
+    /** The data buffer. */
     StringBuilder dataBuffer; // buffers data looking for </script>
 
+    /** The tag pending. */
     Token.Tag tagPending; // tag we are building up
+    
+    /** The doctype pending. */
     Token.Doctype doctypePending; // doctype building up
+    
+    /** The comment pending. */
     Token.Comment commentPending; // comment building up
+    
+    /** The last start tag. */
     private Token.StartTag lastStartTag; // the last start tag emitted, to test appropriate end tag
+    
+    /** The self closing flag acknowledged. */
     private boolean selfClosingFlagAcknowledged = true;
 
+    /**
+     * Instantiates a new tokeniser.
+     *
+     * @param reader the reader
+     * @param errors the errors
+     */
     Tokeniser(CharacterReader reader, ParseErrorList errors) {
         this.reader = reader;
         this.errors = errors;
     }
 
+    /**
+     * Read.
+     *
+     * @return the token
+     */
     Token read() {
         if (!selfClosingFlagAcknowledged) {
             error("Self closing flag not acknowledged");
@@ -52,6 +86,11 @@ class Tokeniser {
         }
     }
 
+    /**
+     * Emit.
+     *
+     * @param token the token
+     */
     void emit(Token token) {
         Validate.isFalse(isEmitPending, "There is an unread token pending!");
 
@@ -70,37 +109,77 @@ class Tokeniser {
         }
     }
 
+    /**
+     * Emit.
+     *
+     * @param str the str
+     */
     void emit(String str) {
         // buffer strings up until last string token found, to emit only one token for a run of character refs etc.
         // does not set isEmitPending; read checks that
         charBuffer.append(str);
     }
 
+    /**
+     * Emit.
+     *
+     * @param chars the chars
+     */
     void emit(char[] chars) {
         charBuffer.append(chars);
     }
 
+    /**
+     * Emit.
+     *
+     * @param c the c
+     */
     void emit(char c) {
         charBuffer.append(c);
     }
 
+    /**
+     * Gets the state.
+     *
+     * @return the state
+     */
     TokeniserState getState() {
         return state;
     }
 
+    /**
+     * Transition.
+     *
+     * @param state the state
+     */
     void transition(TokeniserState state) {
         this.state = state;
     }
 
+    /**
+     * Advance transition.
+     *
+     * @param state the state
+     */
     void advanceTransition(TokeniserState state) {
         reader.advance();
         this.state = state;
     }
 
+    /**
+     * Acknowledge self closing flag.
+     */
     void acknowledgeSelfClosingFlag() {
         selfClosingFlagAcknowledged = true;
     }
 
+    /**
+     * Consume character reference.
+     *
+     * @param additionalAllowedCharacter the additional allowed character
+     * @param inAttribute the in attribute
+     * @return the char[]
+     */
     char[] consumeCharacterReference(Character additionalAllowedCharacter, boolean inAttribute) {
         if (reader.isEmpty())
             return null;
@@ -158,66 +237,125 @@ class Tokeniser {
         }
     }
 
+    /**
+     * Creates the tag pending.
+     *
+     * @param start the start
+     * @return the token. tag
+     */
     Token.Tag createTagPending(boolean start) {
         tagPending = start ? new Token.StartTag() : new Token.EndTag();
         return tagPending;
     }
 
+    /**
+     * Emit tag pending.
+     */
     void emitTagPending() {
         tagPending.finaliseTag();
         emit(tagPending);
     }
 
+    /**
+     * Creates the comment pending.
+     */
     void createCommentPending() {
         commentPending = new Token.Comment();
     }
 
+    /**
+     * Emit comment pending.
+     */
     void emitCommentPending() {
         emit(commentPending);
     }
 
+    /**
+     * Creates the doctype pending.
+     */
     void createDoctypePending() {
         doctypePending = new Token.Doctype();
     }
 
+    /**
+     * Emit doctype pending.
+     */
     void emitDoctypePending() {
         emit(doctypePending);
     }
 
+    /**
+     * Creates the temp buffer.
+     */
     void createTempBuffer() {
         dataBuffer = new StringBuilder();
     }
 
+    /**
+     * Checks if is appropriate end tag token.
+     *
+     * @return true, if is appropriate end tag token
+     */
     boolean isAppropriateEndTagToken() {
         if (lastStartTag == null)
             return false;
         return tagPending.tagName.equals(lastStartTag.tagName);
     }
 
+    /**
+     * Appropriate end tag name.
+     *
+     * @return the string
+     */
     String appropriateEndTagName() {
         return lastStartTag.tagName;
     }
 
+    /**
+     * Error.
+     *
+     * @param state the state
+     */
     void error(TokeniserState state) {
         if (errors.canAddError())
             errors.add(new ParseError(reader.pos(), "Unexpected character '%s' in input state [%s]", reader.current(), state));
     }
 
+    /**
+     * Eof error.
+     *
+     * @param state the state
+     */
     void eofError(TokeniserState state) {
         if (errors.canAddError())
             errors.add(new ParseError(reader.pos(), "Unexpectedly reached end of file (EOF) in input state [%s]", state));
     }
 
+    /**
+     * Character reference error.
+     *
+     * @param message the message
+     */
     private void characterReferenceError(String message) {
         if (errors.canAddError())
             errors.add(new ParseError(reader.pos(), "Invalid character reference: %s", message));
     }
 
+    /**
+     * Error.
+     *
+     * @param errorMsg the error msg
+     */
     private void error(String errorMsg) {
         if (errors.canAddError())
             errors.add(new ParseError(reader.pos(), errorMsg));
     }
 
+    /**
+     * Current node in html ns.
+     *
+     * @return true, if successful
+     */
     boolean currentNodeInHtmlNS() {
         // todo: implement namespaces correctly
         return true;
@@ -227,7 +365,8 @@ class Tokeniser {
 
     /**
      * Utility method to consume reader and unescape entities found within.
-     * @param inAttribute
+     *
+     * @param inAttribute the in attribute
      * @return unescaped string from reader
      */
     String unescapeEntities(boolean inAttribute) {

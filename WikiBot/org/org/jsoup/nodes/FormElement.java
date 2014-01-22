@@ -15,6 +15,8 @@ import java.util.List;
  * form to easily be submitted.
  */
 public class FormElement extends Element {
+    
+    /** The elements. */
     private final Elements elements = new Elements();
 
     /**
@@ -49,9 +51,8 @@ public class FormElement extends Element {
     /**
      * Prepare to submit this form. A Connection object is created with the request set up from the form values. You
      * can then set up other options (like user-agent, timeout, cookies), then execute it.
+     *
      * @return a connection prepared from the values of this form.
-     * @throws IllegalArgumentException if the form's absolute action URL cannot be determined. Make sure you pass the
-     * document's base URI when parsing.
      */
     public Connection submit() {
         String action = hasAttr("action") ? absUrl("action") : baseUri();
@@ -92,6 +93,9 @@ public class FormElement extends Element {
         return data;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Element#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         return super.equals(o);

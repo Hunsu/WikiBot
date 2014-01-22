@@ -13,11 +13,20 @@ import org.jsoup.parser.TokenQueue;
  * Parses a CSS selector into an Evaluator tree.
  */
 class QueryParser {
+    
+    /** The Constant combinators. */
     private final static String[] combinators = {",", ">", "+", "~", " "};
+    
+    /** The Constant AttributeEvals. */
     private static final String[] AttributeEvals = new String[]{"=", "!=", "^=", "$=", "*=", "~="};
 
+    /** The tq. */
     private TokenQueue tq;
+    
+    /** The query. */
     private String query;
+    
+    /** The evals. */
     private List<Evaluator> evals = new ArrayList<Evaluator>();
 
     /**
@@ -40,7 +49,8 @@ class QueryParser {
     }
 
     /**
-     * Parse the query
+     * Parse the query.
+     *
      * @return Evaluator
      */
     Evaluator parse() {
@@ -72,6 +82,11 @@ class QueryParser {
         return new CombiningEvaluator.And(evals);
     }
 
+    /**
+     * Combinator.
+     *
+     * @param combinator the combinator
+     */
     private void combinator(char combinator) {
         tq.consumeWhitespace();
         String subQuery = consumeSubQuery(); // support multi > childs
@@ -124,6 +139,11 @@ class QueryParser {
         evals.add(rootEval);
     }
 
+    /**
+     * Consume sub query.
+     *
+     * @return the string
+     */
     private String consumeSubQuery() {
         StringBuilder sq = new StringBuilder();
         while (!tq.isEmpty()) {
@@ -139,6 +159,9 @@ class QueryParser {
         return sq.toString();
     }
 
+    /**
+     * Find elements.
+     */
     private void findElements() {
         if (tq.matchChomp("#"))
             byId();
@@ -197,18 +220,27 @@ class QueryParser {
 
     }
 
+    /**
+     * By id.
+     */
     private void byId() {
         String id = tq.consumeCssIdentifier();
         Validate.notEmpty(id);
         evals.add(new Evaluator.Id(id));
     }
 
+    /**
+     * By class.
+     */
     private void byClass() {
         String className = tq.consumeCssIdentifier();
         Validate.notEmpty(className);
         evals.add(new Evaluator.Class(className.trim().toLowerCase()));
     }
 
+    /**
+     * By tag.
+     */
     private void byTag() {
         String tagName = tq.consumeElementSelector();
         Validate.notEmpty(tagName);
@@ -220,6 +252,9 @@ class QueryParser {
         evals.add(new Evaluator.Tag(tagName.trim().toLowerCase()));
     }
 
+    /**
+     * By attribute.
+     */
     private void byAttribute() {
         TokenQueue cq = new TokenQueue(tq.chompBalanced('[', ']')); // content queue
         String key = cq.consumeToAny(AttributeEvals); // eq, not, start, end, contain, match, (no val)
@@ -254,27 +289,48 @@ class QueryParser {
         }
     }
 
+    /**
+     * All elements.
+     */
     private void allElements() {
         evals.add(new Evaluator.AllElements());
     }
 
     // pseudo selectors :lt, :gt, :eq
+    /**
+     * Index less than.
+     */
     private void indexLessThan() {
         evals.add(new Evaluator.IndexLessThan(consumeIndex()));
     }
 
+    /**
+     * Index greater than.
+     */
     private void indexGreaterThan() {
         evals.add(new Evaluator.IndexGreaterThan(consumeIndex()));
     }
 
+    /**
+     * Index equals.
+     */
     private void indexEquals() {
         evals.add(new Evaluator.IndexEquals(consumeIndex()));
     }
     
     //pseudo selectors :first-child, :last-child, :nth-child, ...
+    /** The Constant NTH_AB. */
     private static final Pattern NTH_AB = Pattern.compile("((\\+|-)?(\\d+)?)n(\\s*(\\+|-)?\\s*\\d+)?", Pattern.CASE_INSENSITIVE);
+    
+    /** The Constant NTH_B. */
     private static final Pattern NTH_B  = Pattern.compile("(\\+|-)?(\\d+)");
 
+	/**
+	 * Css nth child.
+	 *
+	 * @param backwards the backwards
+	 * @param ofType the of type
+	 */
 	private void cssNthChild(boolean backwards, boolean ofType) {
 		String argS = tq.chompTo(")").trim().toLowerCase();
 		Matcher mAB = NTH_AB.matcher(argS);
@@ -308,6 +364,11 @@ class QueryParser {
 		}
 	}
 
+    /**
+     * Consume index.
+     *
+     * @return the int
+     */
     private int consumeIndex() {
         String indexS = tq.chompTo(")").trim();
         Validate.isTrue(StringUtil.isNumeric(indexS), "Index must be numeric");
@@ -315,6 +376,9 @@ class QueryParser {
     }
 
     // pseudo selector :has(el)
+    /**
+     * Checks for.
+     */
     private void has() {
         tq.consume(":has");
         String subQuery = tq.chompBalanced('(', ')');
@@ -323,6 +387,11 @@ class QueryParser {
     }
 
     // pseudo selector :contains(text), containsOwn(text)
+    /**
+     * Contains.
+     *
+     * @param own the own
+     */
     private void contains(boolean own) {
         tq.consume(own ? ":containsOwn" : ":contains");
         String searchText = TokenQueue.unescape(tq.chompBalanced('(', ')'));
@@ -334,6 +403,11 @@ class QueryParser {
     }
 
     // :matches(regex), matchesOwn(regex)
+    /**
+     * Matches.
+     *
+     * @param own the own
+     */
     private void matches(boolean own) {
         tq.consume(own ? ":matchesOwn" : ":matches");
         String regex = tq.chompBalanced('(', ')'); // don't unescape, as regex bits will be escaped
@@ -346,6 +420,9 @@ class QueryParser {
     }
 
     // :not(selector)
+    /**
+     * Not.
+     */
     private void not() {
         tq.consume(":not");
         String subQuery = tq.chompBalanced('(', ')');

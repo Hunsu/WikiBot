@@ -9,9 +9,14 @@ import org.jsoup.helper.Validate;
  * @author Jonathan Hedley
  */
 public class TokenQueue {
+    
+    /** The queue. */
     private String queue;
+    
+    /** The pos. */
     private int pos = 0;
     
+    /** The Constant ESC. */
     private static final char ESC = '\\'; // escape char for chomp balanced.
 
     /**
@@ -24,13 +29,19 @@ public class TokenQueue {
     }
 
     /**
-     * Is the queue empty?
+     * Is the queue empty?.
+     *
      * @return true if no data left in queue.
      */
     public boolean isEmpty() {
         return remainingLength() == 0;
     }
     
+    /**
+     * Remaining length.
+     *
+     * @return the int
+     */
     private int remainingLength() {
         return queue.length() - pos;
     }
@@ -93,6 +104,12 @@ public class TokenQueue {
         return false;
     }
 
+    /**
+     * Matches any.
+     *
+     * @param seq the seq
+     * @return true, if successful
+     */
     public boolean matchesAny(char... seq) {
         if (isEmpty())
             return false;
@@ -104,6 +121,11 @@ public class TokenQueue {
         return false;
     }
 
+    /**
+     * Matches start tag.
+     *
+     * @return true, if successful
+     */
     public boolean matchesStartTag() {
         // micro opt for matching "<x"
         return (remainingLength() >= 2 && queue.charAt(pos) == '<' && Character.isLetter(queue.charAt(pos+1)));
@@ -188,6 +210,12 @@ public class TokenQueue {
         }
     }
     
+    /**
+     * Consume to ignore case.
+     *
+     * @param seq the seq
+     * @return the string
+     */
     public String consumeToIgnoreCase(String seq) {
         int start = pos;
         String first = seq.substring(0, 1);
@@ -244,6 +272,12 @@ public class TokenQueue {
         return data;
     }
     
+    /**
+     * Chomp to ignore case.
+     *
+     * @param seq the seq
+     * @return the string
+     */
     public String chompToIgnoreCase(String seq) {
         String data = consumeToIgnoreCase(seq); // case insensitive scan
         matchChomp(seq);
@@ -307,6 +341,8 @@ public class TokenQueue {
 
     /**
      * Pulls the next run of whitespace characters of the queue.
+     *
+     * @return true, if successful
      */
     public boolean consumeWhitespace() {
         boolean seen = false;
@@ -329,8 +365,8 @@ public class TokenQueue {
     }
     
     /**
-     * Consume an tag name off the queue (word or :, _, -)
-     * 
+     * Consume an tag name off the queue (word or :, _, -).
+     *
      * @return tag name
      */
     public String consumeTagName() {
@@ -368,8 +404,9 @@ public class TokenQueue {
     }
 
     /**
-     Consume an attribute key off the queue (letter, digit, -, _, :")
-     @return attribute key
+     * Consume an attribute key off the queue (letter, digit, -, _, :").
+     *
+     * @return attribute key
      */
     public String consumeAttributeKey() {
         int start = pos;
@@ -389,6 +426,9 @@ public class TokenQueue {
         return remainder;
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return queue.substring(pos);
     }

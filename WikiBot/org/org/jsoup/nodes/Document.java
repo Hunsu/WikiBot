@@ -15,8 +15,14 @@ import java.util.List;
 
  @author Jonathan Hedley, jonathan@hedley.net */
 public class Document extends Element {
+    
+    /** The output settings. */
     private OutputSettings outputSettings = new OutputSettings();
+    
+    /** The quirks mode. */
     private QuirksMode quirksMode = QuirksMode.noQuirks;
+    
+    /** The location. */
     private String location;
 
     /**
@@ -132,6 +138,11 @@ public class Document extends Element {
     }
 
     // does not recurse.
+    /**
+     * Normalise text nodes.
+     *
+     * @param element the element
+     */
     private void normaliseTextNodes(Element element) {
         List<Node> toMove = new ArrayList<Node>();
         for (Node node: element.childNodes) {
@@ -151,6 +162,12 @@ public class Document extends Element {
     }
 
     // merge multiple <head> or <body> contents into one, delete the remainder, and ensure they are owned by <html>
+    /**
+     * Normalise structure.
+     *
+     * @param tag the tag
+     * @param htmlEl the html el
+     */
     private void normaliseStructure(String tag, Element htmlEl) {
         Elements elements = this.getElementsByTag(tag);
         Element master = elements.first(); // will always be available as created above if not existent
@@ -173,6 +190,13 @@ public class Document extends Element {
     }
 
     // fast method to get first by tag name, used for html, head, body finders
+    /**
+     * Find first element by tag name.
+     *
+     * @param tag the tag
+     * @param node the node
+     * @return the element
+     */
     private Element findFirstElementByTagName(String tag, Node node) {
         if (node.nodeName().equals(tag))
             return (Element) node;
@@ -186,6 +210,9 @@ public class Document extends Element {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Node#outerHtml()
+     */
     @Override
     public String outerHtml() {
         return super.html(); // no outer wrapper tag
@@ -202,11 +229,17 @@ public class Document extends Element {
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Element#nodeName()
+     */
     @Override
     public String nodeName() {
         return "#document";
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Element#clone()
+     */
     @Override
     public Document clone() {
         Document clone = (Document) super.clone();
@@ -218,13 +251,28 @@ public class Document extends Element {
      * A Document's output settings control the form of the text() and html() methods.
      */
     public static class OutputSettings implements Cloneable {
+        
+        /** The escape mode. */
         private Entities.EscapeMode escapeMode = Entities.EscapeMode.base;
+        
+        /** The charset. */
         private Charset charset = Charset.forName("UTF-8");
+        
+        /** The charset encoder. */
         private CharsetEncoder charsetEncoder = charset.newEncoder();
+        
+        /** The pretty print. */
         private boolean prettyPrint = true;
+        
+        /** The outline. */
         private boolean outline = false;
+        
+        /** The indent amount. */
         private int indentAmount = 1;
 
+        /**
+         * Instantiates a new output settings.
+         */
         public OutputSettings() {}
 
         /**
@@ -240,7 +288,8 @@ public class Document extends Element {
         }
 
         /**
-         * Set the document's escape mode
+         * Set the document's escape mode.
+         *
          * @param escapeMode the new escape mode to use
          * @return the document's output settings, for chaining
          */
@@ -283,6 +332,11 @@ public class Document extends Element {
             return this;
         }
 
+        /**
+         * Encoder.
+         *
+         * @return the charset encoder
+         */
         CharsetEncoder encoder() {
             return charsetEncoder;
         }
@@ -334,7 +388,8 @@ public class Document extends Element {
         }
 
         /**
-         * Set the indent amount for pretty printing
+         * Set the indent amount for pretty printing.
+         *
          * @param indentAmount number of spaces to use for indenting each level. Must be >= 0.
          * @return this, for chaining
          */
@@ -344,6 +399,9 @@ public class Document extends Element {
             return this;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#clone()
+         */
         @Override
         public OutputSettings clone() {
             OutputSettings clone;
@@ -378,19 +436,42 @@ public class Document extends Element {
         return this;
     }
 
+    /**
+     * The Enum QuirksMode.
+     */
     public enum QuirksMode {
-        noQuirks, quirks, limitedQuirks;
+        
+        /** The no quirks. */
+        noQuirks, 
+ /** The quirks. */
+ quirks, 
+ /** The limited quirks. */
+ limitedQuirks;
     }
 
+    /**
+     * Quirks mode.
+     *
+     * @return the quirks mode
+     */
     public QuirksMode quirksMode() {
         return quirksMode;
     }
 
+    /**
+     * Quirks mode.
+     *
+     * @param quirksMode the quirks mode
+     * @return the document
+     */
     public Document quirksMode(QuirksMode quirksMode) {
         this.quirksMode = quirksMode;
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see org.jsoup.nodes.Element#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
         return super.equals(o);

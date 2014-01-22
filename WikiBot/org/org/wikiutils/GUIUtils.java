@@ -14,10 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 /**
- * Contains several GUI methods that could be useful for editing applications
- * 
+ * Contains several GUI methods that could be useful for editing applications.
+ *
  * @author Fastily
- * 
  * @see org.wikiutils.CollectionUtils
  * @see org.wikiutils.DateUtils
  * @see org.wikiutils.IOUtils
@@ -28,8 +27,9 @@ import javax.swing.JTextArea;
  */
 public class GUIUtils
 {
+	
 	/**
-	 * Hiding constructor from JavaDoc
+	 * Hiding constructor from JavaDoc.
 	 */
 	private GUIUtils()
 	{
@@ -54,14 +54,12 @@ public class GUIUtils
 	/**
 	 * Creates a form in the form of a JPanel. Fields are dynamically resized when the window size is
 	 * modified by the user.
-	 * 
+	 *
 	 * @param title Title to use in the border. Specify null if you don't want one. Specify empty
-	 *           string if you want just border.
+	 * string if you want just border.
 	 * @param cl The list of containers to work with. Elements should be in the order, e.g. JLabel1,
-	 *           JTextField1, JLabel 2, JTextField2, etc.
-	 * 
+	 * JTextField1, JLabel 2, JTextField2, etc.
 	 * @return A JPanel with a SpringLayout in a form.
-	 * @throws UnsupportedOperationException If cl.length == 0 || cl.length % 2 == 1
 	 */
 	public static JPanel buildForm(String title, JComponent... cl)
 	{
@@ -104,11 +102,10 @@ public class GUIUtils
 	/**
 	 * Creates a JFileChooser that allows user to select multiple directories. Program is exited if
 	 * user cancels/closes the dialog box.
-	 * 
+	 *
 	 * @param starting Starting directory. If you want to use the user's home directory, I suggest
-	 *           using <tt>System.getProperty("user.home")</tt>
+	 * using <tt>System.getProperty("user.home")</tt>
 	 * @return A list of Files representing directories the user selected.
-	 * @throws IllegalArgumentException If the solitary param is non-existent or not a directory.
 	 */
 	public static File[] directoryFetch(File starting)
 	{

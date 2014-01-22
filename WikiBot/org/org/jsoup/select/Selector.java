@@ -68,9 +68,19 @@ import java.util.LinkedHashSet;
  * @see Element#select(String)
  */
 public class Selector {
+    
+    /** The evaluator. */
     private final Evaluator evaluator;
+    
+    /** The root. */
     private final Element root;
 
+    /**
+     * Instantiates a new selector.
+     *
+     * @param query the query
+     * @param root the root
+     */
     private Selector(String query, Element root) {
         Validate.notNull(query);
         query = query.trim();
@@ -111,11 +121,23 @@ public class Selector {
         return new Elements(elements);
     }
 
+    /**
+     * Select.
+     *
+     * @return the elements
+     */
     private Elements select() {
         return Collector.collect(evaluator, root);
     }
 
     // exclude set. package open so that Elements can implement .not() selector.
+    /**
+     * Filter out.
+     *
+     * @param elements the elements
+     * @param outs the outs
+     * @return the elements
+     */
     static Elements filterOut(Collection<Element> elements, Collection<Element> outs) {
         Elements output = new Elements();
         for (Element el : elements) {
@@ -132,7 +154,17 @@ public class Selector {
         return output;
     }
 
+    /**
+     * The Class SelectorParseException.
+     */
     public static class SelectorParseException extends IllegalStateException {
+        
+        /**
+         * Instantiates a new selector parse exception.
+         *
+         * @param msg the msg
+         * @param params the params
+         */
         public SelectorParseException(String msg, Object... params) {
             super(String.format(msg, params));
         }
