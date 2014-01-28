@@ -90,7 +90,7 @@ public class LoggedInTests {
 						continue;
 					}
 
-					else{
+					else{// TODO Auto-generated method stub
 						text = text.replace("{{pdf}} {{lien web", "{{lien web|format=pdf");
 						text = text.replace("{{Pdf}} {{lien web", "{{lien web|format=pdf");
 						text = text.replace("{{Pdf}} {{Lien web", "{{Lien web|format=pdf");

@@ -31,15 +31,7 @@ public class TVSeries {
 	 * @param args the args
 	 */
 	public static void main(String[] args){
-		/*UpdateFRArticle("Saison 1 de Friends");
-		UpdateFRArticle("Saison 2 de Friends");
-		UpdateFRArticle("Saison 3 de Friends");
-		UpdateFRArticle("Saison 4 de Friends");
-		//UpdateFRArticle("Saison 5 de Friends");
-		UpdateFRArticle("Saison 6 de Friends");
-		UpdateFRArticle("Saison 7 de Friends");
-		UpdateFRArticle("Saison 8 de Friends");*/
-		UpdateFRArticle("Saison 9 de Friends");
+		UpdateFRArticle("Saison 1 de Gilmore Girls");
 	}
 
 	/**
@@ -50,6 +42,13 @@ public class TVSeries {
 	public static void UpdateFRArticle(String articleTitle) {
 		Wiki enWiki = new Wiki("en.wikipedia.org");
 		Wiki frWiki = new Wiki("fr.wikipedia.org");
+		Pattern p = Pattern.compile("Saison (\\d\\d?)");
+		Matcher m = p.matcher(articleTitle);
+		String number;
+		if(m.find())
+			number = m.group(1);
+		else
+			number = null;
 
 		try {
 			Login login = new Login();
@@ -57,6 +56,8 @@ public class TVSeries {
 
 			String enWikiTitle = frWiki.getArticleInSpecifLang(articleTitle,
 					"en");
+			if(enWikiTitle == null)
+				return;
 
 			String enArticle = enWiki.getPageText(enWikiTitle);
 			String frArticle = frWiki.getPageText(articleTitle);
@@ -97,7 +98,7 @@ public class TVSeries {
 								frEpisodeNumber, title));
 				if (map == null)
 					continue;
-				String newTemplate = getMessingInfos(oldTemplate, map);
+				String newTemplate = getMessingInfos(oldTemplate, map,number);
 				/*
 				 * String numero = String.valueOf(i+1) +" ("+String.valueOf(1)
 				 * +"."; if(i<10) numero += "0"; numero +=
@@ -163,9 +164,9 @@ public class TVSeries {
 			int len = 100;
 			if (enTitle != null){
 				enTitle = enTitle.trim();
-				len = enTitle.length() /2;
-				if(title != null && title.length()/2 < len)
-					len = title.length()/2;
+				len = enTitle.length() * 90/100;
+				if(title != null && title.length() * 90/100 < len)
+					len = title.length()* 90/100;
 			}
 			if ((enEpisodeNumber == null && enTitle == null)
 					|| (enTitle == null && frEpisodeNumber == null)
@@ -186,7 +187,7 @@ public class TVSeries {
 	 * @return the messing infos
 	 */
 	private static String getMessingInfos(String template,
-			LinkedHashMap<String, String> map) {
+			LinkedHashMap<String, String> map, String number) {
 		String title = ParseUtils.getTemplateParam(template, "titre original",true);
 		String writtenBy = ParseUtils.getTemplateParam(template, "scénariste",true);
 		String frEpisodeNumber = ParseUtils.getTemplateParam(template, "numéro",true);
@@ -200,11 +201,11 @@ public class TVSeries {
 		String enProdCode = ParseUtils.getTemplateParam(map, "ProdCode",true);
 		String originalAirDate = ParseUtils.getTemplateParam(template,
 				"première diffusion",true);
-		if((frEpisodeNumber == null || frEpisodeNumber.equals(""))){
+		if((frEpisodeNumber == null || frEpisodeNumber.equals("")) && number != null){
 			if(enEpisodeNumber != null){
 				frEpisodeNumber = enEpisodeNumber;
 				if(enEpisodeNumber2 != null){
-					frEpisodeNumber += " (7-";
+					frEpisodeNumber += " (" + number +"-";
 					int n = Integer.parseInt(enEpisodeNumber2);
 					if(n < 10)
 						frEpisodeNumber += "0";
@@ -368,7 +369,7 @@ public class TVSeries {
 			return null;
 		int index = viewers.indexOf("<ref");
 		if (index == -1)
-			return null;
+			index = viewers.length();
 		return citeweb("\n* {{Audience|États-Unis|"
 				+ viewers.substring(0, index).trim() + "|M}}"
 				+ viewers.substring(index).trim()

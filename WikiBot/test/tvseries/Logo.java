@@ -34,10 +34,10 @@ public class Logo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String title = "Frères Scott";
+		String title = "Grand Galop";
 		if(title.endsWith(" (série télévisée)"))
 			title = title.substring(0,title.length()-18);
-		addLogo(title,"One Tree Hill logo.jpg");
+		addLogo(title,"Saddle-Club-logo 1.png");
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class Logo {
 	private static void addLogo(String title, String imageTitle) {
 		String[] titles = new String[30];
 		for(int i=0;i<30;i++){
-			titles[i ]= "Saison " + i +" des "+title;
+			titles[i ]= "Saison " + i +" de "+title;
 		}
 		try {
 			boolean[] tests = wiki.exists(titles);

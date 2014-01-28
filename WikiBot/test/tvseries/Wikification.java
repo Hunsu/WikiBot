@@ -33,7 +33,7 @@ public class Wikification {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
-		String category = "Saison de Friends";
+		String category = "Saison de Grand Galop";
 		try {
 			boolean dosave = true;
 			boolean test = false;
@@ -165,6 +165,7 @@ public class Wikification {
 		s = RegExReplace(s, autPattern, "| autre titre        = $2");
 		s = RegExReplace(s, scPattern, "| scénariste         =");
 		s = RegExReplace(s, dirPattern, "| réalisateur        =");
+		s = RegExReplace(s,"\\*'''Réalisatrice'''\\s*:","| réalisateur        =");
 		s = RegExReplace(s, diffPattern, "| première diffusion =");
 		s = RegExReplace(s, invPattern, "| invités            =");
 		s = RegExReplace(s, audPattern, "| audience           =");
@@ -173,6 +174,7 @@ public class Wikification {
 		s = RegExReplace(s, comPattern, "| commentaire        =");
 		s = RegExReplace(s, codeProduction, "\n| code de production = $1");
 		s = RegExReplace(s, codeProductionPattern, "| code de production =");
+		s = RegExReplace(s,"\\*'''Commenatires'''\\s*:","| commentaire        =");
 		s = RegExReplace(s, "\\*'''Autre titre français\\s*:\\s* '?'?(.*?)'?'?","| autre titre     = $1");
 		s = s.replace("*'''Résumé''' :", "| résumé   =");
 		s = s.replace("* '''Remarque(s)''' :", "| commentaire =");
