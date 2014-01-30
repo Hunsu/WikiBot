@@ -38,14 +38,14 @@ public class CanadianRatings {
 			LinkedHashMap<String,String> ratings = getRatings("shows/"+filename);
 			if(ratings == null)
 				continue;
-			for(int i=1;i<17;i++){
+			for(int i=3;i<17;i++){
 				String title = String.format(str, i);
 				if(wiki.exists(title)){
 					String text = wiki.getPageText(title);
 					String newText = addCanadianRatings(text,ratings);
 					if(!newText.equals(text))
 						try {
-							wiki.edit(title, newText, "Ajout de l'audience au Canada");
+							wiki.edit(title, newText, "bot: Ajout de l'audience au Canada");
 						} catch (LoginException e) {
 							e.printStackTrace();
 						}
@@ -85,7 +85,7 @@ private static String addCanadianRatings(String text,
 			String oldValue = ParseUtils.getTemplateParam(template, "audience", false);
 			if(oldValue == null || oldValue.trim().equals(""))
 				oldValue = "\n";
-			template = ParseUtils.setTemplateParam(template, "audience", oldValue + "\n" + value.trim() + "\n", true);
+			template = ParseUtils.setTemplateParam(template, "audience", oldValue + value.trim() + "\n", true);
 			return template;
 		}
 	}
@@ -147,11 +147,11 @@ private static String addCanadianRatings(String text,
 	private static String getDate(String date) {
 		ArrayList<String> al = ParseUtils.getTemplates("date", date);
 		if(al.isEmpty()){
-			Pattern p = Pattern.compile("\\d\\d? (janvier|février|mars|avril|mai|juin|juillet|août|septembre"
-					+ "|octobre|novembre|décembre) \\d\\d\\d\\d");
+			Pattern p = Pattern.compile("(\\d\\d?)[\\|\\s](janvier|février|mars|avril|mai|juin|juillet|août|septembre"
+					+ "|octobre|novembre|décembre)[\\|\\s](\\d\\d\\d\\d)");
 			Matcher m = p.matcher(date);
 			if(m.find())
-				return m.group();
+				return m.group(1) + " " + m.group(2) + " " + m.group(3);
 			else
 				return null;
 		}
