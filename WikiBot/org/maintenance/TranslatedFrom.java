@@ -8,6 +8,8 @@ import javax.security.auth.login.LoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+import Tools.Login;
+
 /**
  * The Class TranslatedFrom.
  */
@@ -28,7 +30,8 @@ public class TranslatedFrom {
 	public static void main(String[] args){
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
 			
 			String[] titles = wiki.getCategoryMembers("Article utilisant le modèle Traduit de");
 			for(int i=0;i<titles.length;i++){

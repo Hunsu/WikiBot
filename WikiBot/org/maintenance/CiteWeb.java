@@ -163,8 +163,11 @@ public class CiteWeb {
 			text = text.substring(index, fin).trim();
 			String[] errors = text.split("\n");
 			for(int i=0;i<errors.length;i++){
-				String key = errors[i].substring(0,errors[i].indexOf("=")).trim();
-				String value = errors[i].substring(errors[i].indexOf("=")+1).trim();
+				index = errors[i].indexOf("=");
+				if(index == -1)
+					continue;
+				String key = errors[i].substring(0,index).trim();
+				String value = errors[i].substring(index+1).trim();
 				map.put(key, value);
 			}
 		} catch (Exception e) {

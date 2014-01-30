@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
+
+import Tools.Login;
 
 /**
  * The Class Pmid.
@@ -43,7 +44,8 @@ public class Pmid {
 	 */
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
 			ArrayList<String> pages = wiki.getPagesInCategory("Page_avec_une_référence_PMID_incomplète", 25);
 			int size = pages.size();
 			for(int i=0;i<size;i++){
@@ -66,13 +68,16 @@ public class Pmid {
 						    			  + "[[en:Template:Cite pmid/{{subst:#titleparts:{{subst:PAGENAME}}|0|2}}]]\n"
 						    			  + "</noinclude>";
 								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");
+								wiki.purge(pages.get(i));
 							}
 						}
 						else{
-							String text = getArticle(pmid);
-							text = parseXML(text);
-							if(!wiki.exists("Modèle:Cite pmid/"+pmid))
+							if(!wiki.exists("Modèle:Cite pmid/"+pmid)){
+								String text = getArticle(pmid);
+								text = parseXML(text);
 								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");
+							}
+							
 						}
 						
 								
@@ -81,6 +86,7 @@ public class Pmid {
 						e.printStackTrace();
 					}
 				}
+				wiki.edit(pages.get(i), article, "");
 			}
 			
 			//System.out.print(text);

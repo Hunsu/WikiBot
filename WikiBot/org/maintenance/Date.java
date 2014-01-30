@@ -24,6 +24,8 @@ import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
+import Tools.Login;
+
 import com.inet.jortho.Dictionary;
 import com.inet.jortho.Suggestion;
 
@@ -47,7 +49,8 @@ public class Date {
 	public static void date() {
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
 		} catch (FailedLoginException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -56,8 +59,6 @@ public class Date {
 			e1.printStackTrace();
 		}
 		try {
-			FileInputStream fstream = new FileInputStream("dates");
-			DataInputStream in = new DataInputStream(fstream);
 			int i = 0;
 			String[] titles = wiki
 					.getCategoryMembers("Page utilisant le modèle date avec une syntaxe erronée");
@@ -116,8 +117,7 @@ public class Date {
 
 			}
 			// FileUtils.writeStringToFile(new File("corrections.txt"),
-			// corrections);
-			in.close();
+			// corrections);;
 
 		} catch (Exception e) {// Catch exception if any
 			System.err.println("Error: " + e.getMessage());
