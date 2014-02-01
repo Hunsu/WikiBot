@@ -1,4 +1,4 @@
-package maintenance;
+package org.maintenance;
 
 import java.io.*;
 
@@ -19,9 +19,9 @@ import org.wikiutils.ParseUtils;
 import Tools.Login;
 
 /**
- * The Class Pmid.
+ * The Class Doi.
  */
-public class Pmid {
+public class Doi {
 
 	/** The url. */
 	private static String url = "http://www.ncbi.nlm.nih.gov/pubmed/";
@@ -46,47 +46,44 @@ public class Pmid {
 		try {
 			Login login = new Login();
 			wiki.login(login.getLogin(), login.getPassword());
-			ArrayList<String> pages = wiki.getPagesInCategory("Page_avec_une_référence_PMID_incomplète", 25);
+			ArrayList<String> pages = wiki.getPagesInCategory("Page à référence DOI incomplète", 500);
 			int size = pages.size();
 			for(int i=0;i<size;i++){
 				String article = wiki.getPageText(pages.get(i),true);
-				ArrayList<String> al = ParseUtils.getTemplates("cite pmid", article);
+				ArrayList<String> al = ParseUtils.getTemplates("cite doi", article);
 				int alSize = al.size();
 				for(int j=0;j<alSize;j++){
 					try{
-						int pmid = Integer.parseInt(ParseUtils.getTemplateParam(al.get(j), 1).trim());
-						if(wiki.exists("Modèle:Cite pmid/"+pmid))
+						String doi = ParseUtils.getTemplateParam(al.get(j), 1);
+						doi = doi.replace("/", ".2F");
+						if(wiki.exists("Modèle:Cite doi/"+doi))
 							continue;
-						//Jsoup.connect("http://tools.wikimedia.de/~verisimilus/Bot/DOI_bot/doibot.php?edit=doc&page=Template:Cite_pmid/"+pmid).get();
-						if(enwiki.exists("Template:Cite pmid/"+pmid)){
-							String text = enwiki.getPageText("Template:Cite pmid/"+pmid,true);
+						//Jsoup.connect("https://toolserver.org/~verisimilus/Bot/DOI_bot/doibot.php?edit=doc&page=Template:Cite_doi/"+doi).get();
+						if(enwiki.exists("Template:Cite doi/"+doi)){
+							String text = enwiki.getPageText("Template:Cite doi/"+doi,true);
+							text = text.replace("{{{cite|cite}}}", "cite");
 							ArrayList<String> enal = ParseUtils.getTemplates("cite journal", text);
 							if(enal.size() == 1){
 								text = enal.get(0) + "<noinclude>\n"
 						    			  + "{{Documentation}}\n\n"
 						    			  + "[[Catégorie:Modèle de source‎]]\n\n"
-						    			  + "[[en:Template:Cite pmid/{{subst:#titleparts:{{subst:PAGENAME}}|0|2}}]]\n"
+						    			  + "[[en:Template:Cite doi/{{subst:#titleparts:{{subst:PAGENAME}}|0|2}}]]\n"
 						    			  + "</noinclude>";
-								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");
-								wiki.purge(pages.get(i));
+								wiki.edit("Modèle:Cite doi/"+doi,text,"bot: création page");
 							}
 						}
 						else{
-							if(!wiki.exists("Modèle:Cite pmid/"+pmid)){
-								String text = getArticle(pmid);
-								text = parseXML(text);
-								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");
-							}
-							
+							/*String text = getArticle(pmid);
+							text = parseXML(text);
+							if(!wiki.exists("Modèle:Cite pmid/"+pmid))
+								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");*/
 						}
 						
 								
 					}catch(Exception e){
-						e.getCause();
 						e.printStackTrace();
 					}
 				}
-				wiki.edit(pages.get(i), article, "");
 			}
 			
 			//System.out.print(text);
@@ -123,7 +120,7 @@ public class Pmid {
 	    	  String lang    = getLanguage(root.getChild("Language"));
 	    	  //String lang    = getLanguages(root.getChild("language"));
 	    	  text = "{{Article\n"+lang+authors+title+journal+pages;
-	    	  text += "| pmid = {{subst:#titleparts:{{subst:PAGENAME}}|0|2}}\n"
+	    	  text += "| doi = {{subst:#titleparts:{{subst:PAGENAME}}|0|2}}\n"
 	    			  + "| url = \n"
 	    			  + "| format = \n"
 	    			  + "| date = \n"

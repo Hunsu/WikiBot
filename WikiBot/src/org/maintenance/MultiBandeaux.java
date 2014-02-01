@@ -1,9 +1,8 @@
-package maintenance;
+package org.maintenance;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;

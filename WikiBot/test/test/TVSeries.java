@@ -24,20 +24,21 @@ public class TVSeries {
 	/** The wiki. */
 	private static Wiki wiki = new Wiki();
 
-
 	/**
 	 * Main.
-	 *
-	 * @param args the args
+	 * 
+	 * @param args
+	 *            the args
 	 */
-	public static void main(String[] args){
-		UpdateFRArticle("Saison 1 de Gilmore Girls");
+	public static void main(String[] args) {
+		UpdateFRArticle("Saison 1 des Griffin");
 	}
 
 	/**
 	 * Update fr article.
-	 *
-	 * @param articleTitle the article title
+	 * 
+	 * @param articleTitle
+	 *            the article title
 	 */
 	public static void UpdateFRArticle(String articleTitle) {
 		Wiki enWiki = new Wiki("en.wikipedia.org");
@@ -45,7 +46,7 @@ public class TVSeries {
 		Pattern p = Pattern.compile("Saison (\\d\\d?)");
 		Matcher m = p.matcher(articleTitle);
 		String number;
-		if(m.find())
+		if (m.find())
 			number = m.group(1);
 		else
 			number = null;
@@ -56,7 +57,7 @@ public class TVSeries {
 
 			String enWikiTitle = frWiki.getArticleInSpecifLang(articleTitle,
 					"en");
-			if(enWikiTitle == null)
+			if (enWikiTitle == null)
 				return;
 
 			String enArticle = enWiki.getPageText(enWikiTitle);
@@ -73,9 +74,10 @@ public class TVSeries {
 
 			ArrayList<String> enAl = ParseUtils.getTemplates("Episode list",
 					enArticle);
-			if(enAl.isEmpty())
-				enAl = ParseUtils.getTemplates("Episode list/sublist", enArticle);
-			if(enAl.isEmpty())
+			if (enAl.isEmpty())
+				enAl = ParseUtils.getTemplates("Episode list/sublist",
+						enArticle);
+			if (enAl.isEmpty())
 				return;
 			ArrayList<String> frAl = ParseUtils.getTemplates(
 					"Saison de série télévisée/Épisode", frArticle);
@@ -90,15 +92,15 @@ public class TVSeries {
 			for (int i = 0; i < frSize; i++) {
 				String oldTemplate = frAl.get(i);
 				String frEpisodeNumber = ParseUtils.getTemplateParam(
-						oldTemplate, "numéro",true);
+						oldTemplate, "numéro", true);
 				String title = ParseUtils.getTemplateParam(oldTemplate,
-						"titre original",true);
+						"titre original", true);
 				LinkedHashMap<String, String> map = ParseUtils
 						.getTemplateParametersWithValue(getEnTemplate(enAl,
 								frEpisodeNumber, title));
 				if (map == null)
 					continue;
-				String newTemplate = getMessingInfos(oldTemplate, map,number);
+				String newTemplate = getMessingInfos(oldTemplate, map, number);
 				/*
 				 * String numero = String.valueOf(i+1) +" ("+String.valueOf(1)
 				 * +"."; if(i<10) numero += "0"; numero +=
@@ -120,9 +122,10 @@ public class TVSeries {
 
 			// frWiki.edit("Utilisateur:Hunsu/Brouillons", frArticle,
 			// "bot : ajout d'infos depuis WPen");
-            if(oldArticle.equalsIgnoreCase(frArticle))
-            	return;
-			frArticle = frArticle.replace("{{Références}}", "{{Références|colonnes=2}}");
+			if (oldArticle.equalsIgnoreCase(frArticle))
+				return;
+			frArticle = frArticle.replace("{{Références}}",
+					"{{Références|colonnes=2}}");
 
 			frWiki.edit(articleTitle, frArticle,
 					"bot : ajout d'infos depuis WPen");
@@ -139,10 +142,13 @@ public class TVSeries {
 
 	/**
 	 * Gets the en template.
-	 *
-	 * @param enAl the en al
-	 * @param frEpisodeNumber the fr episode number
-	 * @param title the title
+	 * 
+	 * @param enAl
+	 *            the en al
+	 * @param frEpisodeNumber
+	 *            the fr episode number
+	 * @param title
+	 *            the title
 	 * @return the en template
 	 */
 	private static String getEnTemplate(ArrayList<String> enAl,
@@ -152,28 +158,39 @@ public class TVSeries {
 		int size = enAl.size();
 		for (int i = 0; i < size; i++) {
 			String enEpisodeNumber = ParseUtils.getTemplateParam(enAl.get(i),
-					"EpisodeNumber",true);
+					"EpisodeNumber", true);
 
 			if (enEpisodeNumber != null)
 				enEpisodeNumber = enEpisodeNumber.trim();
-			String enTitle = ParseUtils.getTemplateParam(enAl.get(i), "Title",true);
-			if(enTitle == null)
-				enTitle = ParseUtils.getTemplateParam(enAl.get(i), "RTitle",true);
-			if(enTitle != null)
-				enTitle = enTitle.toLowerCase();
-			int len = 100;
+			String enTitle = ParseUtils.getTemplateParam(enAl.get(i), "Title",
+					true);
+			if (enTitle == null)
+				enTitle = ParseUtils.getTemplateParam(enAl.get(i), "RTitle",
+						true);
 			if (enTitle != null){
+				enTitle = enTitle.toLowerCase();
+				enTitle = enTitle.replace("[[", "").replace("]]", "").replace("{{", "").replace("}}", "");
+			}
+			int len = 100;
+			if (enTitle != null) {
 				enTitle = enTitle.trim();
-				len = enTitle.length() * 90/100;
-				if(title != null && title.length() * 90/100 < len)
-					len = title.length()* 90/100;
+				len = enTitle.length() * 90 / 100;
+				if (title != null && title.length() * 90 / 100 < len){
+					title = title.replace("[[", "").replace("]]", "").replace("{{", "").replace("}}", "");
+					len = title.length() * 90 / 100;
+				}
 			}
 			if ((enEpisodeNumber == null && enTitle == null)
 					|| (enTitle == null && frEpisodeNumber == null)
 					|| (enEpisodeNumber == null && title == null))
 				return null;
-			if ((frEpisodeNumber != null && frEpisodeNumber.startsWith(enEpisodeNumber + " ("))
-					|| (enTitle != null &&  title.toLowerCase().contains(enTitle) || enTitle.contains(title.toLowerCase())) || StringUtils.longestSubstr(enTitle, title.toLowerCase()) > len)
+			if ((frEpisodeNumber != null && (frEpisodeNumber
+					.startsWith(enEpisodeNumber + " (") || frEpisodeNumber
+					.equals(enEpisodeNumber)))
+					|| (enTitle != null
+							&& title.toLowerCase().contains(enTitle) || enTitle
+								.contains(title.toLowerCase()))
+					|| StringUtils.longestSubstr(enTitle, title.toLowerCase()) > len)
 				return enAl.get(i);
 		}
 		return null;
@@ -181,56 +198,68 @@ public class TVSeries {
 
 	/**
 	 * Gets the messing infos.
-	 *
-	 * @param template the template
-	 * @param map the map
+	 * 
+	 * @param template
+	 *            the template
+	 * @param map
+	 *            the map
 	 * @return the messing infos
 	 */
 	private static String getMessingInfos(String template,
 			LinkedHashMap<String, String> map, String number) {
-		String title = ParseUtils.getTemplateParam(template, "titre original",true);
-		String writtenBy = ParseUtils.getTemplateParam(template, "scénariste",true);
-		String frEpisodeNumber = ParseUtils.getTemplateParam(template, "numéro",true);
-		String enEpisodeNumber = ParseUtils.getTemplateParam(map, "EpisodeNumber",true);
-		String enEpisodeNumber2 = ParseUtils.getTemplateParam(map, "EpisodeNumber2",true);
-		String directedBy = ParseUtils
-				.getTemplateParam(template, "réalisateur",true);
-		String viewers = ParseUtils.getTemplateParam(template, "audience",true);
+		String title = ParseUtils.getTemplateParam(template, "titre original",
+				true);
+		String writtenBy = ParseUtils.getTemplateParam(template, "scénariste",
+				true);
+		String frEpisodeNumber = ParseUtils.getTemplateParam(template,
+				"numéro", true);
+		String enEpisodeNumber = ParseUtils.getTemplateParam(map,
+				"EpisodeNumber", true);
+		String enEpisodeNumber2 = ParseUtils.getTemplateParam(map,
+				"EpisodeNumber2", true);
+		String directedBy = ParseUtils.getTemplateParam(template,
+				"réalisateur", true);
+		String viewers = ParseUtils
+				.getTemplateParam(template, "audience", true);
 		String prodCode = ParseUtils.getTemplateParam(template,
-				"code de production",true);
-		String enProdCode = ParseUtils.getTemplateParam(map, "ProdCode",true);
+				"code de production", true);
+		String enProdCode = ParseUtils.getTemplateParam(map, "ProdCode", true);
 		String originalAirDate = ParseUtils.getTemplateParam(template,
-				"première diffusion",true);
-		if((frEpisodeNumber == null || frEpisodeNumber.equals("")) && number != null){
-			if(enEpisodeNumber != null){
-				frEpisodeNumber = enEpisodeNumber;
-				if(enEpisodeNumber2 != null){
-					frEpisodeNumber += " (" + number +"-";
-					int n = Integer.parseInt(enEpisodeNumber2);
-					if(n < 10)
-						frEpisodeNumber += "0";
-					frEpisodeNumber += enEpisodeNumber2 +")\n";
-					template = ParseUtils.setTemplateParam(template, "numéro", frEpisodeNumber, true);
-				}
+				"première diffusion", true);
+		if (number != null
+				&& enEpisodeNumber != null
+				&& (frEpisodeNumber == null || frEpisodeNumber.equals("") || (frEpisodeNumber
+						.equals(enEpisodeNumber)))) {
+			frEpisodeNumber = enEpisodeNumber;
+			if (enEpisodeNumber2 != null) {
+				frEpisodeNumber += " (" + number + "-";
+				int n = Integer.parseInt(enEpisodeNumber2);
+				if (n < 10)
+					frEpisodeNumber += "0";
+				frEpisodeNumber += enEpisodeNumber2 + ")\n";
+				template = ParseUtils.setTemplateParam(template, "numéro",
+						frEpisodeNumber, true);
 			}
 		}
 
 		if (title == null || title.trim().equals(""))
 			template = ParseUtils.setTemplateParam(template, "titre original",
-					ParseUtils.getTemplateParam(map, "Title",true) + "\n",
+					ParseUtils.getTemplateParam(map, "Title", true) + "\n",
 					true);
 		if (writtenBy == null || writtenBy.trim().equals("")) {
 			writtenBy = translateInternalLinks(ParseUtils
-					.getTemplateParam(map, "WrittenBy",true).replace("&", "et")
-					.replace("\"", "").replace(" and ", " et ").trim());
+					.getTemplateParam(map, "WrittenBy", true)
+					.replace("&", "et").replace("\"", "")
+					.replace(" and ", " et ").trim());
 			template = ParseUtils.setTemplateParam(template, "scénariste",
 
 			writtenBy + "\n", true);
 		}
 		if (directedBy == null || directedBy.trim().equals("")) {
 			directedBy = translateInternalLinks(ParseUtils
-					.getTemplateParam(map, "DirectedBy",true).replace("&", "et")
-					.replace("\"", "").replace(" and ", " et ").trim());
+					.getTemplateParam(map, "DirectedBy", true)
+					.replace("&", "et").replace("\"", "")
+					.replace(" and ", " et ").trim());
 			template = ParseUtils.setTemplateParam(template, "réalisateur",
 
 			directedBy + "\n", true);
@@ -239,11 +268,11 @@ public class TVSeries {
 		if (!frViewers.toLowerCase().contains("tats-unis")) {
 			viewers = ParseUtils
 					.removeCommentsAndNoWikiText(formatViewers(ParseUtils
-							.getTemplateParam(map, "Viewers",true)));
+							.getTemplateParam(map, "Viewers", true)));
 			if (viewers == null)
 				viewers = ParseUtils
 						.removeCommentsAndNoWikiText(formatViewers(ParseUtils
-								.getTemplateParam(map, "Aux4",true)));
+								.getTemplateParam(map, "Aux4", true)));
 			if (viewers != null)
 				template = ParseUtils.setTemplateParam(template, "audience",
 						(viewers + frViewers).replace("\n\n", "\n"), true);
@@ -257,15 +286,14 @@ public class TVSeries {
 		if (originalAirDate == null || originalAirDate.trim().equals("")) {
 			originalAirDate = "\n*{{États-Unis}} : "
 					+ translateDate(
-							ParseUtils.getTemplateParam(map, "OriginalAirDate",true)
-									 + "\n", true);
+							ParseUtils.getTemplateParam(map, "OriginalAirDate",
+									true) + "\n", true);
 			template = ParseUtils.setTemplateParam(template,
 					"première diffusion", originalAirDate, true);
 		}
 		int index;
 		String date = translateDate(
-				ParseUtils.getTemplateParam(map, "OriginalAirDate",true),
-				true);
+				ParseUtils.getTemplateParam(map, "OriginalAirDate", true), true);
 		if ((index = originalAirDate.indexOf("{{États-Unis}} : sur")) != -1) {
 			String temp = originalAirDate.substring(0, index + 17);
 			temp += date;
@@ -279,8 +307,9 @@ public class TVSeries {
 
 	/**
 	 * Gets the viewers.
-	 *
-	 * @param viewers the viewers
+	 * 
+	 * @param viewers
+	 *            the viewers
 	 * @return the viewers
 	 */
 	private static String getViewers(String viewers) {
@@ -312,9 +341,8 @@ public class TVSeries {
 							viewers += "\n" + viewer[i];
 					} else
 						viewers += "\n" + viewer[i];
-				}
-				else{
-					if( i != 0)
+				} else {
+					if (i != 0)
 						viewers += "\n" + viewer[i];
 				}
 			}
@@ -327,9 +355,11 @@ public class TVSeries {
 
 	/**
 	 * Translate date.
-	 *
-	 * @param text the text
-	 * @param useDateTemplate the use date template
+	 * 
+	 * @param text
+	 *            the text
+	 * @param useDateTemplate
+	 *            the use date template
 	 * @return the string
 	 */
 	private static String translateDate(String text, boolean useDateTemplate) {
@@ -360,8 +390,9 @@ public class TVSeries {
 
 	/**
 	 * Format viewers.
-	 *
-	 * @param viewers the viewers
+	 * 
+	 * @param viewers
+	 *            the viewers
 	 * @return the string
 	 */
 	private static String formatViewers(String viewers) {
@@ -378,8 +409,9 @@ public class TVSeries {
 
 	/**
 	 * Citeweb.
-	 *
-	 * @param text the text
+	 * 
+	 * @param text
+	 *            the text
 	 * @return the string
 	 */
 	private static String citeweb(String text) {
@@ -393,19 +425,22 @@ public class TVSeries {
 					"archiveurl");
 			newTemplate = ParseUtils.removeTemplateParam(newTemplate,
 					"archivedate");
-			String title = ParseUtils.getTemplateParam(newTemplate, "title",false);
+			String title = ParseUtils.getTemplateParam(newTemplate, "title",
+					false);
 			Pattern p = Pattern.compile("([:\\s])'([^'])");
 			Matcher m = p.matcher(title);
 			StringBuffer buf = new StringBuffer();
 			while (m.find())
-				m.appendReplacement(buf, Matcher.quoteReplacement((m.group(1) + "''" + m.group(2))));
+				m.appendReplacement(buf, Matcher.quoteReplacement((m.group(1)
+						+ "''" + m.group(2))));
 			m.appendTail(buf);
 			title = buf.toString();
 			p = Pattern.compile("([^'])'([\\s,])");
 			m = p.matcher(title);
 			buf = new StringBuffer();
 			while (m.find())
-				m.appendReplacement(buf, Matcher.quoteReplacement(m.group(1) + "''" + m.group(2)));
+				m.appendReplacement(buf, Matcher.quoteReplacement(m.group(1)
+						+ "''" + m.group(2)));
 			m.appendTail(buf);
 			title = buf.toString().replace("&", "and");
 			newTemplate = ParseUtils.setTemplateParam(newTemplate, "title",
@@ -418,8 +453,9 @@ public class TVSeries {
 
 	/**
 	 * Correct internal link.
-	 *
-	 * @param internalLink the internal link
+	 * 
+	 * @param internalLink
+	 *            the internal link
 	 * @return the string
 	 */
 	private static String correctInternalLink(String internalLink) {
@@ -435,8 +471,9 @@ public class TVSeries {
 
 	/**
 	 * Translate internal links.
-	 *
-	 * @param text the text
+	 * 
+	 * @param text
+	 *            the text
 	 * @return the string
 	 */
 	private static String translateInternalLinks(String text) {
@@ -472,15 +509,15 @@ public class TVSeries {
 	/*
 	 * private static String correctDate(String template){ template =
 	 * correctDate(template,"date","(\d\d\d\d)-(\d\d)") return template;
-	 *
+	 * 
 	 * }
-	 *
+	 * 
 	 * private static String correctDate(String Template,String param, String
 	 * regex,String replacement) { String date =
 	 * ParseUtils.getTemplateParam(Template, param); date =
 	 * date.replaceAll(regex, replacement); Template =
 	 * ParseUtils.setTemplateParam(Template, param, date); return Template; }
-	 *
+	 * 
 	 * private static String translateCiteWeb(String citeWebTemplate) { String[]
 	 * citeWebParameters = { "title","author", "last", "first", "last1",
 	 * "first1", "last2", "first2", "website", "publisher", "accessdate" };

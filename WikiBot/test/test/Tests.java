@@ -1,15 +1,8 @@
 package test;
 
 import java.io.IOException;
-import java.util.List;
-
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
-
-import maintenance.Date;
-
-import com.inet.jortho.Dictionary;
-import com.inet.jortho.Suggestion;
 
 /**
  * The Class Tests.

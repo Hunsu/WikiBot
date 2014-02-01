@@ -1,4 +1,4 @@
-package maintenance;
+package org.maintenance;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package maintenance;
+package org.maintenance;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -11,6 +11,8 @@ import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
+
+import Tools.Login;
 
 /**
  * The Class Refernces.
@@ -32,7 +34,8 @@ public class Refernces {
 	public static void correctRefslist() {
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
 
 			String[] titles = wiki
 					.getCategoryMembers("Page utilisant un modèle avec un paramètre obsolète");
