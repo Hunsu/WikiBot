@@ -1,8 +1,15 @@
 package test;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import javax.security.auth.login.FailedLoginException;
+
 import org.wikipedia.Wiki;
-import org.wikiutils.ParseUtils;
+import Tools.Login;
 
 /**
  * The Class Tests.
@@ -13,7 +20,6 @@ public class Tests {
 	 * Instantiates a new tests.
 	 */
 	public Tests() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -21,14 +27,26 @@ public class Tests {
 	 *
 	 * @param args the arguments
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws FailedLoginException
 	 */
-	public static void main(String[] args) throws IOException {
-		Wiki wiki = new Wiki("fr.wikipedia.org");
+	public static void main(String[] args) throws IOException, FailedLoginException {
 
-		String text = wiki.getPageText("Saison 3 des Frères Scott");
+		Wiki wiki = new Wiki("fr.wikipedia.org");
+		try{
+			wiki.readObject(new ObjectInputStream(new FileInputStream("wiki")));
+		}catch(IOException | ClassNotFoundException e){
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
+			wiki.writeObject(new ObjectOutputStream(new FileOutputStream("wiki")));
+		}
+
+		String[] pages = wiki.getPagesUsingTemplate("Palette Akon");
+		System.out.println(pages);
+
+		/*String text = wiki.getPageText("Saison 3 des Frères Scott");
 		String template = ParseUtils.getTemplates("Infobox Saison de série télévisée", text).get(0);
 		template = ParseUtils.setTemplateParam(template, "nom", "value\n", true);
-		System.out.println(template);
+		System.out.println(template);*/
 
 
 

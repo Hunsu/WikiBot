@@ -48,7 +48,7 @@ import javax.security.auth.login.*;
  * >here</a> (fast) or at the <a
  * href="https://code.google.com/p/wiki-java/issues/list">Google code bug
  * tracker</a> (slow).
- * 
+ *
  * @author MER-C and contributors
  * @version 0.30
  */
@@ -64,7 +64,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace of images and media, such that there is no
 	 * description page. Uses the "Media:" prefix.
-	 * 
+	 *
 	 * @see #FILE_NAMESPACE
 	 * @since 0.03
 	 */
@@ -74,14 +74,14 @@ public class Wiki implements Serializable {
 	 * Denotes the namespace of pages with the "Special:" prefix. Note that many
 	 * methods dealing with special pages may spew due to raw content not being
 	 * available.
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int SPECIAL_NAMESPACE = -1;
 
 	/**
 	 * Denotes the main namespace, with no prefix.
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int MAIN_NAMESPACE = 0;
@@ -89,21 +89,21 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for talk pages relating to the main namespace,
 	 * denoted by the prefix "Talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int TALK_NAMESPACE = 1;
 
 	/**
 	 * Denotes the namespace for user pages, given the prefix "User:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int USER_NAMESPACE = 2;
 
 	/**
 	 * Denotes the namespace for user talk pages, given the prefix "User talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int USER_TALK_NAMESPACE = 3;
@@ -111,7 +111,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for pages relating to the project, with prefix
 	 * "Project:". It also goes by the name of whatever the project name was.
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int PROJECT_NAMESPACE = 4;
@@ -120,7 +120,7 @@ public class Wiki implements Serializable {
 	 * Denotes the namespace for talk pages relating to project pages, with
 	 * prefix "Project talk:". It also goes by the name of whatever the project
 	 * name was, + "talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int PROJECT_TALK_NAMESPACE = 5;
@@ -128,7 +128,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for file description pages. Has the prefix "File:".
 	 * Do not create these directly, use upload() instead.
-	 * 
+	 *
 	 * @see #MEDIA_NAMESPACE
 	 * @since 0.25
 	 */
@@ -137,7 +137,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes talk pages for file description pages. Has the prefix
 	 * "File talk:".
-	 * 
+	 *
 	 * @since 0.25
 	 */
 	public static final int FILE_TALK_NAMESPACE = 7;
@@ -145,7 +145,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for (wiki) system messages, given the prefix
 	 * "MediaWiki:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int MEDIAWIKI_NAMESPACE = 8;
@@ -153,14 +153,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for talk pages relating to system messages, given
 	 * the prefix "MediaWiki talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int MEDIAWIKI_TALK_NAMESPACE = 9;
 
 	/**
 	 * Denotes the namespace for templates, given the prefix "Template:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int TEMPLATE_NAMESPACE = 10;
@@ -168,14 +168,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for talk pages regarding templates, given the
 	 * prefix "Template talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int TEMPLATE_TALK_NAMESPACE = 11;
 
 	/**
 	 * Denotes the namespace for help pages, given the prefix "Help:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int HELP_NAMESPACE = 12;
@@ -183,7 +183,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for talk pages regarding help pages, given the
 	 * prefix "Help talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int HELP_TALK_NAMESPACE = 13;
@@ -191,7 +191,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for category description pages. Has the prefix
 	 * "Category:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int CATEGORY_NAMESPACE = 14;
@@ -199,14 +199,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes the namespace for talk pages regarding categories. Has the prefix
 	 * "Category talk:".
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int CATEGORY_TALK_NAMESPACE = 15;
 
 	/**
 	 * Denotes all namespaces.
-	 * 
+	 *
 	 * @since 0.03
 	 */
 	public static final int ALL_NAMESPACES = 0x09f91102;
@@ -215,77 +215,77 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Denotes all logs.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String ALL_LOGS = "";
 
 	/**
 	 * Denotes the user creation log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String USER_CREATION_LOG = "newusers";
 
 	/**
 	 * Denotes the upload log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String UPLOAD_LOG = "upload";
 
 	/**
 	 * Denotes the deletion log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String DELETION_LOG = "delete";
 
 	/**
 	 * Denotes the move log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String MOVE_LOG = "move";
 
 	/**
 	 * Denotes the block log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String BLOCK_LOG = "block";
 
 	/**
 	 * Denotes the protection log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String PROTECTION_LOG = "protect";
 
 	/**
 	 * Denotes the user rights log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String USER_RIGHTS_LOG = "rights";
 
 	/**
 	 * Denotes the user renaming log.
-	 * 
+	 *
 	 * @since 0.06
 	 */
 	public static final String USER_RENAME_LOG = "renameuser";
 
 	/**
 	 * Denotes the page importation log.
-	 * 
+	 *
 	 * @since 0.08
 	 */
 	public static final String IMPORT_LOG = "import";
 
 	/**
 	 * Denotes the edit patrol log.
-	 * 
+	 *
 	 * @since 0.08
 	 */
 	public static final String PATROL_LOG = "patrol";
@@ -294,7 +294,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Denotes a non-protected page.
-	 * 
+	 *
 	 * @since 0.09
 	 */
 	public static final String NO_PROTECTION = "all";
@@ -302,7 +302,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes semi-protection (i.e. only autoconfirmed users can perform a
 	 * particular action).
-	 * 
+	 *
 	 * @since 0.09
 	 */
 	public static final String SEMI_PROTECTION = "autoconfirmed";
@@ -310,7 +310,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Denotes full protection (i.e. only admins can perfom a particular
 	 * action).
-	 * 
+	 *
 	 * @since 0.09
 	 */
 	public static final String FULL_PROTECTION = "sysop";
@@ -319,7 +319,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Use no assertions (i.e. 0).
-	 * 
+	 *
 	 * @see #setAssertionMode
 	 * @since 0.11
 	 */
@@ -327,7 +327,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Assert that we have a bot flag (i.e. 2).
-	 * 
+	 *
 	 * @see #setAssertionMode
 	 * @since 0.11
 	 */
@@ -336,7 +336,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Assert that we have no new messages. Not defined in Assert Edit, but some
 	 * bots have this.
-	 * 
+	 *
 	 * @see #setAssertionMode
 	 * @since 0.11
 	 */
@@ -347,7 +347,7 @@ public class Wiki implements Serializable {
 	/**
 	 * In queries against the recent changes table, this would mean we don't
 	 * fetch anonymous edits.
-	 * 
+	 *
 	 * @since 0.20
 	 */
 	public static final int HIDE_ANON = 1;
@@ -355,7 +355,7 @@ public class Wiki implements Serializable {
 	/**
 	 * In queries against the recent changes table, this would mean we don't
 	 * fetch edits made by bots.
-	 * 
+	 *
 	 * @since 0.20
 	 */
 	public static final int HIDE_BOT = 2;
@@ -363,7 +363,7 @@ public class Wiki implements Serializable {
 	/**
 	 * In queries against the recent changes table, this would mean we don't
 	 * fetch by the logged in user.
-	 * 
+	 *
 	 * @since 0.20
 	 */
 	public static final int HIDE_SELF = 4;
@@ -371,7 +371,7 @@ public class Wiki implements Serializable {
 	/**
 	 * In queries against the recent changes table, this would mean we don't
 	 * fetch minor edits.
-	 * 
+	 *
 	 * @since 0.20
 	 */
 	public static final int HIDE_MINOR = 8;
@@ -379,7 +379,7 @@ public class Wiki implements Serializable {
 	/**
 	 * In queries against the recent changes table, this would mean we don't
 	 * fetch patrolled edits.
-	 * 
+	 *
 	 * @since 0.20
 	 */
 	public static final int HIDE_PATROLLED = 16;
@@ -388,7 +388,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * In <tt>Revision.diff()</tt>, denotes the next revision.
-	 * 
+	 *
 	 * @see org.wikipedia.Wiki.Revision#diff(org.wikipedia.Wiki.Revision)
 	 * @since 0.21
 	 */
@@ -396,7 +396,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * In <tt>Revision.diff()</tt>, denotes the current revision.
-	 * 
+	 *
 	 * @see org.wikipedia.Wiki.Revision#diff(org.wikipedia.Wiki.Revision)
 	 * @since 0.21
 	 */
@@ -404,7 +404,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * In <tt>Revision.diff()</tt>, denotes the previous revision.
-	 * 
+	 *
 	 * @see org.wikipedia.Wiki.Revision#diff(org.wikipedia.Wiki.Revision)
 	 * @since 0.21
 	 */
@@ -412,7 +412,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * The list of options the user can specify for his/her gender.
-	 * 
+	 *
 	 * @since 0.24
 	 */
 	public enum Gender {
@@ -422,21 +422,21 @@ public class Wiki implements Serializable {
 
 		/**
 		 * The user self-identifies as a male.
-		 * 
+		 *
 		 * @since 0.24
 		 */
 		male,
 
 		/**
 		 * The user self-identifies as a female.
-		 * 
+		 *
 		 * @since 0.24
 		 */
 		female,
 
 		/**
 		 * The user has not specified a gender in preferences.
-		 * 
+		 *
 		 * @since 0.24
 		 */
 		unknown;
@@ -448,61 +448,61 @@ public class Wiki implements Serializable {
 	// the domain of the wiki
 	/** The domain. */
 	private String domain;
-	
+
 	/** The api url. */
 	protected String query, base, apiUrl;
-	
+
 	/** The script path. */
 	protected String scriptPath = "/w";
-	
+
 	/** The wg capital links. */
 	private boolean wgCapitalLinks = true;
 
 	// user management
 	/** The cookies. */
 	private HashMap<String, String> cookies = new HashMap<String, String>(12);
-	
+
 	/** The user. */
 	private User user;
-	
+
 	/** The statuscounter. */
 	private int statuscounter = 0;
 
 	// various caches
 	/** The namespaces. */
 	private HashMap<String, Integer> namespaces = null;
-	
+
 	/** The watchlist. */
 	private ArrayList<String> watchlist = null;
 
 	// preferences
 	/** The max. */
 	private int max = 500;
-	
+
 	/** The slowmax. */
 	private int slowmax = 50;
-	
+
 	/** The throttle. */
 	private int throttle = 10000; // throttle
-	
+
 	/** The maxlag. */
 	private int maxlag = 5;
-	
+
 	/** The assertion. */
 	private int assertion = 0; // assertion mode
-	
+
 	/** The statusinterval. */
 	private int statusinterval = 100; // status check
-	
+
 	/** The useragent. */
 	private String useragent = "Wiki.java " + version;
-	
+
 	/** The zipped. */
 	private boolean zipped = true;
-	
+
 	/** The markbot. */
 	private boolean markminor = false, markbot = false;
-	
+
 	/** The resolveredirect. */
 	private boolean resolveredirect = false;
 
@@ -522,18 +522,18 @@ public class Wiki implements Serializable {
 	// are slow
 	// and the data volume is large!)
 	/** The Constant CONNECTION_READ_TIMEOUT_MSEC. */
-																		private static final int CONNECTION_READ_TIMEOUT_MSEC = 180000; // 180
-																	// seconds
+	private static final int CONNECTION_READ_TIMEOUT_MSEC = 180000; // 180
+	// seconds
 	// log2(upload chunk size). Default = 22 => upload size = 4 MB. Disable
 	// chunked uploads by setting a large value here (50 = 1 PB will do).
 	/** The Constant LOG2_CHUNK_SIZE. */
-																	private static final int LOG2_CHUNK_SIZE = 22;
+	private static final int LOG2_CHUNK_SIZE = 22;
 
 	// CONSTRUCTORS AND CONFIGURATION
 
 	/**
 	 * Creates a new connection to the English Wikipedia.
-	 * 
+	 *
 	 * @since 0.02
 	 */
 	public Wiki() {
@@ -545,7 +545,7 @@ public class Wiki implements Serializable {
 	 * $wgScriptpath other than the default <tt>/w</tt>, you need to call
 	 * <tt>getScriptPath()</tt> to automatically set it. Alternatively, you can
 	 * use the constructor below if you know it in advance.
-	 * 
+	 *
 	 * @param domain
 	 *            the wiki domain name e.g. en.wikipedia.org (defaults to
 	 *            en.wikipedia.org)
@@ -557,7 +557,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Creates a new connection to a wiki with $wgScriptpath set to
 	 * <tt>scriptPath</tt>.
-	 * 
+	 *
 	 * @param domain
 	 *            the wiki domain name
 	 * @param scriptPath
@@ -583,14 +583,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Override/edit this if you need to change the API and human interface url
 	 * configuration of the wiki. Some example uses:
-	 * 
+	 *
 	 * *Your wiki not supporting HTTPS *Server-side cache management (maxage and
 	 * smaxage API parameters)
-	 * 
+	 *
 	 * <br>
 	 * <br>
 	 * Contributed by Tedder
-	 * 
+	 *
 	 * @since 0.24
 	 */
 	protected void initVars() {
@@ -611,7 +611,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the domain of the wiki, as supplied on construction.
-	 * 
+	 *
 	 * @return the domain of the wiki
 	 * @since 0.06
 	 */
@@ -621,7 +621,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the editing throttle.
-	 * 
+	 *
 	 * @return the throttle value in milliseconds
 	 * @see #setThrottle
 	 * @since 0.09
@@ -633,7 +633,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Sets the editing throttle. Read requests are not throttled or restricted
 	 * in any way. Default is 10s.
-	 * 
+	 *
 	 * @param throttle
 	 *            the new throttle value in milliseconds
 	 * @see #getThrottle
@@ -651,7 +651,8 @@ public class Wiki implements Serializable {
 	 * . See also [[mw:Manual:$wgScriptpath]].
 	 *
 	 * @return the script path, if you have any use for it
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.14
 	 */
 	public String getScriptPath() throws IOException {
@@ -667,7 +668,7 @@ public class Wiki implements Serializable {
 	 * title and sets the bot framework up to use it. Example: en.wikipedia =
 	 * true, en.wiktionary = false. Default = true. See
 	 * [[mw:Manual:$wgCapitalLinks]].
-	 * 
+	 *
 	 * @return see above
 	 * @throws IOException
 	 *             if a network error occurs
@@ -683,7 +684,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Sets the user agent HTTP header to be used for requests. Default is
 	 * "Wiki.java " + version.
-	 * 
+	 *
 	 * @param useragent
 	 *            the new user agent
 	 * @since 0.22
@@ -695,7 +696,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the user agent HTTP header to be used for requests. Default is
 	 * "Wiki.java " + version.
-	 * 
+	 *
 	 * @return useragent the user agent
 	 * @since 0.22
 	 */
@@ -705,7 +706,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Enables/disables GZip compression for GET requests. Default: true.
-	 * 
+	 *
 	 * @param zipped
 	 *            whether we use GZip compression
 	 * @since 0.23
@@ -717,7 +718,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Checks whether we are using GZip compression for GET requests. Default:
 	 * true.
-	 * 
+	 *
 	 * @return (see above)
 	 * @since 0.23
 	 */
@@ -728,7 +729,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Checks whether API action=query dependencies automatically resolve
 	 * redirects (default = false).
-	 * 
+	 *
 	 * @return (see above)
 	 * @since 0.27
 	 */
@@ -739,7 +740,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Sets whether API action=query dependencies automatically resolve
 	 * redirects (default = false).
-	 * 
+	 *
 	 * @param b
 	 *            (see above)
 	 * @since 0.27
@@ -753,7 +754,7 @@ public class Wiki implements Serializable {
 	 * Sets whether edits are marked as bot by default (may be overridden
 	 * specifically by edit()). Default = false. Works only if one has the
 	 * required permissions.
-	 * 
+	 *
 	 * @param markbot
 	 *            (see above)
 	 * @since 0.26
@@ -775,7 +776,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Sets whether edits are marked as minor by default (may be overridden
 	 * specifically by edit()). Default = false.
-	 * 
+	 *
 	 * @param minor
 	 *            (see above)
 	 * @since 0.26
@@ -796,7 +797,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Determines whether this wiki is equal to another object.
-	 * 
+	 *
 	 * @param obj
 	 *            the object to compare
 	 * @return whether this wiki is equal to such object
@@ -811,7 +812,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Returns a hash code of this object.
-	 * 
+	 *
 	 * @return a hash code
 	 * @since 0.12
 	 */
@@ -822,7 +823,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Returns a string representation of this Wiki.
-	 * 
+	 *
 	 * @return a string representation of this Wiki.
 	 * @since 0.10
 	 */
@@ -854,7 +855,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the maxlag parameter. See [[mw:Manual:Maxlag parameter]].
-	 * 
+	 *
 	 * @return the current maxlag, in seconds
 	 * @see #setMaxLag
 	 * @see #getCurrentDatabaseLag
@@ -867,7 +868,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Sets the maxlag parameter. A value of less than 0s disables this
 	 * mechanism. Default is 5s.
-	 * 
+	 *
 	 * @param lag
 	 *            the desired maxlag in seconds
 	 * @see #getMaxLag
@@ -884,7 +885,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the assertion mode. See [[mw:Extension:Assert Edit]] for what
 	 * functionality this mimics. Assertion modes are bitmasks.
-	 * 
+	 *
 	 * @return the current assertion mode
 	 * @see #setAssertionMode
 	 * @since 0.11
@@ -897,7 +898,7 @@ public class Wiki implements Serializable {
 	 * Sets the assertion mode. See [[mw:Extension:Assert Edit]] for what this
 	 * functionality this mimics. Assertion modes are bitmasks. Default is
 	 * <tt>ASSERT_NONE</tt>.
-	 * 
+	 *
 	 * @param mode
 	 *            an assertion mode
 	 * @see #getAssertionMode
@@ -913,7 +914,7 @@ public class Wiki implements Serializable {
 	 * status checks. A status check is where we update user rights, block
 	 * status and check for new messages (if the appropriate assertion mode is
 	 * set).
-	 * 
+	 *
 	 * @return the number of edits between status checks
 	 * @see #setStatusCheckInterval
 	 * @since 0.18
@@ -927,7 +928,7 @@ public class Wiki implements Serializable {
 	 * status checks. A status check is where we update user rights, block
 	 * status and check for new messages (if the appropriate assertion mode is
 	 * set). Default is 100.
-	 * 
+	 *
 	 * @param interval
 	 *            the number of edits between status checks
 	 * @see #getStatusCheckInterval
@@ -941,15 +942,29 @@ public class Wiki implements Serializable {
 
 	// META STUFF
 
+
+	public void login() throws ClassNotFoundException, FileNotFoundException, IOException{
+		readObject(new ObjectInputStream(new FileInputStream("wiki")));
+	}
+
+	public void loginAndSaveobject(String username, String password) throws FailedLoginException, IOException{
+		login(username,password.toCharArray());
+		writeObject(new ObjectOutputStream(new FileOutputStream("wiki")));
+	}
+
 	/**
 	 * Logs in to the wiki. This method is thread-safe. If the specified
 	 * username or password is incorrect, the thread blocks for 20 seconds then
 	 * throws an exception.
 	 *
-	 * @param username a username
-	 * @param password a password (as a char[] due to JPasswordField)
-	 * @throws IOException if a network error occurs
-	 * @throws FailedLoginException if the login failed due to incorrect username and/or password
+	 * @param username
+	 *            a username
+	 * @param password
+	 *            a password (as a char[] due to JPasswordField)
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws FailedLoginException
+	 *             if the login failed due to incorrect username and/or password
 	 * @see #logout
 	 */
 	public synchronized void login(String username, char[] password)
@@ -1002,10 +1017,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Login.
 	 *
-	 * @param username the username
-	 * @param password the password
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws FailedLoginException the failed login exception
+	 * @param username
+	 *            the username
+	 * @param password
+	 *            the password
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws FailedLoginException
+	 *             the failed login exception
 	 */
 	public synchronized void login(String username, String password)
 			throws IOException, FailedLoginException {
@@ -1016,7 +1035,7 @@ public class Wiki implements Serializable {
 	 * Logs out of the wiki. This method is thread safe (so that we don't log
 	 * out during an edit). All operations are conducted offline, so you can
 	 * serialize this Wiki first.
-	 * 
+	 *
 	 * @see #login
 	 * @see #logoutServerSide
 	 */
@@ -1035,7 +1054,7 @@ public class Wiki implements Serializable {
 	 * we don't log out during an edit). WARNING: kills all concurrent sessions
 	 * - if you are logged in with a browser this will log you out there as
 	 * well.
-	 * 
+	 *
 	 * @throws IOException
 	 *             if a network error occurs
 	 * @since 0.14
@@ -1050,7 +1069,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Determines whether the current user has new messages. (A human would
 	 * notice a yellow bar at the top of the page).
-	 * 
+	 *
 	 * @return whether the user has new messages
 	 * @throws IOException
 	 *             if a network error occurs
@@ -1063,7 +1082,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Determines the current database replication lag.
-	 * 
+	 *
 	 * @return the current database replication lag
 	 * @throws IOException
 	 *             if a network error occurs
@@ -1083,7 +1102,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Fetches some site statistics, namely the number of articles, pages,
 	 * files, edits, users and admins. Equivalent to [[Special:Statistics]].
-	 * 
+	 *
 	 * @return a map containing the stats. Use "articles", "pages", "files"
 	 *         "edits", "users" or "admins" to retrieve the respective value
 	 * @throws IOException
@@ -1108,7 +1127,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the version of MediaWiki this wiki runs e.g. 1.20wmf5 (54b4fcb). See
 	 * also https://gerrit.wikimedia.org/ .
-	 * 
+	 *
 	 * @return the version of MediaWiki used
 	 * @throws IOException
 	 *             if a network error occurs
@@ -1124,7 +1143,7 @@ public class Wiki implements Serializable {
 	 * through the API. (Note: this isn't implemented locally because I can't be
 	 * stuffed porting Parser.php). One use of this method is to emulate the
 	 * previewing functionality of the MediaWiki software.
-	 * 
+	 *
 	 * @param markup
 	 *            the markup to parse
 	 * @return the parsed markup as HTML
@@ -1145,7 +1164,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Same as <tt>parse()</tt>, but also strips out unwanted crap. This might
 	 * be useful to subclasses.
-	 * 
+	 *
 	 * @param in
 	 *            the string to parse
 	 * @return that string without the crap
@@ -1168,7 +1187,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Fetches a random page in the main namespace. Equivalent to
 	 * [[Special:Random]].
-	 * 
+	 *
 	 * @return the title of the page
 	 * @throws IOException
 	 *             if a network error occurs
@@ -1181,7 +1200,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Fetches a random page in the specified namespace. Equivalent to
 	 * [[Special:Random]].
-	 * 
+	 *
 	 * @param ns
 	 *            namespace(s)
 	 * @return the title of the page
@@ -1204,20 +1223,20 @@ public class Wiki implements Serializable {
 	 * Determines the intersection of two lists of pages a and b. Such lists
 	 * might be generated from the various list methods below. Examples from the
 	 * English Wikipedia:
-	 * 
+	 *
 	 * <pre>
 	 * // find all orphaned and unwikified articles
 	 * String[] articles = Wiki.intersection(wikipedia.getCategoryMembers(
 	 * 		&quot;All orphaned articles&quot;, Wiki.MAIN_NAMESPACE), wikipedia
 	 * 		.getCategoryMembers(&quot;All pages needing to be wikified&quot;,
 	 * 				Wiki.MAIN_NAMESPACE));
-	 * 
+	 *
 	 * // find all (notable) living people who are related to Barack Obama
 	 * String[] people = Wiki.intersection(
 	 * 		wikipedia.getCategoryMembers(&quot;Living people&quot;, Wiki.MAIN_NAMESPACE),
 	 * 		wikipedia.whatLinksHere(&quot;Barack Obama&quot;, Wiki.MAIN_NAMESPACE));
 	 * </pre>
-	 * 
+	 *
 	 * @param a
 	 *            a list of pages
 	 * @param b
@@ -1240,19 +1259,19 @@ public class Wiki implements Serializable {
 	 * Determines the list of articles that are in a but not b, i.e. a \ b. This
 	 * is not the same as b \ a. Such lists might be generated from the various
 	 * lists below. Some examples from the English Wikipedia:
-	 * 
+	 *
 	 * <pre>
 	 * // find all Martian crater articles that do not have an infobox
 	 * String[] articles = Wiki.relativeComplement(wikipedia
 	 * 		.getCategoryMembers(&quot;Craters on Mars&quot;), wikipedia.whatTranscludesHere(
 	 * 		&quot;Template:MarsGeo-Crater&quot;, Wiki.MAIN_NAMESPACE));
-	 * 
+	 *
 	 * // find all images without a description that haven't been tagged &quot;no license&quot;
 	 * String[] images = Wiki.relativeComplement(wikipedia
 	 * 		.getCategoryMembers(&quot;Images lacking a description&quot;), wikipedia
 	 * 		.getCategoryMembers(&quot;All images with unknown copyright status&quot;));
 	 * </pre>
-	 * 
+	 *
 	 * @param a
 	 *            a list of pages
 	 * @param b
@@ -1272,10 +1291,12 @@ public class Wiki implements Serializable {
 	/**
 	 * Returns the corresponding talk page to this page.
 	 *
-	 * @param title the page title
+	 * @param title
+	 *            the page title
 	 * @return the name of the talk page corresponding to <tt>title</tt> or ""
-	 * if we cannot recognise it
-	 * @throws IOException if a network error occurs
+	 *         if we cannot recognise it
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.10
 	 */
 	public String getTalkPage(String title) throws IOException {
@@ -1295,7 +1316,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets miscellaneous page info.
-	 * 
+	 *
 	 * @param page
 	 *            the page to get info for
 	 * @return see {@link #getPageInfo(String[]) }
@@ -1309,11 +1330,11 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets miscellaneous page info. Returns:
-	 * 
+	 *
 	 * <pre>
 	 *  {
 	 *      "displaytitle" => "iPod"         , // the title of the page that is actually displayed (String)
-	 *      "protection"   => NO_PROTECTION  , // the {@link #protect(java.lang.String, java.util.HashMap) 
+	 *      "protection"   => NO_PROTECTION  , // the {@link #protect(java.lang.String, java.util.HashMap)
 	 *                                         // protection state} of the page (HashMap). Does not cover
 	 *                                         // implied protection levels (e.g. MediaWiki namespace)
 	 *      "token"        => "\+"           , // an edit token for the page, must be logged
@@ -1330,7 +1351,7 @@ public class Wiki implements Serializable {
 	 *      "watchers"     => 34               // number of watchers (Integer), may be restricted
 	 *  }
 	 * </pre>
-	 * 
+	 *
 	 * @param pages
 	 *            the pages to get info for.
 	 * @return (see above). The HashMaps will come out in the same order as the
@@ -1440,7 +1461,7 @@ public class Wiki implements Serializable {
 	 * custom namespaces, though you may want to define static fields e.g.
 	 * <tt>public static final int PORTAL_NAMESPACE = 100;</tt> for the Portal
 	 * namespace on the English Wikipedia.
-	 * 
+	 *
 	 * @param title
 	 *            any valid page name
 	 * @return an integer array containing the namespace of <tt>title</tt>
@@ -1478,7 +1499,7 @@ public class Wiki implements Serializable {
 	 * identification string e.g. <tt>namespaceIdentifier(1)</tt> should return
 	 * "Talk" on en.wp. (This does the exact opposite to <tt>namespace()</tt>).
 	 * Strings returned are localized.
-	 * 
+	 *
 	 * @param namespace
 	 *            an integer corresponding to a namespace. If it does not
 	 *            correspond to a namespace, we assume you mean the main
@@ -1505,7 +1526,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the namespaces used by this wiki.
-	 * 
+	 *
 	 * @return a map containing e.g. {"Media" => -2, "Special" => -1, ...}.
 	 *         Changes in this map do not propagate back to this Wiki object.
 	 * @throws IOException
@@ -1520,7 +1541,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Populates the namespace cache.
-	 * 
+	 *
 	 * @throws IOException
 	 *             if a network error occurs.
 	 * @since 0.25
@@ -1545,7 +1566,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Determines whether a series of pages exist.
-	 * 
+	 *
 	 * @param titles
 	 *            the titles to check.
 	 * @return whether the pages exist, in the same order as the processed array
@@ -1567,13 +1588,17 @@ public class Wiki implements Serializable {
 	 * fetching the contents of special pages. Use <tt>getImage()</tt> to fetch
 	 * an image.
 	 *
-	 * @param title the title of the page.
-	 * @param redirect the redirect
+	 * @param title
+	 *            the title of the page.
+	 * @param redirect
+	 *            the redirect
 	 * @return the raw wikicode of a page.
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @see #edit
 	 */
-	public String getPageText(String title,boolean redirect) throws IOException {
+	public String getPageText(String title, boolean redirect)
+			throws IOException {
 		// pitfall check
 		if (namespace(title) < 0)
 			throw new UnsupportedOperationException(
@@ -1585,20 +1610,20 @@ public class Wiki implements Serializable {
 		String temp = fetch(url, "getPageText");
 		log(Level.INFO, "getPageText", "Successfully retrieved text of "
 				+ title);
-		if (redirect){
+		if (redirect) {
 			Pattern p = Pattern.compile("#REDIRECT\\[\\[(.*?)\\]\\]");
 			Matcher m = p.matcher(temp);
-			if(m.find())
-				return getPageText(m.group(1),false);
+			if (m.find())
+				return getPageText(m.group(1), false);
 		}
 		return temp;
 	}
-	
-	
+
 	/**
 	 * Gets the redirect title.
 	 *
-	 * @param title the title
+	 * @param title
+	 *            the title
 	 * @return the redirect title
 	 */
 	public String getRedirectTitle(String title) {
@@ -1618,7 +1643,8 @@ public class Wiki implements Serializable {
 
 			log(Level.INFO, "getPageText", "Successfully retrieved text of "
 					+ title);
-			Pattern p = Pattern.compile("#(REDIRECTION|REDIRECT)\\s*\\[\\[(.*?)\\]\\]");
+			Pattern p = Pattern
+					.compile("#(REDIRECTION|REDIRECT)\\s*\\[\\[(.*?)\\]\\]");
 			Matcher m = p.matcher(temp);
 			if (m.find())
 				return m.group(2);
@@ -1630,26 +1656,30 @@ public class Wiki implements Serializable {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Gets the page text.
 	 *
-	 * @param title the title
+	 * @param title
+	 *            the title
 	 * @return the page text
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public String getPageText(String title) throws IOException{
-		return getPageText(title,false);
+	public String getPageText(String title) throws IOException {
+		return getPageText(title, false);
 	}
-	
 
 	/**
 	 * Gets the text of a specific section. Useful for section editing.
 	 *
-	 * @param title the title of the relevant page
-	 * @param number the section number of the section to retrieve text for
+	 * @param title
+	 *            the title of the relevant page
+	 * @param number
+	 *            the section number of the section to retrieve text for
 	 * @return the text of the given section
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.24
 	 */
 	public String getSectionText(String title, int number) throws IOException {
@@ -1682,7 +1712,7 @@ public class Wiki implements Serializable {
 	 * <tt>{{Special:Specialpage}}</tt>. Use <tt>getImage()</tt> to fetch an
 	 * image. Be aware of any transclusion limits, as outlined at
 	 * [[Wikipedia:Template limits]].
-	 * 
+	 *
 	 * @param title
 	 *            the title of the page
 	 * @return the rendered contents of that page
@@ -1701,19 +1731,24 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title the title of the page
-	 * @param text the text of the page
-	 * @param summary the edit summary. See [[Help:Edit summary]]. Summaries longer
-	 * than 200 characters are truncated server-side.
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page
+	 * @param text
+	 *            the text of the page
+	 * @param summary
+	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
+	 *            than 200 characters are truncated server-side.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @see #getPageText
 	 */
 	public void edit(String title, String text, String summary)
 			throws IOException, LoginException {
-		if(!hasNewMessages())
+		if (!hasNewMessages())
 			edit(title, text, summary, markminor, markbot, -2, null);
-		else{
+		else {
 			System.out.println("New massage!\n");
 			System.exit(0);
 		}
@@ -1725,14 +1760,20 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title the title of the page
-	 * @param text the text of the page
-	 * @param summary the edit summary. See [[Help:Edit summary]]. Summaries longer
-	 * than 200 characters are truncated server-side.
-	 * @param basetime the timestamp of the revision on which <tt>text</tt> is based,
-	 * used to check for edit conflicts. <tt>null</tt> disables this.
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page
+	 * @param text
+	 *            the text of the page
+	 * @param summary
+	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
+	 *            than 200 characters are truncated server-side.
+	 * @param basetime
+	 *            the timestamp of the revision on which <tt>text</tt> is based,
+	 *            used to check for edit conflicts. <tt>null</tt> disables this.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @see #getPageText
 	 */
 	public void edit(String title, String text, String summary,
@@ -1746,14 +1787,20 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title the title of the page
-	 * @param text the text of the page
-	 * @param summary the edit summary. See [[Help:Edit summary]]. Summaries longer
-	 * than 200 characters are truncated server-side.
-	 * @param section the section to edit. Use -1 to specify a new section and -2 to
-	 * disable section editing.
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page
+	 * @param text
+	 *            the text of the page
+	 * @param summary
+	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
+	 *            than 200 characters are truncated server-side.
+	 * @param section
+	 *            the section to edit. Use -1 to specify a new section and -2 to
+	 *            disable section editing.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @see #getPageText
 	 * @since 0.25
 	 */
@@ -1768,16 +1815,23 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title the title of the page
-	 * @param text the text of the page
-	 * @param summary the edit summary. See [[Help:Edit summary]]. Summaries longer
-	 * than 200 characters are truncated server-side.
-	 * @param section the section to edit. Use -1 to specify a new section and -2 to
-	 * disable section editing.
-	 * @param basetime the timestamp of the revision on which <tt>text</tt> is based,
-	 * used to check for edit conflicts. <tt>null</tt> disables this.
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page
+	 * @param text
+	 *            the text of the page
+	 * @param summary
+	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
+	 *            than 200 characters are truncated server-side.
+	 * @param section
+	 *            the section to edit. Use -1 to specify a new section and -2 to
+	 *            disable section editing.
+	 * @param basetime
+	 *            the timestamp of the revision on which <tt>text</tt> is based,
+	 *            used to check for edit conflicts. <tt>null</tt> disables this.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @see #getPageText
 	 * @since 0.25
 	 */
@@ -1790,20 +1844,29 @@ public class Wiki implements Serializable {
 	 * Edits a page by setting its text to the supplied value. This method is
 	 * thread safe and blocks for a minimum time as specified by the throttle.
 	 *
-	 * @param title the title of the page
-	 * @param text the text of the page
-	 * @param summary the edit summary. See [[Help:Edit summary]]. Summaries longer
-	 * than 200 characters are truncated server-side.
-	 * @param minor whether the edit should be marked as minor, See [[Help:Minor
-	 * edit]].
-	 * @param bot whether to mark the edit as a bot edit (ignored if one does
-	 * not have the necessary permissions)
-	 * @param section the section to edit. Use -1 to specify a new section and -2 to
-	 * disable section editing.
-	 * @param basetime the timestamp of the revision on which <tt>text</tt> is based,
-	 * used to check for edit conflicts. <tt>null</tt> disables this.
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page
+	 * @param text
+	 *            the text of the page
+	 * @param summary
+	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
+	 *            than 200 characters are truncated server-side.
+	 * @param minor
+	 *            whether the edit should be marked as minor, See [[Help:Minor
+	 *            edit]].
+	 * @param bot
+	 *            whether to mark the edit as a bot edit (ignored if one does
+	 *            not have the necessary permissions)
+	 * @param section
+	 *            the section to edit. Use -1 to specify a new section and -2 to
+	 *            disable section editing.
+	 * @param basetime
+	 *            the timestamp of the revision on which <tt>text</tt> is based,
+	 *            used to check for edit conflicts. <tt>null</tt> disables this.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @see #getPageText
 	 * @since 0.17
 	 */
@@ -1895,14 +1958,21 @@ public class Wiki implements Serializable {
 	 * Creates a new section on the specified page. Leave <tt>subject</tt> as
 	 * the empty string if you just want to append.
 	 *
-	 * @param title the title of the page to edit
-	 * @param subject the subject of the new section
-	 * @param text the text of the new section
-	 * @param minor whether the edit should be marked as minor (see [[Help:Minor
-	 * edit]])
-	 * @param bot the bot
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page to edit
+	 * @param subject
+	 *            the subject of the new section
+	 * @param text
+	 *            the text of the new section
+	 * @param minor
+	 *            whether the edit should be marked as minor (see [[Help:Minor
+	 *            edit]])
+	 * @param bot
+	 *            the bot
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.17
 	 */
 	public void newSection(String title, String subject, String text,
@@ -1915,15 +1985,22 @@ public class Wiki implements Serializable {
 	 * maintainance templates, rather than getting and setting the page
 	 * yourself.
 	 *
-	 * @param title the title of the page
-	 * @param stuff what to prepend to the page
-	 * @param summary the edit summary. See [[Help:Edit summary]]. Summaries longer
-	 * than 200 characters are truncated server-side.
-	 * @param minor whether the edit is minor
-	 * @param bot whether to mark the edit as a bot edit (ignored if one does
-	 * not have the necessary permissions)
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page
+	 * @param stuff
+	 *            what to prepend to the page
+	 * @param summary
+	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
+	 *            than 200 characters are truncated server-side.
+	 * @param minor
+	 *            whether the edit is minor
+	 * @param bot
+	 *            whether to mark the edit as a bot edit (ignored if one does
+	 *            not have the necessary permissions)
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 */
 	public void prepend(String title, String stuff, String summary,
 			boolean minor, boolean bot) throws IOException, LoginException {
@@ -1937,10 +2014,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Deletes a page. Does not delete any page requiring <tt>bigdelete</tt>.
 	 *
-	 * @param title the page to delete
-	 * @param reason the reason for deletion
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the page to delete
+	 * @param reason
+	 *            the reason for deletion
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.24
 	 */
 	public synchronized void delete(String title, String reason)
@@ -2004,9 +2085,12 @@ public class Wiki implements Serializable {
 	/**
 	 * Purges the server-side cache for various pages.
 	 *
-	 * @param links update the links tables
-	 * @param titles the titles of the page to purge
-	 * @throws IOException if a network error occurs
+	 * @param links
+	 *            update the links tables
+	 * @param titles
+	 *            the titles of the page to purge
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.17
 	 */
 	public void purge(boolean links, String... titles) throws IOException {
@@ -2020,31 +2104,29 @@ public class Wiki implements Serializable {
 		log(Level.INFO, "purge", "Successfully purged " + titles.length
 				+ " pages.");
 	}
-	
-	
-	
+
 	/**
 	 * Purge.
 	 *
-	 * @param title the title
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param title
+	 *            the title
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public void purge(String title) throws IOException {
-		StringBuilder url = new StringBuilder("https://fr.wikipedia.org/w/index.php?title=");
-		title = URLEncoder
-		.encode(title, "UTF-8");
+		StringBuilder url = new StringBuilder(
+				"https://fr.wikipedia.org/w/index.php?title=");
+		title = URLEncoder.encode(title, "UTF-8");
 		url.append(title);
 		url.append("&action=purge");
 
-			post(url.toString(), "&titles=" + title, "purge");
+		post(url.toString(), "&titles=" + title, "purge");
 	}
-	
-	
 
 	/**
 	 * Gets the list of images used on a particular page. Capped at <tt>max</tt>
 	 * number of images, there's no reason why there should be more than that.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the list of images used in the page. Note that each String in the
@@ -2074,7 +2156,7 @@ public class Wiki implements Serializable {
 	 * Gets the list of categories a particular page is in. Includes hidden
 	 * categories. Capped at <tt>max</tt> number of categories, there's no
 	 * reason why there should be more than that.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the list of categories that page is in
@@ -2102,33 +2184,39 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the pages in category.
 	 *
-	 * @param categoryName the category name
-	 * @param number the number
+	 * @param categoryName
+	 *            the category name
+	 * @param number
+	 *            the number
 	 * @return the pages in category
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public ArrayList<String> getPagesInCategory(String categoryName, int number) throws IOException {
+	public ArrayList<String> getPagesInCategory(String categoryName, int number)
+			throws IOException {
 		ArrayList<String> al = new ArrayList<String>();
 		int maxQuery;
 		categoryName = "Category:" + categoryName;
 		String url = query + "list=categorymembers&cmtitle="
-				+ URLEncoder.encode(categoryName,"UTF-8") + "&cmlimit=";
-		//url = url + String.valueOf(maxQuery);
-		String cmcontinue ="";
-		do{
+				+ URLEncoder.encode(categoryName, "UTF-8") + "&cmlimit=";
+		// url = url + String.valueOf(maxQuery);
+		String cmcontinue = "";
+		do {
 			maxQuery = (max > number) ? number : max;
-            url += maxQuery;
-			String response = fetch(url,"getPagesInCategory");
-			String s = parseAttribute(response, "cmcontinue", response.indexOf("<categorymembers"));
-			if(s != null)
+			url += maxQuery;
+			String response = fetch(url, "getPagesInCategory");
+			String s = parseAttribute(response, "cmcontinue",
+					response.indexOf("<categorymembers"));
+			if (s != null)
 				cmcontinue = decode(s);
 			else
 				cmcontinue = null;
-			url += "&cmcontinue="+cmcontinue;
-			for (int a = response.indexOf("<cm "); a > 0; a = response.indexOf("<cm ", ++a)){
+			url += "&cmcontinue=" + cmcontinue;
+			for (int a = response.indexOf("<cm "); a > 0; a = response.indexOf(
+					"<cm ", ++a)) {
 				al.add(decode(parseAttribute(response, "title", a)));
 			}
-		}while(cmcontinue != null);
+		} while (cmcontinue != null);
 
 		return al;
 	}
@@ -2137,7 +2225,7 @@ public class Wiki implements Serializable {
 	 * Gets the list of templates used on a particular page that are in a
 	 * particular namespace(s). Capped at <tt>max</tt> number of templates,
 	 * there's no reason why there should be more than that.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @param ns
@@ -2169,7 +2257,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the list of interwiki links a particular page has. The returned map
 	 * has the format language code => the page on the external wiki linked to.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return a map of interwiki links that page has (empty if there are no
@@ -2202,7 +2290,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the list of wikilinks used on a particular page. Patch somewhat by
 	 * wim.jongman
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the list of links used in the page
@@ -2246,7 +2334,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the list of external links used on a particular page.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the list of external links used in the page
@@ -2295,11 +2383,11 @@ public class Wiki implements Serializable {
 	 * Gets the list of sections on a particular page. The returned map pairs
 	 * the section numbering as in the table of contents with the section title,
 	 * as in the following example:
-	 * 
+	 *
 	 * 1 => How to nominate 1.1 => Step 1 - Evaluate 1.2 => Step 2 - Create
 	 * subpage 1.2.1 => Step 2.5 - Transclude and link 1.3 => Step 3 - Update
 	 * image ...
-	 * 
+	 *
 	 * @param page
 	 *            the page to get sections for
 	 * @return the section map for that page
@@ -2330,7 +2418,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the most recent revision of a page, or null if the page does not
 	 * exist.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the most recent revision of that page
@@ -2353,7 +2441,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the first revision of a page, or null if the page does not exist.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the oldest revision of that page
@@ -2377,7 +2465,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the newest page name or the name of a page where the asked page
 	 * redirects.
-	 * 
+	 *
 	 * @param title
 	 *            a title
 	 * @return the page redirected to or null if not a redirect
@@ -2392,7 +2480,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the newest page name or the name of a page where the asked pages
 	 * redirect.
-	 * 
+	 *
 	 * @param titles
 	 *            a list of titles.
 	 * @return for each title, the page redirected to or null if not a redirect
@@ -2429,7 +2517,7 @@ public class Wiki implements Serializable {
 	 * Gets the entire revision history of a page. Be careful when using this
 	 * method as some pages (such as [[Wikipedia:Administrators'
 	 * noticeboard/Incidents]] have ~10^6 revisions.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @return the revisions of that page
@@ -2443,7 +2531,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the revision history of a page between two dates.
-	 * 
+	 *
 	 * @param title
 	 *            a page
 	 * @param start
@@ -2522,11 +2610,16 @@ public class Wiki implements Serializable {
 	 * applicable. Equivalent to [[Special:MovePage]]. This method is thread
 	 * safe and is subject to the throttle.
 	 *
-	 * @param title the title of the page to move
-	 * @param newTitle the new title of the page
-	 * @param reason a reason for the move
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page to move
+	 * @param newTitle
+	 *            the new title of the page
+	 * @param reason
+	 *            a reason for the move
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.16
 	 */
 	public void move(String title, String newTitle, String reason)
@@ -2538,16 +2631,24 @@ public class Wiki implements Serializable {
 	 * Moves a page. Equivalent to [[Special:MovePage]]. This method is thread
 	 * safe and is subject to the throttle.
 	 *
-	 * @param title the title of the page to move
-	 * @param newTitle the new title of the page
-	 * @param reason a reason for the move
-	 * @param noredirect don't leave a redirect behind. You need to be a admin to do
-	 * this, otherwise this option is ignored.
-	 * @param movetalk move the talk page as well (if applicable)
-	 * @param movesubpages move the subpages of this page as well. You need to be an
-	 * admin to do this, otherwise this will be ignored.
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param title
+	 *            the title of the page to move
+	 * @param newTitle
+	 *            the new title of the page
+	 * @param reason
+	 *            a reason for the move
+	 * @param noredirect
+	 *            don't leave a redirect behind. You need to be a admin to do
+	 *            this, otherwise this option is ignored.
+	 * @param movetalk
+	 *            move the talk page as well (if applicable)
+	 * @param movesubpages
+	 *            move the subpages of this page as well. You need to be an
+	 *            admin to do this, otherwise this will be ignored.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.16
 	 */
 	public synchronized void move(String title, String newTitle, String reason,
@@ -2641,7 +2742,7 @@ public class Wiki implements Serializable {
 	 * Protects a page. Structure of <tt>protectionstate</tt> (everything is
 	 * optional, if a value is not present, then the corresponding values will
 	 * be left untouched):
-	 * 
+	 *
 	 * <pre>
 	 * {
 	 * edit => one of { NO_PROTECTION, SEMI_PROTECTION, FULL_PROTECTION }, // restricts editing
@@ -2654,11 +2755,16 @@ public class Wiki implements Serializable {
 	 * };
 	 * </pre>
 	 *
-	 * @param page the page
-	 * @param protectionstate (see above)
-	 * @param reason the reason for (un)protection
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param page
+	 *            the page
+	 * @param protectionstate
+	 *            (see above)
+	 * @param reason
+	 *            the reason for (un)protection
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.30
 	 */
 	public synchronized void protect(String page,
@@ -2673,7 +2779,7 @@ public class Wiki implements Serializable {
 		/*
 		 * long start = System.currentTimeMillis(); HashMap info =
 		 * getPageInfo(page); String protectToken = (String)info.get("token");
-		 * 
+		 *
 		 * StringBuilder out = new StringBuilder("title=");
 		 * out.append(URLEncoder.encode(page, "UTF-8")); out.append("&reason=");
 		 * out.append(URLEncoder.encode(reason, "UTF-8"));
@@ -2690,7 +2796,7 @@ public class Wiki implements Serializable {
 		 * out.append("%7C"); temp.append("%7C"); } } out.delete(out.length() -
 		 * 3, out.length()); temp.delete(temp.length() - 3, temp.length());
 		 * out.append("&expiry="); out.append(temp); System.out.println(out);
-		 * 
+		 *
 		 * String response = post(apiUrl + "action=protect", out.toString(),
 		 * "protect"); try { checkErrors(response, "post"); } catch (IOException
 		 * e) { // retry once if (retry) { retry = false; log(Level.WARNING,
@@ -2699,7 +2805,7 @@ public class Wiki implements Serializable {
 		 * "protect", "EXCEPTION: " + e); throw e; } } if (retry)
 		 * log(Level.INFO, "edit", "Successfully protected " + page); retry =
 		 * true;
-		 * 
+		 *
 		 * // throttle try { long time = throttle - System.currentTimeMillis() +
 		 * start; if (time > 0) Thread.sleep(time); } catch
 		 * (InterruptedException e) { // nobody cares }
@@ -2709,10 +2815,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Completely unprotects a page.
 	 *
-	 * @param page the page to unprotect
-	 * @param reason the reason for unprotection
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param page
+	 *            the page to unprotect
+	 * @param reason
+	 *            the reason for unprotection
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.30
 	 */
 	public void unprotect(String page, String reason) throws IOException,
@@ -2729,7 +2839,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Exports the current revision of this page. Equivalent to
 	 * [[Special:Export]].
-	 * 
+	 *
 	 * @param title
 	 *            the title of the page to export
 	 * @return the exported text
@@ -2750,7 +2860,7 @@ public class Wiki implements Serializable {
 	 * Gets a revision based on a given oldid. Automatically fills out all
 	 * attributes of that revision except <tt>rcid</tt> and
 	 * <tt>rollbacktoken</tt>.
-	 * 
+	 *
 	 * @param oldid
 	 *            an oldid
 	 * @return the revision corresponding to that oldid, or null if it has been
@@ -2767,7 +2877,7 @@ public class Wiki implements Serializable {
 	 * Gets revisions based on given oldids. Automatically fills out all
 	 * attributes of those revisions except <tt>rcid</tt> and
 	 * <tt>rollbacktoken</tt>.
-	 * 
+	 *
 	 * @param oldids
 	 *            a list of oldids
 	 * @return the revisions corresponding to those oldids, in the order of the
@@ -2824,10 +2934,13 @@ public class Wiki implements Serializable {
 	 * edit and reverted edits will be marked as bot if
 	 * <tt>isMarkBot() == true</tt>.
 	 *
-	 * @param revision the revision to revert. <tt>revision.isTop()</tt> must be true
-	 * for the rollback to succeed
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param revision
+	 *            the revision to revert. <tt>revision.isTop()</tt> must be true
+	 *            for the rollback to succeed
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.19
 	 */
 	public void rollback(Revision revision) throws IOException, LoginException {
@@ -2840,14 +2953,19 @@ public class Wiki implements Serializable {
 	 * not the case, then this method does nothing. See [[mw:Manual:Parameters
 	 * to index.php#Actions]] (look under rollback) for more information.
 	 *
-	 * @param revision the revision to revert. <tt>revision.isTop()</tt> must be true
-	 * for the rollback to succeed
-	 * @param bot whether to mark this edit and the reverted revisions as bot
-	 * edits (ignored if we cannot do this)
-	 * @param reason (optional) a reason for the rollback. Use "" for the default
-	 * ([[MediaWiki:Revertpage]]).
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param revision
+	 *            the revision to revert. <tt>revision.isTop()</tt> must be true
+	 *            for the rollback to succeed
+	 * @param bot
+	 *            whether to mark this edit and the reverted revisions as bot
+	 *            edits (ignored if we cannot do this)
+	 * @param reason
+	 *            (optional) a reason for the rollback. Use "" for the default
+	 *            ([[MediaWiki:Revertpage]]).
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.19
 	 */
 	public synchronized void rollback(Revision revision, boolean bot,
@@ -2928,7 +3046,7 @@ public class Wiki implements Serializable {
 	 * Undoes revisions, equivalent to the "undo" button in the GUI page
 	 * history. A quick explanation on how this might work - suppose the edit
 	 * history was as follows:
-	 * 
+	 *
 	 * <ul>
 	 * <li>(revid=541) 2009-01-13 00:01 92.45.43.227
 	 * <li>(revid=325) 2008-12-10 11:34 Example user
@@ -2937,7 +3055,7 @@ public class Wiki implements Serializable {
 	 * <li>(revid=200) 2008-07-31 16:46 EvilCabalMember
 	 * </ul>
 	 * Then:
-	 * 
+	 *
 	 * <pre>
 	 * wiki.undo(wiki.getRevision(314L), null, reason, false); // undo revision 314
 	 * // only
@@ -2945,19 +3063,26 @@ public class Wiki implements Serializable {
 	 * // revisions
 	 * // 236-325
 	 * </pre>
-	 * 
+	 *
 	 * This will only work if revision 541 or any subsequent edits do not clash
 	 * with the change resulting from the undo.
 	 *
-	 * @param rev a revision to undo
-	 * @param to the most recent in a range of revisions to undo. Set to null
-	 * to undo only one revision.
-	 * @param reason an edit summary (optional). Use "" to get the default
-	 * [[MediaWiki:Undo-summary]].
-	 * @param minor whether this is a minor edit
-	 * @param bot whether this is a bot edit
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param rev
+	 *            a revision to undo
+	 * @param to
+	 *            the most recent in a range of revisions to undo. Set to null
+	 *            to undo only one revision.
+	 * @param reason
+	 *            an edit summary (optional). Use "" to get the default
+	 *            [[MediaWiki:Undo-summary]].
+	 * @param minor
+	 *            whether this is a minor edit
+	 * @param bot
+	 *            whether this is a bot edit
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.20
 	 */
 	public synchronized void undo(Revision rev, Revision to, String reason,
@@ -3044,7 +3169,7 @@ public class Wiki implements Serializable {
 	 * <tt>contribs()</tt>, <tt>watchlist()</tt>, <tt>getPageHistory()</tt>
 	 * <tt>rangeContribs()</tt> and <tt>recentChanges()</tt>. NOTE: if
 	 * RevisionDelete was used on a revision, the relevant values will be null.
-	 * 
+	 *
 	 * @param xml
 	 *            the XML to parse
 	 * @param title
@@ -3122,7 +3247,7 @@ public class Wiki implements Serializable {
 	 * Fetches an image file and returns the image data in a <tt>byte[]</tt>. To
 	 * recover the old behavior (BufferedImage), use
 	 * <tt>ImageIO.read(new ByteArrayInputStream(getImage("Example.jpg")));</tt>
-	 * 
+	 *
 	 * @param title
 	 *            the title of the image (may contain "File")
 	 * @return the image data
@@ -3138,7 +3263,7 @@ public class Wiki implements Serializable {
 	 * Fetches a thumbnail of an image file and returns the image data in a
 	 * <tt>byte[]</tt>. To recover the old behavior (BufferedImage), use
 	 * <tt>ImageIO.read(new ByteArrayInputStream(getImage("Example.jpg")));</tt>
-	 * 
+	 *
 	 * @param title
 	 *            the title of the image (may contain "File")
 	 * @param width
@@ -3190,10 +3315,10 @@ public class Wiki implements Serializable {
 	 * Gets the file metadata for a file. Note that <tt>getImage()</tt> reads
 	 * directly into a <tt>BufferedImage</tt> object, so you won't be able to
 	 * get all metadata that way. The keys are:
-	 * 
+	 *
 	 * * size (file size, Integer) * width (Integer) * height (Integer) * mime
 	 * (MIME type, String) * plus EXIF metadata (Strings)
-	 * 
+	 *
 	 * @param file
 	 *            the image to get metadata for (may contain "File")
 	 * @return the metadata for the image or null if it doesn't exist
@@ -3239,7 +3364,7 @@ public class Wiki implements Serializable {
 	 * Gets duplicates of this file. Capped at <tt>max</tt> number of
 	 * duplicates, there's no good reason why there should be more than that.
 	 * Equivalent to [[Special:FileDuplicateSearch]].
-	 * 
+	 *
 	 * @param file
 	 *            the file for checking duplicates (may contain "File")
 	 * @return the duplicates of that file
@@ -3273,7 +3398,7 @@ public class Wiki implements Serializable {
 	 * <tt>getLogEntries(null, null, Integer.MAX_VALUE, Wiki.UPLOAD_LOG,
 	 *  title, Wiki.FILE_NAMESPACE)</tt>, as the image may have been deleted.
 	 * This returns only the live history of an image.
-	 * 
+	 *
 	 * @param title
 	 *            the title of the image (may contain File)
 	 * @return the image history of the image
@@ -3316,11 +3441,13 @@ public class Wiki implements Serializable {
 	 * Gets an old image revision and returns the image data in a
 	 * <tt>byte[]</tt>. You will have to do the thumbnailing yourself.n
 	 *
-	 * @param entry the upload log entry that corresponds to the image being
-	 * uploaded
+	 * @param entry
+	 *            the upload log entry that corresponds to the image being
+	 *            uploaded
 	 * @return the image data that was uploaded, as long as it exists in the
-	 * local repository (i.e. not on Commons or deleted)
-	 * @throws IOException if a network error occurs
+	 *         local repository (i.e. not on Commons or deleted)
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.20
 	 */
 	public byte[] getOldImage(LogEntry entry) throws IOException {
@@ -3372,7 +3499,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the uploads of a user.
-	 * 
+	 *
 	 * @param user
 	 *            the user to get uploads for
 	 * @return a list of all live images the user has uploaded
@@ -3386,7 +3513,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the uploads of a user between the specified times.
-	 * 
+	 *
 	 * @param user
 	 *            the user to get uploads for
 	 * @param start
@@ -3445,14 +3572,20 @@ public class Wiki implements Serializable {
 	 * <tt>LOG2_CHUNK_SIZE</tt> byte size chunks. This method is thread safe and
 	 * subject to the throttle.
 	 *
-	 * @param file the image file
-	 * @param filename the target file name (may contain File)
-	 * @param contents the contents of the image description page, set to "" if
-	 * overwriting an existing file
-	 * @param reason an upload summary (defaults to <tt>contents</tt>, use "" to
-	 * not specify one)
-	 * @throws IOException if a network/local filesystem error occurs
-	 * @throws LoginException the login exception
+	 * @param file
+	 *            the image file
+	 * @param filename
+	 *            the target file name (may contain File)
+	 * @param contents
+	 *            the contents of the image description page, set to "" if
+	 *            overwriting an existing file
+	 * @param reason
+	 *            an upload summary (defaults to <tt>contents</tt>, use "" to
+	 *            not specify one)
+	 * @throws IOException
+	 *             if a network/local filesystem error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.21
 	 */
 	public synchronized void upload(File file, String filename,
@@ -3595,7 +3728,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Determines whether a specific user exists. Should evaluate to false for
 	 * anons.
-	 * 
+	 *
 	 * @param username
 	 *            a username
 	 * @return whether the user exists
@@ -3612,7 +3745,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the specified number of users (as a String) starting at the given
 	 * string, in alphabetical order. Equivalent to [[Special:Listusers]].
-	 * 
+	 *
 	 * @param start
 	 *            the string to start enumeration
 	 * @param number
@@ -3628,7 +3761,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Returns all usernames with the given prefix.
-	 * 
+	 *
 	 * @param prefix
 	 *            a username prefix (without User:)
 	 * @return (see above)
@@ -3643,7 +3776,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the specified number of users (as a String) starting at the given
 	 * string, in alphabetical order. Equivalent to [[Special:Listusers]].
-	 * 
+	 *
 	 * @param start
 	 *            the string to start enumeration
 	 * @param number
@@ -3702,9 +3835,11 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the user with the given username. Returns null if it doesn't exist.
 	 *
-	 * @param username a username
+	 * @param username
+	 *            a username
 	 * @return the user with that username
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.05
 	 */
 	public User getUser(String username) throws IOException {
@@ -3714,7 +3849,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the user we are currently logged in as. If not logged in, returns
 	 * null.
-	 * 
+	 *
 	 * @return the current logged in user
 	 * @since 0.05
 	 */
@@ -3727,7 +3862,7 @@ public class Wiki implements Serializable {
 	 * [[Special:Contributions]]. Be careful when using this method because the
 	 * user may have a high edit count e.g. <tt>enWiki.contribs("MER-C",
 	 *  Wiki.MAIN_NAMESPACE).length</tt> > 50000.
-	 * 
+	 *
 	 * @param user
 	 *            the user or IP to get contributions for
 	 * @param ns
@@ -3748,9 +3883,11 @@ public class Wiki implements Serializable {
 	 * contributions for this AOL range!</tt>
 	 * might just kill your program.
 	 *
-	 * @param range the CIDR range of IP addresses to get contributions for
+	 * @param range
+	 *            the CIDR range of IP addresses to get contributions for
 	 * @return the contributions of that range
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @deprecated doesn't support IPv6, and I am way too lazy to make it do so
 	 * @since 0.17
 	 */
@@ -3790,14 +3927,20 @@ public class Wiki implements Serializable {
 	 * careful when using <tt>prefix</tt> as it may take too long and/or cause
 	 * OOM.
 	 *
-	 * @param user the user to get contributions for.
-	 * @param prefix a prefix of usernames. Overrides <tt>user</tt>. Use "" to not
-	 * specify one.
-	 * @param end fetch edits no older than this date
-	 * @param start fetch edits no newer than this date
-	 * @param ns a list of namespaces to filter by, empty = all namespaces.
+	 * @param user
+	 *            the user to get contributions for.
+	 * @param prefix
+	 *            a prefix of usernames. Overrides <tt>user</tt>. Use "" to not
+	 *            specify one.
+	 * @param end
+	 *            fetch edits no older than this date
+	 * @param start
+	 *            fetch edits no newer than this date
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return contributions of this user
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.17
 	 */
 	public Revision[] contribs(String user, String prefix, Calendar end,
@@ -3861,12 +4004,18 @@ public class Wiki implements Serializable {
 	 * email address and the target user must have email contact enabled.
 	 * Messages are sent in plain text (no wiki markup or HTML).
 	 *
-	 * @param user a Wikipedia user with email enabled
-	 * @param message the plain text message
-	 * @param subject the subject of the message
-	 * @param emailme whether to send a copy of the message to your email address
-	 * @throws IOException if a network error occurs
-	 * @throws LoginException the login exception
+	 * @param user
+	 *            a Wikipedia user with email enabled
+	 * @param message
+	 *            the plain text message
+	 * @param subject
+	 *            the subject of the message
+	 * @param emailme
+	 *            whether to send a copy of the message to your email address
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.24
 	 */
 	public synchronized void emailUser(User user, String message,
@@ -3931,7 +4080,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Adds a page to the watchlist. You need to be logged in to use this.
-	 * 
+	 *
 	 * @param titles
 	 *            the pages to add to the watchlist
 	 * @throws IOException
@@ -3947,7 +4096,7 @@ public class Wiki implements Serializable {
 		 * Ideally, we would have a setRawWatchlist() equivalent in the API, and
 		 * as such not have to send title.length requests. Then we can do away
 		 * with watchInternal() and this method will consist of the following:
-		 * 
+		 *
 		 * watchlist.addAll(Arrays.asList(titles);
 		 * setRawWatchlist(watchlist.toArray(new String[0]));
 		 */
@@ -3958,7 +4107,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Removes pages from the watchlist. You need to be logged in to use this.
 	 * (Does not do anything if the page is not watched).
-	 * 
+	 *
 	 * @param titles
 	 *            the pages to remove from the watchlist.
 	 * @throws IOException
@@ -3978,10 +4127,14 @@ public class Wiki implements Serializable {
 	 * Internal method for interfacing with the watchlist, since the API URLs
 	 * for (un)watching are very similar.
 	 *
-	 * @param unwatch whether we should unwatch these pages
-	 * @param titles the titles to (un)watch
-	 * @throws IOException if a network error occurs
-	 * @throws CredentialNotFoundException if not logged in
+	 * @param unwatch
+	 *            whether we should unwatch these pages
+	 * @param titles
+	 *            the titles to (un)watch
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if not logged in
 	 * @see #watch
 	 * @see #unwatch
 	 * @since 0.18
@@ -4010,7 +4163,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Fetches the list of titles on the currently logged in user's watchlist.
 	 * Equivalent to [[Special:Watchlist/raw]].
-	 * 
+	 *
 	 * @return the contents of the watchlist
 	 * @throws IOException
 	 *             if a network error occurs
@@ -4026,7 +4179,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Fetches the list of titles on the currently logged in user's watchlist.
 	 * Equivalent to [[Special:Watchlist/raw]].
-	 * 
+	 *
 	 * @param cache
 	 *            whether we should use the watchlist cache (no online activity,
 	 *            if the cache exists)
@@ -4080,7 +4233,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Determines whether a page is watched. (Uses a cache).
-	 * 
+	 *
 	 * @param title
 	 *            the title to be checked
 	 * @return whether that page is watched
@@ -4102,7 +4255,7 @@ public class Wiki implements Serializable {
 	 * Fetches the most recent changes to pages on your watchlist. Data is
 	 * retrieved from the <tt>recentchanges</tt> table and hence cannot be older
 	 * than about a month.
-	 * 
+	 *
 	 * @return list of changes to watched pages and their talk pages
 	 * @throws IOException
 	 *             if a network error occurs
@@ -4119,7 +4272,7 @@ public class Wiki implements Serializable {
 	 * Fetches recent changes to pages on your watchlist. Data is retrieved from
 	 * the <tt>recentchanges</tt> table and hence cannot be older than about a
 	 * month.
-	 * 
+	 *
 	 * @param allrev
 	 *            show all revisions to the pages, instead of the top most
 	 *            change
@@ -4171,13 +4324,13 @@ public class Wiki implements Serializable {
 	 * Performs a full text search of the wiki. Equivalent to
 	 * [[Special:Search]], or that little textbox in the sidebar. Returns an
 	 * array of search results, where:
-	 * 
+	 *
 	 * <pre>
 	 *  results[0] == page name
 	 *  results[1] == parsed section name (may be "")
 	 *  results[2] == snippet of page text
 	 * </pre>
-	 * 
+	 *
 	 * @param search
 	 *            a search string
 	 * @param namespaces
@@ -4241,7 +4394,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Returns a list of pages in the specified namespaces which use the
 	 * specified image.
-	 * 
+	 *
 	 * @param image
 	 *            the image (may contain File:)
 	 * @param ns
@@ -4289,7 +4442,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Returns a list of all pages linking to this page. Equivalent to
 	 * [[Special:Whatlinkshere]].
-	 * 
+	 *
 	 * @param title
 	 *            the title of the page
 	 * @param ns
@@ -4309,11 +4462,15 @@ public class Wiki implements Serializable {
 	 * page by setting <tt>redirects</tt> to true. Equivalent to
 	 * [[Special:Whatlinkshere]].
 	 *
-	 * @param title the title of the page
-	 * @param redirects whether we should limit to redirects only
-	 * @param ns a list of namespaces to filter by, empty = all namespaces.
+	 * @param title
+	 *            the title of the page
+	 * @param redirects
+	 *            whether we should limit to redirects only
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return the list of pages linking to the specified page
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.10
 	 */
 	public String[] whatLinksHere(String title, boolean redirects, int... ns)
@@ -4357,7 +4514,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Returns a list of all pages transcluding to a page within the specified
 	 * namespaces.
-	 * 
+	 *
 	 * @param title
 	 *            the title of the page, e.g. "Template:Stub"
 	 * @param ns
@@ -4402,7 +4559,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the members of a category.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the category (with or without namespace attached)
 	 * @param ns
@@ -4419,7 +4576,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Gets the members of a category.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the category
 	 * @param subcat
@@ -4497,11 +4654,13 @@ public class Wiki implements Serializable {
 	 * first list corresponds to the index of the url on that page in the second
 	 * list. Wildcards (*) are only permitted at the start of the search string.
 	 *
-	 * @param pattern the pattern (String) to search for (e.g. example.com,
-	 * *.example.com)
+	 * @param pattern
+	 *            the pattern (String) to search for (e.g. example.com,
+	 *            *.example.com)
 	 * @return two lists - index 0 is the list of pages (String), index 1 is the
-	 * list of urls (instance of <tt>java.net.URL</tt>)
-	 * @throws IOException if a network error occurs
+	 *         list of urls (instance of <tt>java.net.URL</tt>)
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.06
 	 */
 	public ArrayList[] linksearch(String pattern) throws IOException {
@@ -4515,15 +4674,19 @@ public class Wiki implements Serializable {
 	 * first list corresponds to the index of the url on that page in the second
 	 * list. Wildcards (*) are only permitted at the start of the search string.
 	 *
-	 * @param pattern the pattern (String) to search for (e.g. example.com,
-	 * *.example.com)
-	 * @param protocol one of { http, https, ftp, irc, gopher, telnet, nntp,
-	 * worldwind, mailto, news, svn, git, mms } or "" (equivalent to
-	 * http)
-	 * @param ns a list of namespaces to filter by, empty = all namespaces.
+	 * @param pattern
+	 *            the pattern (String) to search for (e.g. example.com,
+	 *            *.example.com)
+	 * @param protocol
+	 *            one of { http, https, ftp, irc, gopher, telnet, nntp,
+	 *            worldwind, mailto, news, svn, git, mms } or "" (equivalent to
+	 *            http)
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return two lists - index 0 is the list of pages (String), index 1 is the
-	 * list of urls (instance of <tt>java.net.URL</tt>)
-	 * @throws IOException if a network error occurs
+	 *         list of urls (instance of <tt>java.net.URL</tt>)
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.24
 	 */
 	public ArrayList[] linksearch(String pattern, String protocol, int... ns)
@@ -4579,7 +4742,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Looks up a particular user in the IP block list, i.e. whether a user is
 	 * currently blocked. Equivalent to [[Special:Ipblocklist]].
-	 * 
+	 *
 	 * @param user
 	 *            a username or IP (e.g. "127.0.0.1")
 	 * @return the block log entry
@@ -4594,7 +4757,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Lists currently operating blocks that were made in the specified
 	 * interval. Equivalent to [[Special:Ipblocklist]].
-	 * 
+	 *
 	 * @param start
 	 *            the start date
 	 * @param end
@@ -4616,13 +4779,17 @@ public class Wiki implements Serializable {
 	 * [[foundation:Privacy policy]]). Don't call this directly, use one of the
 	 * two above methods instead.
 	 *
-	 * @param user a particular user that might have been blocked. Use "" to not
-	 * specify one. May be an IP (e.g. "127.0.0.1") or a CIDR range
-	 * (e.g. "127.0.0.0/16") but not an autoblock (e.g. "#123456").
-	 * @param start what timestamp to start. Use null to not specify one.
-	 * @param end what timestamp to end. Use null to not specify one.
+	 * @param user
+	 *            a particular user that might have been blocked. Use "" to not
+	 *            specify one. May be an IP (e.g. "127.0.0.1") or a CIDR range
+	 *            (e.g. "127.0.0.0/16") but not an autoblock (e.g. "#123456").
+	 * @param start
+	 *            what timestamp to start. Use null to not specify one.
+	 * @param end
+	 *            what timestamp to end. Use null to not specify one.
 	 * @return a LogEntry[] of the blocks
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.12
 	 */
 	protected LogEntry[] getIPBlockList(String user, Calendar start,
@@ -4710,9 +4877,11 @@ public class Wiki implements Serializable {
 	 * Gets the most recent set of log entries up to the given amount.
 	 * Equivalent to [[Special:Log]].
 	 *
-	 * @param amount the amount of log entries to get
+	 * @param amount
+	 *            the amount of log entries to get
 	 * @return the most recent set of log entries
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(int amount) throws IOException {
@@ -4723,9 +4892,11 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets log entries for a specific user. Equivalent to [[Special:Log]].
 	 *
-	 * @param user the user to get log entries for
+	 * @param user
+	 *            the user to get log entries for
 	 * @return the set of log entries created by that user
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(User user) throws IOException {
@@ -4737,9 +4908,11 @@ public class Wiki implements Serializable {
 	 * Gets the log entries representing actions that were performed on a
 	 * specific target. Equivalent to [[Special:Log]].
 	 *
-	 * @param target the target of the action(s).
+	 * @param target
+	 *            the target of the action(s).
 	 * @return the specified log entries
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(String target) throws IOException {
@@ -4752,10 +4925,13 @@ public class Wiki implements Serializable {
 	 * the start date is the most recent of the dates given, and the order of
 	 * enumeration is from newest to oldest. Equivalent to [[Special:Log]].
 	 *
-	 * @param start what timestamp to start. Use null to not specify one.
-	 * @param end what timestamp to end. Use null to not specify one.
+	 * @param start
+	 *            what timestamp to start. Use null to not specify one.
+	 * @param end
+	 *            what timestamp to end. Use null to not specify one.
 	 * @return the specified log entries
-	 * @throws IOException if something goes wrong
+	 * @throws IOException
+	 *             if something goes wrong
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(Calendar start, Calendar end)
@@ -4769,12 +4945,16 @@ public class Wiki implements Serializable {
 	 * to [[Special:Log]] and [[Special:Newimages]] when
 	 * <tt>type.equals(UPLOAD_LOG)</tt>.
 	 *
-	 * @param amount the number of entries to get
-	 * @param type what log to get (e.g. DELETION_LOG)
-	 * @param action what action to get (e.g. delete, undelete, etc.), use "" to
-	 * not specify one
+	 * @param amount
+	 *            the number of entries to get
+	 * @param type
+	 *            what log to get (e.g. DELETION_LOG)
+	 * @param action
+	 *            what action to get (e.g. delete, undelete, etc.), use "" to
+	 *            not specify one
 	 * @return the specified log entries
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 */
 	public LogEntry[] getLogEntries(int amount, String type, String action)
 			throws IOException {
@@ -4788,20 +4968,29 @@ public class Wiki implements Serializable {
 	 * the start date is the most recent of the dates given, and the order of
 	 * enumeration is from newest to oldest.
 	 *
-	 * @param start what timestamp to start. Use null to not specify one.
-	 * @param end what timestamp to end. Use null to not specify one.
-	 * @param amount the amount of log entries to get. If both start and end are
-	 * defined, this is ignored. Use Integer.MAX_VALUE to not specify
-	 * one.
-	 * @param log what log to get (e.g. DELETION_LOG)
-	 * @param action what action to get (e.g. delete, undelete, etc.), use "" to
-	 * not specify one
-	 * @param user the user performing the action. Use null not to specify one.
-	 * @param target the target of the action. Use "" not to specify one.
-	 * @param namespace filters by namespace. Returns empty if namespace doesn't
-	 * exist.
+	 * @param start
+	 *            what timestamp to start. Use null to not specify one.
+	 * @param end
+	 *            what timestamp to end. Use null to not specify one.
+	 * @param amount
+	 *            the amount of log entries to get. If both start and end are
+	 *            defined, this is ignored. Use Integer.MAX_VALUE to not specify
+	 *            one.
+	 * @param log
+	 *            what log to get (e.g. DELETION_LOG)
+	 * @param action
+	 *            what action to get (e.g. delete, undelete, etc.), use "" to
+	 *            not specify one
+	 * @param user
+	 *            the user performing the action. Use null not to specify one.
+	 * @param target
+	 *            the target of the action. Use "" not to specify one.
+	 * @param namespace
+	 *            filters by namespace. Returns empty if namespace doesn't
+	 *            exist.
 	 * @return the specified log entries
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(Calendar start, Calendar end, int amount,
@@ -4907,7 +5096,7 @@ public class Wiki implements Serializable {
 	 * <tt>getImageHistory()</tt> and <tt>getIPBlockList()</tt> into LogEntry
 	 * objects. Override this if you want custom log types. NOTE: if
 	 * RevisionDelete was used on a log entry, the relevant values will be null.
-	 * 
+	 *
 	 * @param xml
 	 *            the xml to parse
 	 * @return the parsed log entry
@@ -5000,7 +5189,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Lists pages that start with a given prefix. Equivalent to
 	 * [[Special:Prefixindex]].
-	 * 
+	 *
 	 * @param prefix
 	 *            the prefix
 	 * @return the list of pages with that prefix
@@ -5015,7 +5204,7 @@ public class Wiki implements Serializable {
 	/**
 	 * List pages below a certain size in the main namespace. Equivalent to
 	 * [[Special:Shortpages]].
-	 * 
+	 *
 	 * @param cutoff
 	 *            the maximum size in bytes these short pages can be
 	 * @return pages below that size
@@ -5031,10 +5220,13 @@ public class Wiki implements Serializable {
 	 * List pages below a certain size in any namespace. Equivalent to
 	 * [[Special:Shortpages]].
 	 *
-	 * @param cutoff the maximum size in bytes these short pages can be
-	 * @param namespace a namespace
+	 * @param cutoff
+	 *            the maximum size in bytes these short pages can be
+	 * @param namespace
+	 *            a namespace
 	 * @return pages below that size in that namespace
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.15
 	 */
 	public String[] shortPages(int cutoff, int namespace) throws IOException {
@@ -5044,7 +5236,7 @@ public class Wiki implements Serializable {
 	/**
 	 * List pages above a certain size in the main namespace. Equivalent to
 	 * [[Special:Longpages]].
-	 * 
+	 *
 	 * @param cutoff
 	 *            the minimum size in bytes these long pages can be
 	 * @return pages above that size
@@ -5059,7 +5251,7 @@ public class Wiki implements Serializable {
 	/**
 	 * List pages above a certain size in any namespace. Equivalent to
 	 * [[Special:Longpages]].
-	 * 
+	 *
 	 * @param cutoff
 	 *            the minimum size in nbytes these long pages can be
 	 * @param namespace
@@ -5081,13 +5273,17 @@ public class Wiki implements Serializable {
 	 * WARNING: Limited to 500 values (5000 for bots), unless a prefix or
 	 * protection level is specified.
 	 *
-	 * @param prefix the prefix of the title. Use "" to not specify one.
-	 * @param protectionstate a {@link #protect protection state}, use null to not specify
-	 * one
-	 * @param namespace a namespace. ALL_NAMESPACES is not suppported, an
-	 * UnsupportedOperationException will be thrown.
+	 * @param prefix
+	 *            the prefix of the title. Use "" to not specify one.
+	 * @param protectionstate
+	 *            a {@link #protect protection state}, use null to not specify
+	 *            one
+	 * @param namespace
+	 *            a namespace. ALL_NAMESPACES is not suppported, an
+	 *            UnsupportedOperationException will be thrown.
 	 * @return the specified list of pages
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.09
 	 */
 	public String[] listPages(String prefix,
@@ -5105,17 +5301,23 @@ public class Wiki implements Serializable {
 	 * values (5000 for bots), unless a prefix, (max|min)imum size or protection
 	 * level is specified.
 	 *
-	 * @param prefix the prefix of the title. Use "" to not specify one.
-	 * @param protectionstate a {@link #protect protection state}, use null to not specify
-	 * one
-	 * @param namespace a namespace. ALL_NAMESPACES is not suppported, an
-	 * UnsupportedOperationException will be thrown.
-	 * @param minimum the minimum size in bytes these pages can be. Use -1 to not
-	 * specify one.
-	 * @param maximum the maximum size in bytes these pages can be. Use -1 to not
-	 * specify one.
+	 * @param prefix
+	 *            the prefix of the title. Use "" to not specify one.
+	 * @param protectionstate
+	 *            a {@link #protect protection state}, use null to not specify
+	 *            one
+	 * @param namespace
+	 *            a namespace. ALL_NAMESPACES is not suppported, an
+	 *            UnsupportedOperationException will be thrown.
+	 * @param minimum
+	 *            the minimum size in bytes these pages can be. Use -1 to not
+	 *            specify one.
+	 * @param maximum
+	 *            the maximum size in bytes these pages can be. Use -1 to not
+	 *            specify one.
 	 * @return the specified list of pages
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.09
 	 */
 	public String[] listPages(String prefix,
@@ -5209,7 +5411,7 @@ public class Wiki implements Serializable {
 	 * Fetches data from one of a set of miscellaneous special pages. WARNING:
 	 * some of these may be *CACHED*, *DISABLED* and/or *LIMITED* on large
 	 * wikis.
-	 * 
+	 *
 	 * @param page
 	 *            one of { Ancientpages, BrokenRedirects, Deadendpages,
 	 *            Disambiguations, DoubleRedirects, Listredirects, Lonelypages,
@@ -5263,7 +5465,7 @@ public class Wiki implements Serializable {
 	 * Fetches the <tt>amount</tt> most recently created pages in the main
 	 * namespace. WARNING: The recent changes table only stores new pages for
 	 * about a month. It is not possible to retrieve changes before then.
-	 * 
+	 *
 	 * @param amount
 	 *            the number of pages to fetch
 	 * @return the revisions that created the pages satisfying the requirements
@@ -5282,12 +5484,15 @@ public class Wiki implements Serializable {
 	 * changes table only stores new pages for about a month. It is not possible
 	 * to retrieve changes before then. Equivalent to [[Special:Newpages]].
 	 *
-	 * @param amount the amount of new pages to get
-	 * @param rcoptions a bitmask of HIDE_ANON etc that dictate which pages we return
-	 * (e.g. exclude patrolled pages => rcoptions = HIDE_PATROLLED).
+	 * @param amount
+	 *            the amount of new pages to get
+	 * @param rcoptions
+	 *            a bitmask of HIDE_ANON etc that dictate which pages we return
+	 *            (e.g. exclude patrolled pages => rcoptions = HIDE_PATROLLED).
 	 * @return the revisions that created the pages satisfying the requirements
-	 * above
-	 * @throws IOException if a network error occurs
+	 *         above
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.20
 	 */
 	public Revision[] newPages(int amount, int rcoptions) throws IOException {
@@ -5300,13 +5505,17 @@ public class Wiki implements Serializable {
 	 * changes table only stores new pages for about a month. It is not possible
 	 * to retrieve changes before then. Equivalent to [[Special:Newpages]].
 	 *
-	 * @param amount the amount of new pages to get
-	 * @param rcoptions a bitmask of HIDE_ANON etc that dictate which pages we return
-	 * (e.g. exclude patrolled pages => rcoptions = HIDE_PATROLLED).
-	 * @param ns a list of namespaces to filter by, empty = all namespaces.
+	 * @param amount
+	 *            the amount of new pages to get
+	 * @param rcoptions
+	 *            a bitmask of HIDE_ANON etc that dictate which pages we return
+	 *            (e.g. exclude patrolled pages => rcoptions = HIDE_PATROLLED).
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return the revisions that created the pages satisfying the requirements
-	 * above
-	 * @throws IOException if a network error occurs
+	 *         above
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.20
 	 */
 	public Revision[] newPages(int amount, int rcoptions, int... ns)
@@ -5322,7 +5531,7 @@ public class Wiki implements Serializable {
 	 * [[Special:Recentchanges]].
 	 * <p>
 	 * Note: Log entries in recent changes have a revid of 0!
-	 * 
+	 *
 	 * @param amount
 	 *            the number of entries to return
 	 * @return the recent changes that satisfy these criteria
@@ -5341,7 +5550,7 @@ public class Wiki implements Serializable {
 	 * Equivalent to [[Special:Recentchanges]].
 	 * <p>
 	 * Note: Log entries in recent changes have a revid of 0!
-	 * 
+	 *
 	 * @param amount
 	 *            the number of entries to return
 	 * @param ns
@@ -5363,11 +5572,15 @@ public class Wiki implements Serializable {
 	 * <p>
 	 * Note: Log entries in recent changes have a revid of 0!
 	 *
-	 * @param amount the number of entries to return
-	 * @param rcoptions a bitmask of HIDE_ANON etc that dictate which pages we return.
-	 * @param ns a list of namespaces to filter by, empty = all namespaces.
+	 * @param amount
+	 *            the number of entries to return
+	 * @param rcoptions
+	 *            a bitmask of HIDE_ANON etc that dictate which pages we return.
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return the recent changes that satisfy these criteria
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.23
 	 */
 	public Revision[] recentChanges(int amount, int rcoptions, int... ns)
@@ -5383,12 +5596,17 @@ public class Wiki implements Serializable {
 	 * <p>
 	 * Note: Log entries in recent changes have a revid of 0!
 	 *
-	 * @param amount the number of entries to return
-	 * @param rcoptions a bitmask of HIDE_ANON etc that dictate which pages we return.
-	 * @param newpages show new pages only
-	 * @param ns a list of namespaces to filter by, empty = all namespaces.
+	 * @param amount
+	 *            the number of entries to return
+	 * @param rcoptions
+	 *            a bitmask of HIDE_ANON etc that dictate which pages we return.
+	 * @param newpages
+	 *            show new pages only
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return the recent changes that satisfy these criteria
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.23
 	 */
 	protected Revision[] recentChanges(int amount, int rcoptions,
@@ -5445,7 +5663,7 @@ public class Wiki implements Serializable {
 	 * Fetches all pages that use interwiki links to the specified wiki and the
 	 * page on that wiki that is linked to. For example, <tt>
 	 *  getInterWikiBacklinks("testwiki")</tt> may return:
-	 * 
+	 *
 	 * <pre>
 	 * { { &quot;Spam&quot;, &quot;testwiki:Blah&quot; }, { &quot;Test&quot;, &quot;testwiki:Main_Page&quot; } }
 	 * </pre>
@@ -5453,12 +5671,12 @@ public class Wiki implements Serializable {
 	 * Here the page [[Spam]] contains the interwiki link [[testwiki:Blah]] and
 	 * the page [[Test]] contains the interwiki link [[testwiki:Main_Page]].
 	 * This does not resolve nested interwiki prefixes, e.g. [[wikt:fr:Test]].
-	 * 
+	 *
 	 * <p>
 	 * For WMF wikis, see <a
 	 * href="https://meta.wikimedia.org/wiki/Interwiki_map"> the interwiki
 	 * map</a>for where some prefixes link to.
-	 * 
+	 *
 	 * @param prefix
 	 *            the interwiki prefix that denotes a wiki
 	 * @return all pages that contain interwiki links to said wiki
@@ -5476,28 +5694,31 @@ public class Wiki implements Serializable {
 	 * and <tt>title</tt> refers to the page on said wiki being linked to. In
 	 * wiki syntax, this is [[prefix:title]]. This does not resolve nested
 	 * prefixes, e.g. [[wikt:fr:Test]].
-	 * 
+	 *
 	 * <p>
 	 * Example: If [[Test]] and [[Spam]] both contain the interwiki link
 	 * [[testwiki:Blah]] then <tt>getInterWikiBacklinks("testwiki", "Blah");
 	 * </tt> will return (sorted by <tt>title</tt>)
-	 * 
+	 *
 	 * <pre>
 	 * { { &quot;Spam&quot;, &quot;testwiki:Blah&quot; }, { &quot;Test&quot;, &quot;testwiki:Blah&quot; } }
 	 * </pre>
-	 * 
+	 *
 	 * <p>
 	 * For WMF wikis, see <a
 	 * href="https://meta.wikimedia.org/wiki/Interwiki_map"> the interwiki
 	 * map</a>for where some prefixes link to.
 	 *
-	 * @param prefix the interwiki prefix to search
-	 * @param title the title of the page on the other wiki to search for
-	 * (optional, use "|" to not specify one). Warning: "" is a valid
-	 * interwiki target!
+	 * @param prefix
+	 *            the interwiki prefix to search
+	 * @param title
+	 *            the title of the page on the other wiki to search for
+	 *            (optional, use "|" to not specify one). Warning: "" is a valid
+	 *            interwiki target!
 	 * @return a list of all pages that use interwiki links satisfying the
-	 * parameters given
-	 * @throws IOException if a network error occurs
+	 *         parameters given
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @since 0.23
 	 */
 	public String[][] getInterWikiBacklinks(String prefix, String title)
@@ -5552,17 +5773,17 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Subclass for wiki users.
-	 * 
+	 *
 	 * @since 0.05
 	 */
 	public class User implements Cloneable {
-		
+
 		/** The username. */
 		private String username;
-		
+
 		/** The rights. */
 		private String[] rights = null; // cache
-		
+
 		/** The groups. */
 		private String[] groups = null; // cache
 
@@ -5570,7 +5791,7 @@ public class Wiki implements Serializable {
 		 * Creates a new user object. Does not create a new user on the wiki (we
 		 * don't implement this for a very good reason). Shouldn't be called for
 		 * anons.
-		 * 
+		 *
 		 * @param username
 		 *            the username of the user
 		 * @since 0.05
@@ -5581,7 +5802,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets this user's username.
-		 * 
+		 *
 		 * @return this user's username
 		 * @since 0.08
 		 */
@@ -5592,7 +5813,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Gets various properties of this user. Groups and rights are cached
 		 * for the current logged in user. Returns:
-		 * 
+		 *
 		 * <pre>
 		 *  {
 		 *      "editcount" => 150000,                                // {@link #countEdits() the user's edit count} (int)
@@ -5605,7 +5826,7 @@ public class Wiki implements Serializable {
 		 *      "created"   => 20060101000000                         // when the user account was created (Calendar)
 		 *  }
 		 * </pre>
-		 * 
+		 *
 		 * @return (see above)
 		 * @throws IOException
 		 *             if a network error occurs
@@ -5661,9 +5882,11 @@ public class Wiki implements Serializable {
 		 * Uses the rights cache. Read [[Special:Listgrouprights]] before using
 		 * this!
 		 *
-		 * @param right a specific action
+		 * @param right
+		 *            a specific action
 		 * @return whether the user is allowed to execute it
-		 * @throws IOException if a network error occurs
+		 * @throws IOException
+		 *             if a network error occurs
 		 * @since 0.24
 		 */
 		public boolean isAllowedTo(String right) throws IOException {
@@ -5681,9 +5904,11 @@ public class Wiki implements Serializable {
 		 * Returns true if the user is a member of the specified group. Uses the
 		 * groups cache.
 		 *
-		 * @param group a specific group
+		 * @param group
+		 *            a specific group
 		 * @return whether the user is in it
-		 * @throws IOException if a network error occurs
+		 * @throws IOException
+		 *             if a network error occurs
 		 * @since 0.24
 		 */
 		public boolean isA(String group) throws IOException {
@@ -5697,7 +5922,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns a log of the times when the user has been blocked.
-		 * 
+		 *
 		 * @return records of the occasions when this user has been blocked
 		 * @throws IOException
 		 *             if something goes wrong
@@ -5711,7 +5936,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Determines whether this user is blocked by looking it up on the IP
 		 * block list.
-		 * 
+		 *
 		 * @return whether this user is blocked
 		 * @throws IOException
 		 *             if we cannot retrieve the IP block list
@@ -5728,7 +5953,7 @@ public class Wiki implements Serializable {
 		 * live edits and deleted edits after (I think) January 2007. If you
 		 * want to count live edits only, use the slower
 		 * <tt>int count = user.contribs().length;</tt>.
-		 * 
+		 *
 		 * @return the user's edit count
 		 * @throws IOException
 		 *             if a network error occurs
@@ -5740,7 +5965,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Fetches the contributions for this user in a particular namespace(s).
-		 * 
+		 *
 		 * @param ns
 		 *            a list of namespaces to filter by, empty = all namespaces.
 		 * @return a revision array of contributions
@@ -5754,7 +5979,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Copies this user object.
-		 * 
+		 *
 		 * @return the copy
 		 * @since 0.08
 		 */
@@ -5770,7 +5995,8 @@ public class Wiki implements Serializable {
 		/**
 		 * Tests whether this user is equal to another one.
 		 *
-		 * @param x the x
+		 * @param x
+		 *            the x
 		 * @return whether the users are equal
 		 * @since 0.08
 		 */
@@ -5781,7 +6007,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns a string representation of this user.
-		 * 
+		 *
 		 * @return see above
 		 * @since 0.17
 		 */
@@ -5797,7 +6023,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns a hashcode of this user.
-		 * 
+		 *
 		 * @return see above
 		 * @since 0.19
 		 */
@@ -5810,7 +6036,7 @@ public class Wiki implements Serializable {
 	/**
 	 * A wrapper class for an entry in a wiki log, which represents an action
 	 * performed on the wiki.
-	 * 
+	 *
 	 * @see #getLogEntries
 	 * @since 0.08
 	 */
@@ -5818,29 +6044,29 @@ public class Wiki implements Serializable {
 		// internal data storage
 		/** The type. */
 		private String type;
-		
+
 		/** The action. */
 		private String action;
-		
+
 		/** The reason. */
 		private String reason;
-		
+
 		/** The user. */
 		private User user;
-		
+
 		/** The target. */
 		private String target;
-		
+
 		/** The timestamp. */
 		private Calendar timestamp;
-		
+
 		/** The details. */
 		private Object details;
 
 		/**
 		 * Creates a new log entry. WARNING: does not perform the action
 		 * implied. Use Wiki.class methods to achieve this.
-		 * 
+		 *
 		 * @param type
 		 *            the type of log entry, one of USER_CREATION_LOG,
 		 *            DELETION_LOG, BLOCK_LOG, etc.
@@ -5874,7 +6100,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the type of log that this entry is in.
-		 * 
+		 *
 		 * @return one of DELETION_LOG, USER_CREATION_LOG, BLOCK_LOG, etc.
 		 * @since 0.08
 		 */
@@ -5886,7 +6112,7 @@ public class Wiki implements Serializable {
 		 * Gets a string description of the action performed, for example
 		 * "delete", "protect", "overwrite", ... WARNING: returns null if the
 		 * action was RevisionDeleted.
-		 * 
+		 *
 		 * @return the type of action performed
 		 * @since 0.08
 		 */
@@ -5897,7 +6123,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Gets the reason supplied by the perfoming user when the action was
 		 * performed. WARNING: returns null if the reason was RevisionDeleted.
-		 * 
+		 *
 		 * @return the reason the action was performed
 		 * @since 0.08
 		 */
@@ -5908,7 +6134,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Gets the user object representing who performed the action. WARNING:
 		 * returns null if the user was RevisionDeleted.
-		 * 
+		 *
 		 * @return the user who performed the action.
 		 * @since 0.08
 		 */
@@ -5919,7 +6145,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Gets the target of the action represented by this log entry. WARNING:
 		 * returns null if the content was RevisionDeleted.
-		 * 
+		 *
 		 * @return the target of this log entry
 		 * @since 0.08
 		 */
@@ -5929,7 +6155,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the timestamp of this log entry.
-		 * 
+		 *
 		 * @return the timestamp of this log entry
 		 * @since 0.08
 		 */
@@ -5939,7 +6165,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the details of this log entry. Return values are as follows:
-		 * 
+		 *
 		 * <table>
 		 * <tr>
 		 * <th>Log type
@@ -5965,12 +6191,12 @@ public class Wiki implements Serializable {
 		 * <td>Others or RevisionDeleted
 		 * <td>null
 		 * </table>
-		 * 
+		 *
 		 * Note that the duration of a block may be given as a period of time
 		 * (e.g. "31 hours") or a timestamp (e.g. 20071216160302). To tell these
 		 * apart, feed it into <tt>Long.parseLong()</tt> and catch any resulting
 		 * exceptions.
-		 * 
+		 *
 		 * @return the details of the log entry
 		 * @since 0.08
 		 */
@@ -5980,7 +6206,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns a string representation of this log entry.
-		 * 
+		 *
 		 * @return a string representation of this object
 		 * @since 0.08
 		 */
@@ -6012,7 +6238,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Compares this log entry to another one based on the recentness of
 		 * their timestamps.
-		 * 
+		 *
 		 * @param other
 		 *            the log entry to compare
 		 * @return whether this object is equal to
@@ -6028,44 +6254,44 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Represents a contribution and/or a revision to a page.
-	 * 
+	 *
 	 * @since 0.17
 	 */
 	public class Revision implements Comparable<Revision> {
-		
+
 		/** The rvnew. */
 		private boolean minor, bot, rvnew;
-		
+
 		/** The summary. */
 		private String summary;
-		
+
 		/** The rcid. */
 		private long revid, rcid = -1;
-		
+
 		/** The next. */
 		private long previous = 0, next = 0;
-		
+
 		/** The timestamp. */
 		private Calendar timestamp;
-		
+
 		/** The user. */
 		private String user;
-		
+
 		/** The title. */
 		private String title;
-		
+
 		/** The rollbacktoken. */
 		private String rollbacktoken = null;
-		
+
 		/** The size. */
 		private int size = 0;
-		
+
 		/** The sizediff. */
 		private int sizediff = 0;
 
 		/**
 		 * Constructs a new Revision object.
-		 * 
+		 *
 		 * @param revid
 		 *            the id of the revision (this is a long since
 		 *            {{NUMBEROFEDITS}} on en.wikipedia.org is now (January
@@ -6108,7 +6334,8 @@ public class Wiki implements Serializable {
 		 * is deleted.
 		 *
 		 * @return the contents of the appropriate article at <tt>timestamp</tt>
-		 * @throws IOException if a network error occurs
+		 * @throws IOException
+		 *             if a network error occurs
 		 * @since 0.17
 		 */
 		public String getText() throws IOException {
@@ -6131,8 +6358,9 @@ public class Wiki implements Serializable {
 		 * revision is deleted.
 		 *
 		 * @return the rendered contents of the appropriate article at
-		 * <tt>timestamp</tt>
-		 * @throws IOException if a network error occurs
+		 *         <tt>timestamp</tt>
+		 * @throws IOException
+		 *             if a network error occurs
 		 * @since 0.17
 		 */
 		public String getRenderedText() throws IOException {
@@ -6154,7 +6382,7 @@ public class Wiki implements Serializable {
 		 * Returns a HTML rendered diff table; see the table at the <a
 		 * href="https://en.wikipedia.org/w/index.php?diff=343490272"
 		 * >example</a>.
-		 * 
+		 *
 		 * @param other
 		 *            another revision on the same page.
 		 * @return the difference between this and the other revision
@@ -6172,7 +6400,7 @@ public class Wiki implements Serializable {
 		 * See the table at the <a
 		 * href="https://en.wikipedia.org/w/index.php?diff=343490272"
 		 * >example</a>.
-		 * 
+		 *
 		 * @param text
 		 *            some wikitext
 		 * @return the difference between this and the the text provided
@@ -6188,7 +6416,7 @@ public class Wiki implements Serializable {
 		 * Returns a HTML rendered diff table; see the table at the <a
 		 * href="https://en.wikipedia.org/w/index.php?diff=343490272"
 		 * >example</a>.
-		 * 
+		 *
 		 * @param oldid
 		 *            the oldid of a revision on the same page. NEXT_REVISION,
 		 *            PREVIOUS_REVISION and CURRENT_REVISION can be used here
@@ -6206,7 +6434,7 @@ public class Wiki implements Serializable {
 		 * Fetches a HTML rendered diff table; see the table at the <a
 		 * href="https://en.wikipedia.org/w/index.php?diff=343490272"
 		 * >example</a>.
-		 * 
+		 *
 		 * @param oldid
 		 *            the id of another revision; (exclusive) or
 		 * @param text
@@ -6250,7 +6478,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Determines whether this Revision is equal to another object.
-		 * 
+		 *
 		 * @param o
 		 *            an object
 		 * @return whether o is equal to this object
@@ -6265,7 +6493,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns a hash code of this revision.
-		 * 
+		 *
 		 * @return a hash code
 		 * @since 0.17
 		 */
@@ -6277,7 +6505,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Checks whether this edit was marked as minor. See [[Help:Minor edit]]
 		 * for details.
-		 * 
+		 *
 		 * @return whether this revision was marked as minor
 		 * @since 0.17
 		 */
@@ -6287,7 +6515,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Determines whether this revision was made by a bot.
-		 * 
+		 *
 		 * @return (see above)
 		 * @since 0.23
 		 */
@@ -6302,7 +6530,7 @@ public class Wiki implements Serializable {
 		 * WARNING: Returning true does not imply this is the bottommost
 		 * revision on the page due to histmerges.<br>
 		 * WARNING: Not accessible through getPageHistory() -- a MW problem.
-		 * 
+		 *
 		 * @return (see above)
 		 * @since 0.27
 		 */
@@ -6313,7 +6541,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Returns the edit summary for this revision. WARNING: returns null if
 		 * the summary was RevisionDeleted.
-		 * 
+		 *
 		 * @return the edit summary
 		 * @since 0.17
 		 */
@@ -6325,7 +6553,7 @@ public class Wiki implements Serializable {
 		 * Returns the user or anon who created this revision. You should pass
 		 * this (if not an IP) to <tt>getUser(String)</tt> to obtain a User
 		 * object. WARNING: returns null if the user was RevisionDeleted.
-		 * 
+		 *
 		 * @return the user or anon
 		 * @since 0.17
 		 */
@@ -6335,7 +6563,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns the page to which this revision was made.
-		 * 
+		 *
 		 * @return the page
 		 * @since 0.17
 		 */
@@ -6346,7 +6574,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Returns the oldid of this revision. Don't confuse this with
 		 * <tt>rcid</tt>
-		 * 
+		 *
 		 * @return the oldid (long)
 		 * @since 0.17
 		 */
@@ -6356,7 +6584,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the time that this revision was made.
-		 * 
+		 *
 		 * @return the timestamp
 		 * @since 0.17
 		 */
@@ -6366,7 +6594,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the size of this revision in bytes.
-		 * 
+		 *
 		 * @return see above
 		 * @since 0.25
 		 */
@@ -6376,7 +6604,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns the change in page size caused by this revision.
-		 * 
+		 *
 		 * @return see above
 		 * @since 0.28
 		 */
@@ -6386,7 +6614,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Returns a string representation of this revision.
-		 * 
+		 *
 		 * @return see above
 		 * @since 0.17
 		 */
@@ -6423,7 +6651,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Compares this revision to another revision based on the recentness of
 		 * their timestamps.
-		 * 
+		 *
 		 * @param other
 		 *            the revision to compare
 		 * @return whether this object is equal to
@@ -6438,7 +6666,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the previous revision.
-		 * 
+		 *
 		 * @return the previous revision, or null if this is the first revision
 		 *         or this object was spawned via contribs().
 		 * @throws IOException
@@ -6451,7 +6679,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the next revision.
-		 * 
+		 *
 		 * @return the next revision, or null if this is the last revision or
 		 *         this object was spawned via contribs().
 		 * @throws IOException
@@ -6465,7 +6693,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Sets the <tt>rcid</tt> of this revision, used for patrolling. This
 		 * parameter is optional. This is publicly editable for subclassing.
-		 * 
+		 *
 		 * @param rcid
 		 *            the rcid of this revision (long)
 		 * @since 0.17
@@ -6476,7 +6704,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Gets the <tt>rcid</tt> of this revision for patrolling purposes.
-		 * 
+		 *
 		 * @return the rcid of this revision (long)
 		 * @since 0.17
 		 */
@@ -6486,7 +6714,7 @@ public class Wiki implements Serializable {
 
 		/**
 		 * Sets a rollback token for this revision.
-		 * 
+		 *
 		 * @param token
 		 *            a rollback token
 		 * @since 0.24
@@ -6498,7 +6726,7 @@ public class Wiki implements Serializable {
 		/**
 		 * Gets the rollback token for this revision. Can be null, and often for
 		 * good reasons: cannot rollback or not top revision.
-		 * 
+		 *
 		 * @return the rollback token
 		 * @since 0.24
 		 */
@@ -6510,8 +6738,10 @@ public class Wiki implements Serializable {
 		 * Reverts this revision using the rollback method. See
 		 * <tt>Wiki.rollback()</tt>.
 		 *
-		 * @throws IOException if a network error occurs
-		 * @throws LoginException the login exception
+		 * @throws IOException
+		 *             if a network error occurs
+		 * @throws LoginException
+		 *             the login exception
 		 * @since 0.19
 		 */
 		public void rollback() throws IOException, LoginException {
@@ -6522,10 +6752,14 @@ public class Wiki implements Serializable {
 		 * Reverts this revision using the rollback method. See
 		 * <tt>Wiki.rollback()</tt>.
 		 *
-		 * @param bot mark this and the reverted revision(s) as bot edits
-		 * @param reason (optional) a custom reason
-		 * @throws IOException if a network error occurs
-		 * @throws LoginException the login exception
+		 * @param bot
+		 *            mark this and the reverted revision(s) as bot edits
+		 * @param reason
+		 *            (optional) a custom reason
+		 * @throws IOException
+		 *             if a network error occurs
+		 * @throws LoginException
+		 *             the login exception
 		 * @since 0.19
 		 */
 		public void rollback(boolean bot, String reason) throws IOException,
@@ -6542,12 +6776,12 @@ public class Wiki implements Serializable {
 	 * A generic URL content fetcher. This is only useful for GET requests,
 	 * which is almost everything that doesn't modify the wiki. Might be useful
 	 * for subclasses.
-	 * 
+	 *
 	 * Here we also check the database lag and wait if it exceeds
 	 * <tt>maxlag</tt>, see <a
 	 * href="https://mediawiki.org/wiki/Manual:Maxlag_parameter"> here</a> for
 	 * how this works.
-	 * 
+	 *
 	 * @param url
 	 *            the url to fetch
 	 * @param caller
@@ -6608,11 +6842,15 @@ public class Wiki implements Serializable {
 	/**
 	 * Does a text-only HTTP POST.
 	 *
-	 * @param url the url to post to
-	 * @param text the text to post
-	 * @param caller the caller of this method
+	 * @param url
+	 *            the url to post to
+	 * @param text
+	 *            the text to post
+	 * @param caller
+	 *            the caller of this method
 	 * @return the server response
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @see #multipartPost(java.lang.String, java.util.Map, java.lang.String)
 	 * @since 0.24
 	 */
@@ -6645,7 +6883,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Performs a multi-part HTTP POST.
-	 * 
+	 *
 	 * @param url
 	 *            the url to post to
 	 * @param params
@@ -6724,10 +6962,14 @@ public class Wiki implements Serializable {
 	/**
 	 * Checks for errors from standard read/write requests.
 	 *
-	 * @param line the response from the server to analyze
-	 * @param caller what we tried to do
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws LoginException the login exception
+	 * @param line
+	 *            the response from the server to analyze
+	 * @param caller
+	 *            what we tried to do
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws LoginException
+	 *             the login exception
 	 * @since 0.18
 	 */
 	protected void checkErrors(String line, String caller) throws IOException,
@@ -6773,7 +7015,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Strips entity references like &quot; from the supplied string. This might
 	 * be useful for subclasses.
-	 * 
+	 *
 	 * @param in
 	 *            the string to remove URL encoding from
 	 * @return that string without URL encoding
@@ -6791,7 +7033,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Parses the next XML attribute with the given name.
-	 * 
+	 *
 	 * @param xml
 	 *            the xml to search
 	 * @param attribute
@@ -6815,7 +7057,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Convenience method for converting a namespace list into String form.
-	 * 
+	 *
 	 * @param sb
 	 *            the url StringBuilder to append to
 	 * @param id
@@ -6841,7 +7083,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Cuts up a list of titles into batches for prop=X&titles=Y type queries.
-	 * 
+	 *
 	 * @param titles
 	 *            a list of titles.
 	 * @return the titles ready for insertion into a URL
@@ -6877,9 +7119,11 @@ public class Wiki implements Serializable {
 	 * Convenience method for normalizing MediaWiki titles. (Converts all
 	 * underscores to spaces).
 	 *
-	 * @param s the string to normalize
+	 * @param s
+	 *            the string to normalize
 	 * @return the normalized string
-	 * @throws IOException if a network error occurs (rare)
+	 * @throws IOException
+	 *             if a network error occurs (rare)
 	 * @since 0.27
 	 */
 	public String normalize(String s) throws IOException {
@@ -6923,11 +7167,15 @@ public class Wiki implements Serializable {
 	 * Checks whether the currently logged on user has sufficient rights to
 	 * edit/move a protected page.
 	 *
-	 * @param pageinfo the output from <tt>getPageInfo()</tt>
-	 * @param action what we are doing
+	 * @param pageinfo
+	 *            the output from <tt>getPageInfo()</tt>
+	 * @param action
+	 *            what we are doing
 	 * @return whether the user can perform the specified action
-	 * @throws IOException if a network error occurs
-	 * @throws CredentialException the credential exception
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialException
+	 *             the credential exception
 	 * @since 0.10
 	 */
 	protected boolean checkRights(HashMap<String, Object> pageinfo,
@@ -6955,7 +7203,8 @@ public class Wiki implements Serializable {
 	/**
 	 * Performs a status check, including assertions.
 	 *
-	 * @throws IOException if a network error occurs
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @see #setAssertionMode
 	 * @since 0.11
 	 */
@@ -6985,7 +7234,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Sets cookies to an unconnected URLConnection and enables gzip compression
 	 * of returned text.
-	 * 
+	 *
 	 * @param u
 	 *            an unconnected URLConnection
 	 */
@@ -7008,7 +7257,8 @@ public class Wiki implements Serializable {
 	/**
 	 * Grabs cookies from the URL connection provided.
 	 *
-	 * @param u an unconnected URLConnection
+	 * @param u
+	 *            an unconnected URLConnection
 	 */
 	private void grabCookies(URLConnection u) {
 		String headerName;
@@ -7028,9 +7278,12 @@ public class Wiki implements Serializable {
 	/**
 	 * Logs a successful result.
 	 *
-	 * @param level the level to log at
-	 * @param method what we are currently doing
-	 * @param text string the string to log
+	 * @param level
+	 *            the level to log at
+	 * @param method
+	 *            what we are currently doing
+	 * @param text
+	 *            string the string to log
 	 * @since 0.06
 	 */
 	protected void log(Level level, String method, String text) {
@@ -7041,7 +7294,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Logs a url fetch.
-	 * 
+	 *
 	 * @param url
 	 *            the url we are fetching
 	 * @param method
@@ -7058,7 +7311,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Creates a Calendar object with the current time. Wikimedia wikis use UTC,
 	 * override this if your wiki is in another timezone.
-	 * 
+	 *
 	 * @return see above
 	 * @since 0.26
 	 */
@@ -7069,7 +7322,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Turns a calendar into a timestamp of the format yyyymmddhhmmss. Might be
 	 * useful for subclasses.
-	 * 
+	 *
 	 * @param c
 	 *            the calendar to convert
 	 * @return the converted calendar
@@ -7085,7 +7338,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Turns a timestamp into a Calendar object. Might be useful for subclasses.
-	 * 
+	 *
 	 * @param timestamp
 	 *            the timestamp to convert
 	 * @param api
@@ -7113,7 +7366,7 @@ public class Wiki implements Serializable {
 	/**
 	 * Converts a timestamp of the form used by the API (yyyy-mm-ddThh:mm:ssZ)
 	 * to the form yyyymmddhhmmss.
-	 * 
+	 *
 	 * @param timestamp
 	 *            the timestamp to convert
 	 * @return the converted timestamp
@@ -7134,14 +7387,14 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Writes this wiki to a file.
-	 * 
+	 *
 	 * @param out
 	 *            an ObjectOutputStream to write to
 	 * @throws IOException
 	 *             if there are local IO problems
 	 * @since 0.10
 	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
+	public void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeObject(user.getUsername());
 		out.writeObject(cookies);
 		out.writeInt(throttle);
@@ -7156,7 +7409,7 @@ public class Wiki implements Serializable {
 
 	/**
 	 * Reads a copy of a wiki from a file.
-	 * 
+	 *
 	 * @param in
 	 *            an ObjectInputStream to read from
 	 * @throws IOException
@@ -7165,7 +7418,7 @@ public class Wiki implements Serializable {
 	 *             if we can't recognize the input
 	 * @since 0.10
 	 */
-	private void readObject(ObjectInputStream in) throws IOException,
+	public void readObject(ObjectInputStream in) throws IOException,
 			ClassNotFoundException {
 		String z = (String) in.readObject();
 		user = new User(z);
@@ -7189,8 +7442,10 @@ public class Wiki implements Serializable {
 	/**
 	 * Gets the article in specif lang.
 	 *
-	 * @param title the title
-	 * @param lang the lang
+	 * @param title
+	 *            the title
+	 * @param lang
+	 *            the lang
 	 * @return the article in specif lang
 	 */
 	public String getArticleInSpecifLang(String title, String lang) {
@@ -7214,9 +7469,11 @@ public class Wiki implements Serializable {
 	/**
 	 * Exists.
 	 *
-	 * @param title the title
+	 * @param title
+	 *            the title
 	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public boolean exists(String title) throws IOException {
 		String[] s = new String[1];
@@ -7224,4 +7481,55 @@ public class Wiki implements Serializable {
 		return exists(s)[0];
 	}
 
+	/**
+	 * Gets the members of a category.
+	 *
+	 * @param name
+	 *            the name of the category
+	 * @param subcat
+	 *            do you want to return members of sub-categories also?
+	 *            (default: false)
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
+	 * @return a String[] containing page titles of members of the category
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @since 0.03
+	 */
+	public String[] getPagesUsingTemplate(String name, int... ns)
+			throws IOException {
+		StringBuilder url = new StringBuilder(query);
+		url.append("list=embeddedin&eiprop=title&eilimit=max&eititle=Template:");
+		url.append(URLEncoder.encode(normalize(name), "UTF-8"));
+		constructNamespaceString(url, "ei", ns);
+		ArrayList<String> members = new ArrayList<String>();
+		String next = "";
+		do {
+			if (!next.isEmpty())
+				next = "&eicontinue=" + URLEncoder.encode(next, "UTF-8");
+			String line = fetch(url.toString() + next, "getPagesUsingTemplate");
+
+			// parse cmcontinue if it is there
+			if (line.contains("eicontinue"))
+				next = parseAttribute(line, "eicontinue", 0);
+			else
+				next = null;
+
+			// xml form: <cm pageid="24958584" ns="3"
+			// title="User talk:86.29.138.185" />
+			for (int x = line.indexOf("<ei "); x > 0; x = line.indexOf("<ei ",
+					++x)) {
+				String member = decode(parseAttribute(line, "title", x));
+
+				members.add(member);
+			}
+		} while (next != null);
+
+		int size = members.size();
+		log(Level.INFO, "getCategoryMembers",
+				"Successfully retrieved Pages Using the Template:" + name
+						+ " (" + size + " items)");
+		return members.toArray(new String[size]);
+
+	}
 }
