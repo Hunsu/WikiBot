@@ -51,6 +51,9 @@ public class CanadianRatings {
 		String[] files = dir.list();
 		Arrays.sort(files);
 		for (String filename : files) {
+			System.out.println(filename);
+			if(true)
+				continue;
 			if (!filename.trim().equals("C.S.I. New York"))
 				continue;
 			String str = "Saison %s des Experts : Manhattan";// + filename.trim();
