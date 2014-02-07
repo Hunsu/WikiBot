@@ -40,7 +40,7 @@ public class Tests {
 			wiki.writeObject(new ObjectOutputStream(new FileOutputStream("wiki")));
 		}
 
-		String[] pages = wiki.getPagesUsingTemplate("Palette Akon");
+		String[] pages = wiki.whatTranscludesHere("Palette Akon");
 		System.out.println(pages);
 
 		/*String text = wiki.getPageText("Saison 3 des Frères Scott");

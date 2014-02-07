@@ -4527,7 +4527,7 @@ public class Wiki implements Serializable {
 	public String[] whatTranscludesHere(String title, int... ns)
 			throws IOException {
 		StringBuilder url = new StringBuilder(query);
-		url.append("list=embeddedin&eilimit=max&eititle=");
+		url.append("list=embeddedin&eilimit=max&eititle=Template:");
 		url.append(URLEncoder.encode(normalize(title), "UTF-8"));
 		constructNamespaceString(url, "ei", ns);
 
