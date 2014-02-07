@@ -16,7 +16,7 @@ import org.jsoup.nodes.Document;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
-import Tools.Login;
+import org.wikipedia.login.Login;
 
 /**
  * The Class Pmid.
@@ -25,17 +25,17 @@ public class Pmid {
 
 	/** The url. */
 	private static String url = "http://www.ncbi.nlm.nih.gov/pubmed/";
-	
+
 	/** The arguments. */
 	private static String arguments = "?report=xml&format=text";
-	
+
 	/** The wiki. */
 	private static Wiki wiki = new Wiki("fr.wikipedia.org");
-	
+
 	/** The enwiki. */
 	private static Wiki enwiki = new Wiki();
-	
-	
+
+
 	/**
 	 * The main method.
 	 *
@@ -77,10 +77,10 @@ public class Pmid {
 								text = parseXML(text);
 								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");
 							}
-							
+
 						}
-						
-								
+
+
 					}catch(Exception e){
 						e.getCause();
 						e.printStackTrace();
@@ -88,14 +88,14 @@ public class Pmid {
 				}
 				wiki.edit(pages.get(i), article, "");
 			}
-			
+
 			//System.out.print(text);
 		} catch (IOException | LoginException e) {
 			e.printStackTrace();
 		}
-		
+
 		//text = URLDecoder.decode(text, "UTF-8");
-		
+
 
 	}
 
@@ -138,7 +138,7 @@ public class Pmid {
 	      }
 	}
 
-	
+
 
 	/*private static String getLanguages(Element element) {
 		// TODO Auto-generated method stub

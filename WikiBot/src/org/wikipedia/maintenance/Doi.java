@@ -16,7 +16,7 @@ import org.jsoup.nodes.Document;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
-import Tools.Login;
+import org.wikipedia.login.Login;
 
 /**
  * The Class Doi.
@@ -25,17 +25,17 @@ public class Doi {
 
 	/** The url. */
 	private static String url = "http://www.ncbi.nlm.nih.gov/pubmed/";
-	
+
 	/** The arguments. */
 	private static String arguments = "?report=xml&format=text";
-	
+
 	/** The wiki. */
 	private static Wiki wiki = new Wiki("fr.wikipedia.org");
-	
+
 	/** The enwiki. */
 	private static Wiki enwiki = new Wiki();
-	
-	
+
+
 	/**
 	 * The main method.
 	 *
@@ -78,22 +78,22 @@ public class Doi {
 							if(!wiki.exists("Modèle:Cite pmid/"+pmid))
 								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");*/
 						}
-						
-								
+
+
 					}catch(Exception e){
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			//System.out.print(text);
 		} catch (IOException | LoginException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		//text = URLDecoder.decode(text, "UTF-8");
-		
+
 
 	}
 
@@ -136,7 +136,7 @@ public class Doi {
 	      }
 	}
 
-	
+
 
 	/*private static String getLanguages(Element element) {
 		// TODO Auto-generated method stub

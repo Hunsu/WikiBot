@@ -12,7 +12,7 @@ import javax.security.auth.login.LoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
-import Tools.Login;
+import org.wikipedia.login.Login;
 
 /**
  * The Class Refernces.

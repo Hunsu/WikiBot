@@ -8,7 +8,7 @@ import javax.security.auth.login.LoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
-import Tools.Login;
+import org.wikipedia.login.Login;
 
 /**
  * The Class TranslatedFrom.
@@ -21,7 +21,7 @@ public class TranslatedFrom {
 	public TranslatedFrom() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * The main method.
 	 *
@@ -32,7 +32,7 @@ public class TranslatedFrom {
 		try {
 			Login login = new Login();
 			wiki.login(login.getLogin(), login.getPassword());
-			
+
 			String[] titles = wiki.getCategoryMembers("Article utilisant le modèle Traduit de");
 			for(int i=0;i<titles.length;i++){
 				if(titles[i].toLowerCase().startsWith("catégorie:"))
@@ -55,11 +55,11 @@ public class TranslatedFrom {
 					wiki.edit("Discussion:"+titles[i], text, "bot: déplacement du modèle Traduit de");
 				}
 			}
-			
+
 		} catch (IOException | LoginException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 
 }

@@ -611,6 +611,9 @@ public class ParseUtils {
 	 * @return the template
 	 */
 	public static String templateFromMap(HashMap<String, String> map) {
+		String templateName = map.get("templateName");
+		if(templateName == null)
+			return null;
 		String template = "{{" + map.get("templateName");
 		for (String key : map.keySet()) {
 			if (key.equals("templateName"))
@@ -663,7 +666,7 @@ public class ParseUtils {
 	 *            the map that contains the parameters
 	 * @return the new map
 	 */
-	private static LinkedHashMap<String, String> adjust(
+	public static LinkedHashMap<String, String> adjust(
 			LinkedHashMap<String, String> map) {
 		LinkedHashMap<String, String> newMap = new LinkedHashMap<String, String>();
 		int length = 0;

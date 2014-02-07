@@ -7,14 +7,14 @@ import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
 
-import Tools.Login;
+import org.wikipedia.login.Login;
 
 public class Request {
-	
+
 	public static void main(String[] args) throws FailedLoginException, IOException{
 		process();
 	}
-	
+
 	private static void process() throws FailedLoginException, IOException{
 		Login login = new Login();
 		Wiki wiki = new Wiki("fr.wikipedia.org");

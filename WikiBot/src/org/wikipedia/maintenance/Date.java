@@ -14,7 +14,7 @@ import javax.security.auth.login.FailedLoginException;
 import org.wikipedia.Wiki;
 import org.wikiutils.ParseUtils;
 
-import Tools.Login;
+import org.wikipedia.login.Login;
 
 import com.inet.jortho.Dictionary;
 import com.inet.jortho.Suggestion;

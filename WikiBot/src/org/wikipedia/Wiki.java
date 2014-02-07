@@ -4595,7 +4595,8 @@ public class Wiki implements Serializable {
 				+ namespaceIdentifier(CATEGORY_NAMESPACE) + "):", "");
 		StringBuilder url = new StringBuilder(query);
 		url.append("list=categorymembers&cmprop=title&cmlimit=max&cmtitle=Category:");
-		url.append(URLEncoder.encode(normalize(name), "UTF-8"));
+		//name = normalize(name);
+		url.append(URLEncoder.encode(name, "UTF-8"));
 		boolean nocat = true;
 		if (subcat && ns.length != 0) {
 			for (int i = 0; nocat && i < ns.length; i++)

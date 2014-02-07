@@ -8,6 +8,7 @@ import java.util.Scanner;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.wikipedia.Wiki;
+import org.wikipedia.login.Login;
 import org.wikiutils.ParseUtils;
 
 /**
@@ -30,7 +31,8 @@ public class CiteWeb {
 	public static void main(String[] args) {
 		Wiki wiki = new Wiki("fr.wikipedia.org");
 		try {
-			wiki.login("Hunsu", "MegamiMonster");
+			Login login = new Login();
+			wiki.login(login.getLogin(), login.getPassword());
 
 			String[] titles = wiki
 					.getCategoryMembers("Page du modèle Lien web comportant une erreur");
