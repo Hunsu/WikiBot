@@ -1,4 +1,4 @@
-package org.maintenance;
+package org.wikipedia.botrequest;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package org.maintenance;
+package org.wikipedia.maintenance;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
@@ -25,6 +25,8 @@ import Tools.Login;
 
 public class CanadianRatings {
 	public static LinkedList<String> ratings;
+	public static HashMap<String,String> showsName;
+	public static HashMap<String,Integer> currentSeason;
 
 	public static void main(String[] args) throws FailedLoginException,
 			IOException {
@@ -47,20 +49,25 @@ public class CanadianRatings {
 			Login login = new Login();
 			wiki.login(login.getLogin(), login.getPassword());
 		}
+		showsName = loadShowsName();
+		currentSeason = getTVSerieCurrentSeason();
 		File dir = new File("shows");
 		String[] files = dir.list();
 		Arrays.sort(files);
 		for (String filename : files) {
 			System.out.println(filename);
-			if(true)
+			String str = showsName.get(filename);
+			if(str == null){
+				System.out.println("Ignored file : "+filename);
 				continue;
-			if (!filename.trim().equals("C.S.I. New York"))
-				continue;
-			String str = "Saison %s des Experts : Manhattan";// + filename.trim();
+			}
 			ratings = getRatings("shows/" + filename);
 			if (ratings == null)
 				continue;
-			for (int i = 1; i < 17; i++) {
+			Integer i = currentSeason.get(filename);
+			if(i == null)
+				i=0;
+			for (; i < 17; i++) {
 				String title = String.format(str, i);
 				if (wiki.exists(title)) {
 					String text = wiki.getPageText(title);
@@ -105,6 +112,10 @@ public class CanadianRatings {
 	private static String addCanadianRatingsToEpisode(String template) {
 		String date = ParseUtils.getTemplateParam(template,
 				"première diffusion", false);
+		if(date == null){
+			System.out.println(template);
+			return template;
+		}
 		if (conainsCanadianRatings(template))
 			return template;
 		String[] possibleDates = getCanadianOrAmericanDate(date);
@@ -141,6 +152,8 @@ public class CanadianRatings {
 	private static CharSequence addCanadianDateToEpisode(String template) {
 		String epDate = ParseUtils.getTemplateParam(template,
 				"première diffusion", true);
+		if(epDate == null)
+			return template;
 		if(epDate.indexOf("Canada") != -1)
 			return template;
 		String[] date = getCanadianOrAmericanDate(epDate);
@@ -203,8 +216,10 @@ public class CanadianRatings {
 		return false;
 	}
 
-	private static String[] getCanadianOrAmericanDate(String date) {
-		date = date.toLowerCase();
+	private static String[] getCanadianOrAmericanDate(String dates) {
+		if(dates == null)
+			return null;
+		String date = dates.trim().toLowerCase();
 		boolean canadian = date.contains("canada");
 		String[] str = date.split("\\n");
 		for (int i = 0; i < str.length; i++) {
@@ -217,6 +232,10 @@ public class CanadianRatings {
 					break;
 				}
 			}
+		}
+		if(date == null){
+			System.out.println(dates);
+			return null;
 		}
 		int day = getDay(date);
 		if (day == 0)
@@ -297,9 +316,8 @@ public class CanadianRatings {
 
 	private static URL contructUrl() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(2014, Calendar.JANUARY, 13);
-		if( cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
-			return null;
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.DATE, cal.get(Calendar.DATE)-14);
 		String s = "http://www.bbm.ca/_documents/top_30_tv_programs_english/2013-14/2013-14_";
 		String str = "_TV_ME_NationalTop30.pdf";
 		int day = cal.get(Calendar.DATE);
@@ -315,6 +333,7 @@ public class CanadianRatings {
 		s += str;
 
 		try {
+			System.out.println(s);
 			return new URL(s);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -329,5 +348,33 @@ public class CanadianRatings {
 			FileUtils.deleteQuietly(file);
 		}
 	}
+
+	private static HashMap<String,String> loadShowsName() throws IOException{
+		HashMap<String,String> map = new HashMap<String,String>();
+		String s = FileUtils.readFileToString(new File("showsName"));
+		String[] str = s.split("\\n");
+		for (int i = 0; i < str.length; i++) {
+			int index = str[i].indexOf("=");
+			String key = str[i].substring(0,index).trim();
+			String value = str[i].substring(index+1).trim();
+			map.put(key, value);
+		}
+		return map;
+
+	}
+
+	private static HashMap<String,Integer> getTVSerieCurrentSeason() throws IOException{
+		HashMap<String,Integer> map = new HashMap<String,Integer>();
+		String s = FileUtils.readFileToString(new File("currentSeason"));
+		String[] str = s.split("\\n");
+		for (int i = 0; i < str.length; i++) {
+			int index = str[i].indexOf("=");
+			String key = str[i].substring(0,index).trim();
+			int value = Integer.valueOf(str[i].substring(index+1).trim());
+			map.put(key, value);
+		}
+		return map;
+	}
+
 
 }

@@ -1,4 +1,4 @@
-package org.maintenance;
+package org.wikipedia.maintenance;
 
 import java.io.*;
 

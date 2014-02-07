@@ -109,7 +109,7 @@ public class PDFParser {
 		int j = 6;
 		for (int i = 0; i < 30; i++) {
 			try {
-				String brodcaster = getBrodcaster(lines[j]);
+				String brodcaster = getBrodcaster(lines[j]).replace("Total", "");
 				lines[j] = lines[j].replace(" " + brodcaster, "");
 				String[] cells = lines[j].split(" ");
 				String showName = "";

@@ -23,6 +23,7 @@ package org.wikipedia.tools;
 import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
+
 import javax.swing.JFileChooser;
 
 import org.wikipedia.*;
@@ -36,7 +37,7 @@ import org.wikipedia.*;
  */
 public class ContributionSurveyor
 {
-    
+
     /**
      * The main method.
      *
@@ -149,7 +150,7 @@ public class ContributionSurveyor
         }
         contributionSurvey(homewiki, users.toArray(new String[users.size()]), out, userspace, images);
     }
-    
+
     /**
      *  Performs a mass contribution survey.
      *  @param homewiki the wiki to survey on
@@ -222,7 +223,7 @@ public class ContributionSurveyor
             if (userspace)
             {
                 out.write("====Userspace edits (" + user + ")====\n");
-                HashSet<String> temp = new HashSet(50);
+                HashSet<String> temp = new HashSet<String>(50);
                 for (Wiki.Revision revision : contribs)
                 {
                     String title = revision.getPage();
