@@ -22,7 +22,7 @@
  */
 package com.inet.jortho;
 
-import javax.swing.*;
+import javax.swing.JPopupMenu;
 
 /**
  * The Class CheckerPopup.

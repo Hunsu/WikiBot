@@ -1,8 +1,8 @@
 package org.jsoup.nodes;
 
-import org.jsoup.helper.Validate;
-
 import java.util.Map;
+
+import org.jsoup.helper.Validate;
 
 /**
  A single key + value attribute. Keys are trimmed and normalised to lower-case.

@@ -20,8 +20,11 @@
 package org.wikipedia.servlets;
 
 import java.io.IOException;
-import java.util.*;
-import javax.servlet.http.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *  Common servlet code so that I can maintain it easier.

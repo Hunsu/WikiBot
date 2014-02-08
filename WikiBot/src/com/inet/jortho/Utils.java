@@ -24,7 +24,7 @@ package com.inet.jortho;
 
 import java.awt.Dialog;
 import java.awt.Image;
-import java.util.*;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;

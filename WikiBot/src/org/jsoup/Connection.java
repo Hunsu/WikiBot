@@ -1,12 +1,12 @@
 package org.jsoup;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Map;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
-
-import java.net.URL;
-import java.util.Map;
-import java.util.Collection;
-import java.io.IOException;
 
 /**
  * A Connection provides a convenient interface to fetch content from the web, and parse them into Documents.

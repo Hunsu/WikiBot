@@ -6,7 +6,6 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
-
 import org.wikipedia.login.Login;
 
 public class Request {

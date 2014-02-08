@@ -1,8 +1,8 @@
 package org.jsoup.parser;
 
-import org.jsoup.helper.Validate;
-
 import java.util.Locale;
+
+import org.jsoup.helper.Validate;
 
 /**
  CharacterReader consumes tokens off a string. To replace the old TokenQueue.

@@ -19,12 +19,20 @@
 
 package org.wikipedia.servlets;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.JOptionPane;
-import javax.servlet.*;
-import javax.servlet.http.*;
+
 import org.wikipedia.Wiki;
 
 /**

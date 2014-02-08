@@ -24,10 +24,16 @@ package com.inet.jortho;
 
 import java.util.Locale;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.Highlight;
+import javax.swing.text.JTextComponent;
 
 /**
  * This class check a <code>JTextComponent</code> automatically (in the background) for orthography. Spell error are

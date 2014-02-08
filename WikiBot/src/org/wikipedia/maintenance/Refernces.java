@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import javax.security.auth.login.LoginException;
 
 import org.wikipedia.Wiki;
-import org.wikiutils.ParseUtils;
-
 import org.wikipedia.login.Login;
+import org.wikiutils.ParseUtils;
 
 /**
  * The Class Refernces.

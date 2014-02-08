@@ -784,4 +784,15 @@ public class ParseUtils {
 			templateName = template.substring(2, index);
 		return templateName;
 	}
+
+	public static String getInternalLinkTitle(String internalLink){
+		if(internalLink == null)
+			return null;
+		Pattern p = Pattern.compile("\\[\\[.*?\\|(.*)\\]\\]");
+		Matcher m = p.matcher(internalLink);
+		if(m.find())
+			return m.group(1);
+		else
+			return internalLink;
+	}
 }

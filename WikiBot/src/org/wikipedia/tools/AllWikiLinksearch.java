@@ -20,11 +20,19 @@
 
 package org.wikipedia.tools;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.swing.*;
-import org.wikipedia.*;
+
+import javax.swing.JOptionPane;
+import javax.swing.ProgressMonitor;
+
+import org.wikipedia.WMFWiki;
+import org.wikipedia.Wiki;
 
 /**
  *  Searches all Wikimedia wikis for a given external link. Consider:

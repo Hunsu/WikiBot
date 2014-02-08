@@ -1,11 +1,13 @@
 package org.wikiutils;
 
 import java.io.IOException;
+
 import javax.security.auth.login.FailedLoginException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
 import org.wikipedia.Wiki;
 
 /**

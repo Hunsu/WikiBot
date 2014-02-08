@@ -5,9 +5,6 @@ import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The Class TreeBuilder.
  *

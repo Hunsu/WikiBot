@@ -22,7 +22,9 @@
  */
 package com.inet.jortho;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The Class DictionaryBase.

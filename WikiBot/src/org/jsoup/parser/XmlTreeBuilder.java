@@ -1,10 +1,15 @@
 package org.jsoup.parser;
 
-import org.jsoup.helper.Validate;
-import org.jsoup.nodes.*;
-
 import java.util.Iterator;
 import java.util.List;
+
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Comment;
+import org.jsoup.nodes.DocumentType;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.nodes.XmlDeclaration;
 
 /**
  * The Class XmlTreeBuilder.

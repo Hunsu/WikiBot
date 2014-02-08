@@ -22,9 +22,11 @@
  */
 package com.inet.jortho;
 
-import java.awt.event.*;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 
 /**
  * The Class CheckerMenu.

@@ -1,22 +1,21 @@
 package org.wikipedia.maintenance;
 
-import java.io.*;
-
-import org.jdom2.Element;
-import org.jdom2.input.SAXBuilder;
-
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-import org.jsoup.*;
+import org.jdom2.Element;
+import org.jdom2.input.SAXBuilder;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.wikipedia.Wiki;
-import org.wikiutils.ParseUtils;
-
 import org.wikipedia.login.Login;
+import org.wikiutils.ParseUtils;
 
 /**
  * The Class Pmid.

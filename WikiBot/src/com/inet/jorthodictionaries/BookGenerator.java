@@ -22,12 +22,23 @@
  */
 package com.inet.jorthodictionaries;
 
-import java.io.*;
-import java.lang.reflect.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.zip.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**

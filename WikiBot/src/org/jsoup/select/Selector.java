@@ -1,10 +1,10 @@
 package org.jsoup.select;
 
-import org.jsoup.helper.Validate;
-import org.jsoup.nodes.Element;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
+import org.jsoup.helper.Validate;
+import org.jsoup.nodes.Element;
 
 /**
  * CSS-like element selector, that finds elements matching a query.

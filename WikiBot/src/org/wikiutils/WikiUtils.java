@@ -2,6 +2,7 @@ package org.wikiutils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.wikipedia.Wiki;
 
 /**

@@ -19,11 +19,15 @@
  */
 package org.wikipedia.tools;
 
-import java.io.*;
-import java.util.*;
-import java.net.*;
-import java.util.logging.*;
-import java.util.zip.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+import java.util.zip.GZIPInputStream;
+
 import org.wikipedia.Wiki;
 
 /**

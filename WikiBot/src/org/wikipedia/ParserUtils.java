@@ -20,7 +20,9 @@
 package org.wikipedia;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.StringTokenizer;
 
 /**
  *  Various parsing methods that e.g. turning Wiki.java objects into wikitext 

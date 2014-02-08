@@ -1,11 +1,16 @@
 package org.jsoup.parser;
 
-import org.jsoup.helper.DescendableLinkedList;
-import org.jsoup.helper.StringUtil;
-import org.jsoup.nodes.*;
-
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import org.jsoup.helper.DescendableLinkedList;
+import org.jsoup.helper.StringUtil;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.DocumentType;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 
 /**
  * The Tree Builder's current state. Each state embodies the processing for the state, and transitions to other states.

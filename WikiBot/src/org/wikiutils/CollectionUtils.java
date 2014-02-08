@@ -2,6 +2,7 @@ package org.wikiutils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.wikipedia.Wiki;
 
 /**
