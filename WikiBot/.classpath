@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/itext-xtra-5.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/itextpdf-5.4.5.jar"/>
 	<classpathentry kind="lib" path="/home/meradi/git/WikiBot/WikiBot/lib/theDBApi.jar"/>
+	<classpathentry kind="lib" path="/home/meradi/git/WikiBot/WikiBot/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -45,10 +45,10 @@ public class Doi {
 		try {
 			Login login = new Login();
 			wiki.login(login.getLogin(), login.getPassword());
-			ArrayList<String> pages = wiki.getPagesInCategory("Page à référence DOI incomplète", 500);
-			int size = pages.size();
+			String[] pages = wiki.getCategoryMembers("Page à référence DOI incomplète", 500);
+			int size = pages.length;
 			for(int i=0;i<size;i++){
-				String article = wiki.getPageText(pages.get(i),true);
+				String article = wiki.getPageText(pages[i],true);
 				ArrayList<String> al = ParseUtils.getTemplates("cite doi", article);
 				int alSize = al.size();
 				for(int j=0;j<alSize;j++){

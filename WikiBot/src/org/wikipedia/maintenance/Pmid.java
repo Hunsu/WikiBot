@@ -45,10 +45,10 @@ public class Pmid {
 		try {
 			Login login = new Login();
 			wiki.login(login.getLogin(), login.getPassword());
-			ArrayList<String> pages = wiki.getPagesInCategory("Page_avec_une_référence_PMID_incomplète", 25);
-			int size = pages.size();
+			String[] pages = wiki.getCategoryMembers("Page_avec_une_référence_PMID_incomplète");
+			int size = pages.length;
 			for(int i=0;i<size;i++){
-				String article = wiki.getPageText(pages.get(i),true);
+				String article = wiki.getPageText(pages[i],true);
 				ArrayList<String> al = ParseUtils.getTemplates("cite pmid", article);
 				int alSize = al.size();
 				for(int j=0;j<alSize;j++){
@@ -67,7 +67,7 @@ public class Pmid {
 						    			  + "[[en:Template:Cite pmid/{{subst:#titleparts:{{subst:PAGENAME}}|0|2}}]]\n"
 						    			  + "</noinclude>";
 								wiki.edit("Modèle:Cite pmid/"+pmid,text,"bot: création page");
-								wiki.purge(pages.get(i));
+								wiki.purge(true,pages[i]);
 							}
 						}
 						else{
@@ -85,7 +85,7 @@ public class Pmid {
 						e.printStackTrace();
 					}
 				}
-				wiki.edit(pages.get(i), article, "");
+				wiki.edit(pages[i], article, "");
 			}
 
 			//System.out.print(text);

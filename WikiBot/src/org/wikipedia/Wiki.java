@@ -1,6 +1,6 @@
 /**
  *  @(#)Wiki.java 0.30 05/12/2013
- *  Copyright (C) 2007 - 2013 MER-C and contributors
+ *  Copyright (C) 2007 - 2014 MER-C and contributors
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -84,10 +85,9 @@ import javax.security.auth.login.LoginException;
  */
 public class Wiki implements Serializable {
 	// Master TODO list:
-	// *Admin stuff (low priority)
+	// *Admin stuff
 	// *More multiqueries
 	// *Generators (hard)
-	// *Make handling of protection less bad
 
 	// NAMESPACES
 
@@ -356,7 +356,15 @@ public class Wiki implements Serializable {
 	public static final int ASSERT_NONE = 0;
 
 	/**
-	 * Assert that we have a bot flag (i.e. 2).
+	 * Assert that we are logged in (i.e. 1). This is checked every action.
+	 *
+	 * @see #setAssertionMode
+	 * @since 0.30
+	 */
+	public static final int ASSERT_USER = 1;
+
+	/**
+	 * Assert that we have a bot flag (i.e. 2). This is checked every action.
 	 *
 	 * @see #setAssertionMode
 	 * @since 0.11
@@ -364,13 +372,22 @@ public class Wiki implements Serializable {
 	public static final int ASSERT_BOT = 2;
 
 	/**
-	 * Assert that we have no new messages. Not defined in Assert Edit, but some
-	 * bots have this.
+	 * Assert that we have no new messages. Not defined officially, but some
+	 * bots have this. This is checked intermittently.
 	 *
 	 * @see #setAssertionMode
 	 * @since 0.11
 	 */
 	public static final int ASSERT_NO_MESSAGES = 4;
+
+	/**
+	 * Assert that we have a sysop flag (i.e. 8). This is checked
+	 * intermittently.
+	 *
+	 * @see #setAssertionMode
+	 * @since 0.30
+	 */
+	public static final int ASSERT_SYSOP = 8;
 
 	// RC OPTIONS
 
@@ -472,91 +489,51 @@ public class Wiki implements Serializable {
 		unknown;
 	}
 
-	/** The Constant version. */
 	private static final String version = "0.30";
 
 	// the domain of the wiki
-	/** The domain. */
 	private String domain;
-
-	/** The api url. */
 	protected String query, base, apiUrl;
-
-	/** The script path. */
 	protected String scriptPath = "/w";
-
-	/** The wg capital links. */
 	private boolean wgCapitalLinks = true;
 
 	// user management
-	/** The cookies. */
 	private HashMap<String, String> cookies = new HashMap<String, String>(12);
-
-	/** The user. */
 	private User user;
-
-	/** The statuscounter. */
 	private int statuscounter = 0;
 
 	// various caches
-	/** The namespaces. */
 	private HashMap<String, Integer> namespaces = null;
-
-	/** The watchlist. */
 	private ArrayList<String> watchlist = null;
 
 	// preferences
-	/** The max. */
 	private int max = 500;
-
-	/** The slowmax. */
 	private int slowmax = 50;
-
-	/** The throttle. */
 	private int throttle = 10000; // throttle
-
-	/** The maxlag. */
 	private int maxlag = 5;
-
-	/** The assertion. */
-	private int assertion = 0; // assertion mode
-
-	/** The statusinterval. */
+	private int assertion = ASSERT_NONE; // assertion mode
 	private int statusinterval = 100; // status check
-
-	/** The useragent. */
 	private String useragent = "Wiki.java " + version;
-
-	/** The zipped. */
 	private boolean zipped = true;
-
-	/** The markbot. */
 	private boolean markminor = false, markbot = false;
-
-	/** The resolveredirect. */
 	private boolean resolveredirect = false;
 
 	// retry flag
-	/** The retry. */
 	private boolean retry = true;
 
 	// serial version
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8745212681497644126L;
 
 	// time to open a connection
-	/** The Constant CONNECTION_CONNECT_TIMEOUT_MSEC. */
 	private static final int CONNECTION_CONNECT_TIMEOUT_MSEC = 30000; // 30
 																		// seconds
 	// time for the read to take place. (needs to be longer, some connections
 	// are slow
 	// and the data volume is large!)
-	/** The Constant CONNECTION_READ_TIMEOUT_MSEC. */
 	private static final int CONNECTION_READ_TIMEOUT_MSEC = 180000; // 180
-	// seconds
+																	// seconds
 	// log2(upload chunk size). Default = 22 => upload size = 4 MB. Disable
 	// chunked uploads by setting a large value here (50 = 1 PB will do).
-	/** The Constant LOG2_CHUNK_SIZE. */
 	private static final int LOG2_CHUNK_SIZE = 22;
 
 	// CONSTRUCTORS AND CONFIGURATION
@@ -611,7 +588,7 @@ public class Wiki implements Serializable {
 	}
 
 	/**
-	 * Override/edit this if you need to change the API and human interface url
+	 * Edit this if you need to change the API and human interface url
 	 * configuration of the wiki. Some example uses:
 	 *
 	 * *Your wiki not supporting HTTPS *Server-side cache management (maxage and
@@ -624,19 +601,33 @@ public class Wiki implements Serializable {
 	 * @since 0.24
 	 */
 	protected void initVars() {
-		String temp = "https://" + domain + scriptPath;
+		StringBuilder basegen = new StringBuilder("https://");
+		basegen.append(domain);
+		basegen.append(scriptPath);
+		StringBuilder apigen = new StringBuilder(basegen);
+		apigen.append("/api.php?format=xml&");
 		// MediaWiki has inbuilt maxlag functionality, see [[mw:Manual:Maxlag
 		// parameter]]. Let's exploit it.
 		if (maxlag >= 0) {
-			apiUrl = temp + "/api.php?maxlag=" + maxlag + "&format=xml&";
-			base = temp + "/index.php?maxlag=" + maxlag + "&title=";
-		} else {
-			apiUrl = temp + "/api.php?format=xml&";
-			base = temp + "/index.php?title=";
-		}
-		query = apiUrl + "action=query&";
+			apigen.append("maxlag=");
+			apigen.append(maxlag);
+			apigen.append("&");
+			basegen.append("/index.php?maxlag=");
+			basegen.append(maxlag);
+			basegen.append("&title=");
+		} else
+			basegen.append("/index.php?title=");
+		base = basegen.toString();
+		// the native API supports assertions as of MW 1.23
+		if ((assertion & ASSERT_BOT) == ASSERT_BOT)
+			apigen.append("assert=bot&");
+		else if ((assertion & ASSERT_USER) == ASSERT_USER)
+			apigen.append("assert=user&");
+		apiUrl = apigen.toString();
+		apigen.append("action=query&");
 		if (resolveredirect)
-			query += "redirects&";
+			apigen.append("redirects&");
+		query = apigen.toString();
 	}
 
 	/**
@@ -680,9 +671,9 @@ public class Wiki implements Serializable {
 	 * use it. You need not call this if you know the script path is <tt>/w</tt>
 	 * . See also [[mw:Manual:$wgScriptpath]].
 	 *
-	 * @return the script path, if you have any use for it
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return the script path, if you have any use for it
 	 * @since 0.14
 	 */
 	public String getScriptPath() throws IOException {
@@ -794,7 +785,7 @@ public class Wiki implements Serializable {
 	}
 
 	/**
-	 * Are edits are marked as bot by default?.
+	 * Are edits are marked as bot by default?
 	 *
 	 * @return whether edits are marked as bot by default
 	 * @since 0.26
@@ -816,7 +807,7 @@ public class Wiki implements Serializable {
 	}
 
 	/**
-	 * Are edits are marked as minor by default?.
+	 * Are edits are marked as minor by default?
 	 *
 	 * @return whether edits are marked as minor by default
 	 * @since 0.26
@@ -913,8 +904,7 @@ public class Wiki implements Serializable {
 	}
 
 	/**
-	 * Gets the assertion mode. See [[mw:Extension:Assert Edit]] for what
-	 * functionality this mimics. Assertion modes are bitmasks.
+	 * Gets the assertion mode. Assertion modes are bitmasks.
 	 *
 	 * @return the current assertion mode
 	 * @see #setAssertionMode
@@ -925,9 +915,8 @@ public class Wiki implements Serializable {
 	}
 
 	/**
-	 * Sets the assertion mode. See [[mw:Extension:Assert Edit]] for what this
-	 * functionality this mimics. Assertion modes are bitmasks. Default is
-	 * <tt>ASSERT_NONE</tt>.
+	 * Sets the assertion mode. Do this AFTER logging in, otherwise the login
+	 * will fail. Assertion modes are bitmasks. Default is <tt>ASSERT_NONE</tt>.
 	 *
 	 * @param mode
 	 *            an assertion mode
@@ -937,6 +926,7 @@ public class Wiki implements Serializable {
 	public void setAssertionMode(int mode) {
 		assertion = mode;
 		log(Level.CONFIG, "setAssertionMode", "Set assertion mode to " + mode);
+		initVars();
 	}
 
 	/**
@@ -972,16 +962,6 @@ public class Wiki implements Serializable {
 
 	// META STUFF
 
-
-	public void login() throws ClassNotFoundException, FileNotFoundException, IOException{
-		readObject(new ObjectInputStream(new FileInputStream("wiki")));
-	}
-
-	public void loginAndSaveobject(String username, String password) throws FailedLoginException, IOException{
-		login(username,password.toCharArray());
-		writeObject(new ObjectOutputStream(new FileOutputStream("wiki")));
-	}
-
 	/**
 	 * Logs in to the wiki. This method is thread-safe. If the specified
 	 * username or password is incorrect, the thread blocks for 20 seconds then
@@ -991,10 +971,10 @@ public class Wiki implements Serializable {
 	 *            a username
 	 * @param password
 	 *            a password (as a char[] due to JPasswordField)
-	 * @throws IOException
-	 *             if a network error occurs
 	 * @throws FailedLoginException
 	 *             if the login failed due to incorrect username and/or password
+	 * @throws IOException
+	 *             if a network error occurs
 	 * @see #logout
 	 */
 	public synchronized void login(String username, char[] password)
@@ -1044,18 +1024,6 @@ public class Wiki implements Serializable {
 	}
 
 	// Enables login while using a string password
-	/**
-	 * Login.
-	 *
-	 * @param username
-	 *            the username
-	 * @param password
-	 *            the password
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws FailedLoginException
-	 *             the failed login exception
-	 */
 	public synchronized void login(String username, String password)
 			throws IOException, FailedLoginException {
 		login(username, password.toCharArray());
@@ -1325,6 +1293,9 @@ public class Wiki implements Serializable {
 	 *            the page title
 	 * @return the name of the talk page corresponding to <tt>title</tt> or ""
 	 *         if we cannot recognise it
+	 * @throws IllegalArgumentException
+	 *             if given title is in a talk namespace or we try to retrieve
+	 *             the talk page of a Special: or Media: page.
 	 * @throws IOException
 	 *             if a network error occurs
 	 * @since 0.10
@@ -1620,15 +1591,16 @@ public class Wiki implements Serializable {
 	 *
 	 * @param title
 	 *            the title of the page.
-	 * @param redirect
-	 *            the redirect
 	 * @return the raw wikicode of a page.
+	 * @throws UnsupportedOperationException
+	 *             if you try to retrieve the text of a Special: or Media: page
+	 * @throws FileNotFoundException
+	 *             if the page does not exist
 	 * @throws IOException
 	 *             if a network error occurs
 	 * @see #edit
 	 */
-	public String getPageText(String title, boolean redirect)
-			throws IOException {
+	public String getPageText(String title) throws IOException {
 		// pitfall check
 		if (namespace(title) < 0)
 			throw new UnsupportedOperationException(
@@ -1640,64 +1612,7 @@ public class Wiki implements Serializable {
 		String temp = fetch(url, "getPageText");
 		log(Level.INFO, "getPageText", "Successfully retrieved text of "
 				+ title);
-		if (redirect) {
-			Pattern p = Pattern.compile("#REDIRECT\\[\\[(.*?)\\]\\]");
-			Matcher m = p.matcher(temp);
-			if (m.find())
-				return getPageText(m.group(1), false);
-		}
 		return temp;
-	}
-
-	/**
-	 * Gets the redirect title.
-	 *
-	 * @param title
-	 *            the title
-	 * @return the redirect title
-	 */
-	public String getRedirectTitle(String title) {
-		try {
-			if (namespace(title) < 0)
-				throw new UnsupportedOperationException(
-						"Cannot retrieve Special: or Media: pages!");
-
-			// go for it
-			String url;
-
-			url = base + URLEncoder.encode(normalize(title), "UTF-8")
-					+ "&action=raw";
-
-			String temp;
-			temp = fetch(url, "getPageText");
-
-			log(Level.INFO, "getPageText", "Successfully retrieved text of "
-					+ title);
-			Pattern p = Pattern
-					.compile("#(REDIRECTION|REDIRECT)\\s*\\[\\[(.*?)\\]\\]");
-			Matcher m = p.matcher(temp);
-			if (m.find())
-				return m.group(2);
-			else
-				return null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Gets the page text.
-	 *
-	 * @param title
-	 *            the title
-	 * @return the page text
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public String getPageText(String title) throws IOException {
-		return getPageText(title, false);
 	}
 
 	/**
@@ -1710,6 +1625,8 @@ public class Wiki implements Serializable {
 	 * @return the text of the given section
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if the page has less than <tt>number</tt> sections
 	 * @since 0.24
 	 */
 	public String getSectionText(String title, int number) throws IOException {
@@ -1719,7 +1636,6 @@ public class Wiki implements Serializable {
 		url.append("&rvsection=");
 		url.append(number);
 		String text = fetch(url.toString(), "getSectionText");
-		// FIXME: this is never reached, fetch throws an UnknownError instead
 		if (text.contains("code=\"rvnosuchsection\""))
 			throw new IllegalArgumentException("There is no section " + number
 					+ " in the page " + title);
@@ -1761,27 +1677,30 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title
-	 *            the title of the page
 	 * @param text
 	 *            the text of the page
+	 * @param title
+	 *            the title of the page
 	 * @param summary
 	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
 	 *            than 200 characters are truncated server-side.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws UnsupportedOperationException
+	 *             if you try to edit a Special: or a Media: page
 	 * @see #getPageText
 	 */
 	public void edit(String title, String text, String summary)
 			throws IOException, LoginException {
-		if (!hasNewMessages())
-			edit(title, text, summary, markminor, markbot, -2, null);
-		else {
-			System.out.println("New massage!\n");
+		if(hasNewMessages()){
+			System.out.println("New Message!");
 			System.exit(0);
 		}
+		edit(title, text, summary, markminor, markbot, -2, null);
 	}
 
 	/**
@@ -1790,10 +1709,10 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title
-	 *            the title of the page
 	 * @param text
 	 *            the text of the page
+	 * @param title
+	 *            the title of the page
 	 * @param summary
 	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
 	 *            than 200 characters are truncated server-side.
@@ -1802,8 +1721,12 @@ public class Wiki implements Serializable {
 	 *            used to check for edit conflicts. <tt>null</tt> disables this.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws UnsupportedOperationException
+	 *             if you try to edit a Special: or a Media: page
 	 * @see #getPageText
 	 */
 	public void edit(String title, String text, String summary,
@@ -1817,10 +1740,10 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title
-	 *            the title of the page
 	 * @param text
 	 *            the text of the page
+	 * @param title
+	 *            the title of the page
 	 * @param summary
 	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
 	 *            than 200 characters are truncated server-side.
@@ -1829,8 +1752,12 @@ public class Wiki implements Serializable {
 	 *            disable section editing.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws UnsupportedOperationException
+	 *             if you try to edit a Special: or a Media: page
 	 * @see #getPageText
 	 * @since 0.25
 	 */
@@ -1845,10 +1772,10 @@ public class Wiki implements Serializable {
 	 * The edit will be marked bot if <tt>isMarkBot() == true</tt> and minor if
 	 * <tt>isMarkMinor() == true</tt>.
 	 *
-	 * @param title
-	 *            the title of the page
 	 * @param text
 	 *            the text of the page
+	 * @param title
+	 *            the title of the page
 	 * @param summary
 	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
 	 *            than 200 characters are truncated server-side.
@@ -1860,8 +1787,12 @@ public class Wiki implements Serializable {
 	 *            used to check for edit conflicts. <tt>null</tt> disables this.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws UnsupportedOperationException
+	 *             if you try to edit a Special: or a Media: page
 	 * @see #getPageText
 	 * @since 0.25
 	 */
@@ -1874,10 +1805,10 @@ public class Wiki implements Serializable {
 	 * Edits a page by setting its text to the supplied value. This method is
 	 * thread safe and blocks for a minimum time as specified by the throttle.
 	 *
-	 * @param title
-	 *            the title of the page
 	 * @param text
 	 *            the text of the page
+	 * @param title
+	 *            the title of the page
 	 * @param summary
 	 *            the edit summary. See [[Help:Edit summary]]. Summaries longer
 	 *            than 200 characters are truncated server-side.
@@ -1895,8 +1826,14 @@ public class Wiki implements Serializable {
 	 *            used to check for edit conflicts. <tt>null</tt> disables this.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws UnsupportedOperationException
+	 *             if you try to edit a Special: or Media: page
 	 * @see #getPageText
 	 * @since 0.17
 	 */
@@ -1907,7 +1844,6 @@ public class Wiki implements Serializable {
 		// @revised 0.17 section editing
 		// @revised 0.25 optional bot flagging
 		long start = System.currentTimeMillis();
-		statusCheck();
 
 		// protection and token
 		HashMap info = getPageInfo(title);
@@ -1957,7 +1893,7 @@ public class Wiki implements Serializable {
 					// ideas.
 		}
 		try {
-			checkErrors(response, "edit");
+			checkErrorsAndUpdateStatus(response, "edit");
 		} catch (IOException e) {
 			// retry once
 			if (retry) {
@@ -1973,15 +1909,7 @@ public class Wiki implements Serializable {
 		if (retry)
 			log(Level.INFO, "edit", "Successfully edited " + title);
 		retry = true;
-
-		// throttle
-		try {
-			long time = throttle - System.currentTimeMillis() + start;
-			if (time > 0)
-				Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// nobody cares
-		}
+		throttle(start);
 	}
 
 	/**
@@ -1997,12 +1925,16 @@ public class Wiki implements Serializable {
 	 * @param minor
 	 *            whether the edit should be marked as minor (see [[Help:Minor
 	 *            edit]])
-	 * @param bot
-	 *            the bot
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws UnsupportedOperationException
+	 *             if you try to edit a Special: or Media: page
 	 * @since 0.17
 	 */
 	public void newSection(String title, String subject, String text,
@@ -2027,10 +1959,17 @@ public class Wiki implements Serializable {
 	 * @param bot
 	 *            whether to mark the edit as a bot edit (ignored if one does
 	 *            not have the necessary permissions)
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws UnsupportedOperationException
+	 *             if you try to retrieve the text of a Special: page or a
+	 *             Media: page
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
 	 */
 	public void prepend(String title, String stuff, String summary,
 			boolean minor, boolean bot) throws IOException, LoginException {
@@ -2050,15 +1989,17 @@ public class Wiki implements Serializable {
 	 *            the reason for deletion
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialNotFoundException
+	 *             if the user lacks the permission to delete
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws AccountLockedException
+	 *             if user is blocked
 	 * @since 0.24
 	 */
 	public synchronized void delete(String title, String reason)
 			throws IOException, LoginException {
 		long start = System.currentTimeMillis();
-		statusCheck();
-
 		if (user == null || !user.isAllowedTo("delete"))
 			throw new CredentialNotFoundException(
 					"Cannot delete: Permission denied");
@@ -2085,7 +2026,7 @@ public class Wiki implements Serializable {
 		// done
 		try {
 			if (!response.contains("<delete title="))
-				checkErrors(response, "delete");
+				checkErrorsAndUpdateStatus(response, "delete");
 		} catch (IOException e) {
 			// retry once
 			if (retry) {
@@ -2101,24 +2042,96 @@ public class Wiki implements Serializable {
 		if (retry)
 			log(Level.INFO, "delete", "Successfully deleted " + title);
 		retry = true;
+		throttle(start);
+	}
 
-		// throttle
-		try {
-			long time = throttle - System.currentTimeMillis() + start;
-			if (time > 0)
-				Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// nobody cares
+	/**
+	 * Undeletes a page. Equivalent to [[Special:Undelete]]. Restores ALL
+	 * deleted revisions and files by default.
+	 *
+	 * @param title
+	 *            a page to undelete
+	 * @param reason
+	 *            the reason for undeletion
+	 * @param revisions
+	 *            a list of revisions for selective undeletion
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot undelete
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @since 0.30
+	 */
+	public synchronized void undelete(String title, String reason,
+			Revision... revisions) throws IOException, LoginException {
+		long start = System.currentTimeMillis();
+		if (user == null || !user.isAllowedTo("undelete"))
+			throw new CredentialNotFoundException(
+					"Cannot undelete: Permission denied");
+
+		// deleted revisions token
+		String titleenc = URLEncoder.encode(normalize(title), "UTF-8");
+		String delrev = query
+				+ "action=query&list=deletedrevs&drlimit=1&drprop=token&titles="
+				+ titleenc;
+		if (!delrev.contains("token=\"")) // nothing to undelete
+		{
+			log(Level.WARNING, "undelete", "Page \"" + title
+					+ "\" has no deleted revisions!");
+			return;
 		}
+		String drtoken = parseAttribute(delrev, "token", 0);
+
+		StringBuilder out = new StringBuilder("title=");
+		out.append(titleenc);
+		out.append("&reason=");
+		out.append(URLEncoder.encode(reason, "UTF-8"));
+		out.append("&token=");
+		out.append(URLEncoder.encode(drtoken, "UTF-8"));
+		if (revisions.length != 0) {
+			out.append("&timestamps=");
+			for (int i = 0; i < revisions.length - 1; i++) {
+				out.append(calendarToTimestamp(revisions[i].getTimestamp()));
+				out.append("%7C");
+			}
+			out.append(calendarToTimestamp(revisions[revisions.length - 1]
+					.getTimestamp()));
+		}
+		String response = post(apiUrl + "action=undelete", out.toString(),
+				"undelete");
+
+		// done
+		try {
+			if (!response.contains("<undelete title="))
+				checkErrorsAndUpdateStatus(response, "undelete");
+		} catch (IOException e) {
+			// retry once
+			if (retry) {
+				retry = false;
+				log(Level.WARNING, "undelete", "Exception: " + e.getMessage()
+						+ " Retrying...");
+				delete(title, reason);
+			} else {
+				log(Level.SEVERE, "undelete", "EXCEPTION: " + e);
+				throw e;
+			}
+		}
+		if (retry)
+			log(Level.INFO, "undelete", "Successfully undeleted " + title);
+		retry = true;
+		throttle(start);
 	}
 
 	/**
 	 * Purges the server-side cache for various pages.
 	 *
-	 * @param links
-	 *            update the links tables
 	 * @param titles
 	 *            the titles of the page to purge
+	 * @param links
+	 *            update the links tables
 	 * @throws IOException
 	 *             if a network error occurs
 	 * @since 0.17
@@ -2133,24 +2146,6 @@ public class Wiki implements Serializable {
 			post(url.toString(), "&titles=" + x, "purge");
 		log(Level.INFO, "purge", "Successfully purged " + titles.length
 				+ " pages.");
-	}
-
-	/**
-	 * Purge.
-	 *
-	 * @param title
-	 *            the title
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public void purge(String title) throws IOException {
-		StringBuilder url = new StringBuilder(
-				"https://fr.wikipedia.org/w/index.php?title=");
-		title = URLEncoder.encode(title, "UTF-8");
-		url.append(title);
-		url.append("&action=purge");
-
-		post(url.toString(), "&titles=" + title, "purge");
 	}
 
 	/**
@@ -2195,60 +2190,60 @@ public class Wiki implements Serializable {
 	 * @since 0.16
 	 */
 	public String[] getCategories(String title) throws IOException {
-		String url = query + "prop=categories&cllimit=max&titles="
-				+ URLEncoder.encode(title, "UTF-8");
-		String line = fetch(url, "getCategories");
+		return getCategories(title, false, false);
+	}
 
-		// xml form: <cl ns="14" title="Category:1879 births" />
+	/**
+	 * Gets the list of categories a particular page is in. Ignores hidden
+	 * categories if ignoreHidden is true. Also includes the sortkey of a
+	 * category if sortkey is true. The sortkey would then be appended to the
+	 * element of the returned string array (separated by "|"). Capped at
+	 * <tt>max</tt> number of categories, there's no reason why there should be
+	 * more than that.
+	 *
+	 * @param title
+	 *            a page
+	 * @param sortkey
+	 *            return a sortkey as well (default = false)
+	 * @param ignoreHidden
+	 *            skip hidden categories (default = false)
+	 * @return the list of categories that the page is in
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @since 0.30
+	 */
+	public String[] getCategories(String title, boolean sortkey,
+			boolean ignoreHidden) throws IOException {
+		StringBuilder url = new StringBuilder(query);
+		url.append("prop=categories&cllimit=max");
+		if (sortkey || ignoreHidden)
+			url.append("&clprop=sortkey%7Chidden");
+		url.append("&titles=");
+		url.append(URLEncoder.encode(title, "UTF-8"));
+		String line = fetch(url.toString(), "getCategories");
+
+		// xml form: <cl ns="14" title="Category:1879 births" sortkey=(long
+		// string) sortkeyprefix="" />
+		// or : <cl ns="14" title="Category:Images for cleanup" sortkey=(long
+		// string) sortkeyprefix="Borders" hidden="" />
 		ArrayList<String> categories = new ArrayList<String>(750);
-		for (int a = line.indexOf("<cl "); a > 0; a = line.indexOf("<cl ", ++a))
-			categories.add(decode(parseAttribute(line, "title", a)));
-
+		int a, b; // beginIndex and endIndex
+		for (a = line.indexOf("<cl "); a > 0; a = b) {
+			b = line.indexOf("<cl ", a + 1);
+			if (ignoreHidden
+					&& line.substring(a, (b > 0 ? b : line.length())).contains(
+							"hidden"))
+				continue;
+			String category = decode(parseAttribute(line, "title", a));
+			if (sortkey)
+				category += ("|" + parseAttribute(line, "sortkeyprefix", a));
+			categories.add(category);
+		}
 		int temp = categories.size();
 		log(Level.INFO, "getCategories",
 				"Successfully retrieved categories of " + title + " (" + temp
 						+ " categories)");
 		return categories.toArray(new String[temp]);
-	}
-
-	/**
-	 * Gets the pages in category.
-	 *
-	 * @param categoryName
-	 *            the category name
-	 * @param number
-	 *            the number
-	 * @return the pages in category
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public ArrayList<String> getPagesInCategory(String categoryName, int number)
-			throws IOException {
-		ArrayList<String> al = new ArrayList<String>();
-		int maxQuery;
-		categoryName = "Category:" + categoryName;
-		String url = query + "list=categorymembers&cmtitle="
-				+ URLEncoder.encode(categoryName, "UTF-8") + "&cmlimit=";
-		// url = url + String.valueOf(maxQuery);
-		String cmcontinue = "";
-		do {
-			maxQuery = (max > number) ? number : max;
-			url += maxQuery;
-			String response = fetch(url, "getPagesInCategory");
-			String s = parseAttribute(response, "cmcontinue",
-					response.indexOf("<categorymembers"));
-			if (s != null)
-				cmcontinue = decode(s);
-			else
-				cmcontinue = null;
-			url += "&cmcontinue=" + cmcontinue;
-			for (int a = response.indexOf("<cm "); a > 0; a = response.indexOf(
-					"<cm ", ++a)) {
-				al.add(decode(parseAttribute(response, "title", a)));
-			}
-		} while (cmcontinue != null);
-
-		return al;
 	}
 
 	/**
@@ -2636,6 +2631,234 @@ public class Wiki implements Serializable {
 	}
 
 	/**
+	 * Gets the deleted history of a page.
+	 *
+	 * @param title
+	 *            a page
+	 * @return the deleted revisions of that page in that time span
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot obtain deleted revisions
+	 * @since 0.30
+	 */
+	public Revision[] getDeletedHistory(String title) throws IOException,
+			CredentialNotFoundException {
+		return deletedRevs("", title, null, null, false, ALL_NAMESPACES);
+	}
+
+	/**
+	 * Gets the deleted history of a page.
+	 *
+	 * @param title
+	 *            a page
+	 * @param start
+	 *            the EARLIEST of the two dates
+	 * @param end
+	 *            the LATEST of the two dates
+	 * @param reverse
+	 *            whether to put the oldest first (default = false, newest first
+	 *            is how history pages work)
+	 * @return the deleted revisions of that page in that time span
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot obtain deleted revisions
+	 * @since 0.30
+	 */
+	public Revision[] getDeletedHistory(String title, Calendar start,
+			Calendar end, boolean reverse) throws IOException,
+			CredentialNotFoundException {
+		return deletedRevs("", title, start, end, reverse, ALL_NAMESPACES);
+	}
+
+	/**
+	 * Gets the deleted contributions of a user. Equivalent to
+	 * [[Special:Deletedcontributions]].
+	 *
+	 * @param u
+	 *            a user
+	 * @return the deleted contributions of that user
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot obtain deleted revisions
+	 * @since 0.30
+	 */
+	public Revision[] deletedContribs(String u) throws IOException,
+			CredentialNotFoundException {
+		return deletedRevs(u, "", null, null, false, ALL_NAMESPACES);
+	}
+
+	/**
+	 * Gets the deleted contributions of a user in the given namespace.
+	 * Equivalent to [[Special:Deletedcontributions]].
+	 *
+	 * @param u
+	 *            a user
+	 * @param start
+	 *            the EARLIEST of the two dates
+	 * @param end
+	 *            the LATEST of the two dates
+	 * @param reverse
+	 *            whether to put the oldest first (default = false, newest first
+	 *            is how history pages work)
+	 * @param namespace
+	 *            ONE namespace or ALL_NAMESPACES
+	 * @return the deleted contributions of that user
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot obtain deleted revisions
+	 * @since 0.30
+	 */
+	public Revision[] deletedContribs(String u, Calendar end, Calendar start,
+			boolean reverse, int namespace) throws IOException,
+			CredentialNotFoundException {
+		return deletedRevs(u, "", end, start, false, namespace);
+	}
+
+	/**
+	 * Internal list=deletedrevs handler.
+	 *
+	 * @param u
+	 *            a user (use "" to not specify one)
+	 * @param title
+	 *            a page title
+	 * @param start
+	 *            the EARLIEST of two cutoff dates (use null to not specify one)
+	 * @param end
+	 *            the LATEST of two cutoff dates (use null to not specify one)
+	 * @param reverse
+	 *            whether to put the oldest first (default = false, newest first
+	 *            is how history pages work)
+	 * @param namespace
+	 *            ONE namespace or ALL_NAMESPACES
+	 * @return a list of deleted revisions
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot obtain deleted revisions
+	 * @since 0.30
+	 */
+	protected Revision[] deletedRevs(String u, String title, Calendar start,
+			Calendar end, boolean reverse, int namespace) throws IOException,
+			CredentialNotFoundException {
+		// admin queries are annoying
+		if (!user.isAllowedTo("deletedhistory"))
+			throw new CredentialNotFoundException(
+					"Permission denied: not able to view deleted history");
+
+		StringBuilder url = new StringBuilder(query);
+		url.append("list=deletedrevs&drprop=revid%7Cparentid%7Clen%7Cminor%7Ccomment%7Cuser&drlimit=max");
+		if (reverse)
+			url.append("&drdir=newer");
+		if (start != null) {
+			url.append(reverse ? "&drstart=" : "&drend=");
+			url.append(calendarToTimestamp(start));
+		}
+		if (end != null) {
+			url.append(reverse ? "&drend=" : "&drstart=");
+			url.append(calendarToTimestamp(end));
+		}
+		// get the deleted contributions of a user
+		if (title.isEmpty()) {
+			url.append("&druser=");
+			url.append(URLEncoder.encode(u, "UTF-8"));
+			if (namespace != ALL_NAMESPACES) {
+				// the API documentation is wrong here, this query behaves
+				// exactly
+				// like [[Special:DeletedContributions]]
+				url.append("&drnamespace=");
+				url.append(namespace);
+			}
+		}
+		// get the deleted history of a page
+		else {
+			url.append("&titles=");
+			url.append(URLEncoder.encode(title, "UTF-8"));
+		}
+		String drcontinue = null, drstart = null;
+		ArrayList<Revision> delrevs = new ArrayList<Revision>(500);
+		do {
+			String response;
+			if (drcontinue != null)
+				response = fetch(
+						url.toString() + "&drcontinue="
+								+ URLEncoder.encode(drcontinue, "UTF-8"),
+						"deletedRevs"); // huh?
+			else if (drstart != null)
+				response = fetch(url.toString() + "&drstart=" + drstart,
+						"deletedRevs"); // deleted contributions
+			else
+				response = fetch(url.toString(), "deletedRevs");
+			if (response.contains("drcontinue=\""))
+				drcontinue = parseAttribute(response, "drcontinue", 0);
+			else if (response.contains("drstart=\""))
+				drstart = parseAttribute(response, "drstart", 0);
+			else {
+				drcontinue = null;
+				drstart = null;
+			}
+
+			// parse
+			int x = response.indexOf("<deletedrevs>");
+			if (x < 0) // no deleted history/contributions
+				break;
+			for (x = response.indexOf("<page ", x); x > 0; x = response
+					.indexOf("<page ", ++x)) {
+				String deltitle = parseAttribute(response, "title", x);
+				int y = response.indexOf("</page>", x);
+				for (int z = response.indexOf("<rev ", x); z < y && z >= 0; z = response
+						.indexOf("<rev ", ++z)) {
+					int aa = response.indexOf(" />", z);
+					delrevs.add(parseRevision(response.substring(z, aa),
+							deltitle));
+				}
+			}
+		} while (drcontinue != null || drstart != null);
+
+		int size = delrevs.size();
+		log(Level.INFO, "Successfully fetched " + size + " deleted revisions.",
+				"deletedRevs");
+		return delrevs.toArray(new Revision[size]);
+	}
+
+	/**
+	 * Gets the text of a deleted page (it's like getPageText, but for deleted
+	 * pages).
+	 *
+	 * @param page
+	 *            a page
+	 * @return the deleted text
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @throws CredentialNotFoundException
+	 *             if we cannot obtain deleted revisions
+	 * @since 0.30
+	 */
+	public String getDeletedText(String page) throws IOException,
+			CredentialNotFoundException {
+		if (!user.isAllowedTo("deletedhistory")
+				|| !user.isAllowedTo("deletedtext"))
+			throw new CredentialNotFoundException(
+					"Permission denied: not able to view deleted history or text.");
+
+		// TODO: this can be multiquery(?)
+		StringBuilder url = new StringBuilder(query);
+		url.append("list=deletedrevs&drlimit=1&drprop=content&titles=");
+		url.append(URLEncoder.encode(page, "UTF-8"));
+
+		// expected form: <rev timestamp="2009-04-05T22:40:35Z"
+		// xml:space="preserve">TEXT OF PAGE</rev>
+		String line = fetch(url.toString(), "getDeletedText");
+		int a = line.indexOf("<rev ");
+		a = line.indexOf(">", a) + 1;
+		int b = line.indexOf("</rev>", a);
+		return line.substring(a, b);
+	}
+
+	/**
 	 * Moves a page. Moves the associated talk page and leaves redirects, if
 	 * applicable. Equivalent to [[Special:MovePage]]. This method is thread
 	 * safe and is subject to the throttle.
@@ -2646,10 +2869,17 @@ public class Wiki implements Serializable {
 	 *            the new title of the page
 	 * @param reason
 	 *            a reason for the move
+	 * @throws UnsupportedOperationException
+	 *             if the original page is in the Category or Image namespace.
+	 *             MediaWiki does not support moving of these pages.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialNotFoundException
+	 *             if not logged in
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialException
+	 *             if page is protected and we can't move it
 	 * @since 0.16
 	 */
 	public void move(String title, String newTitle, String reason)
@@ -2670,22 +2900,28 @@ public class Wiki implements Serializable {
 	 * @param noredirect
 	 *            don't leave a redirect behind. You need to be a admin to do
 	 *            this, otherwise this option is ignored.
-	 * @param movetalk
-	 *            move the talk page as well (if applicable)
 	 * @param movesubpages
 	 *            move the subpages of this page as well. You need to be an
 	 *            admin to do this, otherwise this will be ignored.
+	 * @param movetalk
+	 *            move the talk page as well (if applicable)
+	 * @throws UnsupportedOperationException
+	 *             if the original page is in the Category or Image namespace.
+	 *             MediaWiki does not support moving of these pages.
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialNotFoundException
+	 *             if not logged in
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialException
+	 *             if page is protected and we can't move it
 	 * @since 0.16
 	 */
 	public synchronized void move(String title, String newTitle, String reason,
 			boolean noredirect, boolean movetalk, boolean movesubpages)
 			throws IOException, LoginException {
 		long start = System.currentTimeMillis();
-
 		// check for log in
 		if (user == null || !user.isAllowedTo("move")) {
 			CredentialNotFoundException ex = new CredentialNotFoundException(
@@ -2693,7 +2929,6 @@ public class Wiki implements Serializable {
 			log(Level.SEVERE, "move", "Cannot move - permission denied: " + ex);
 			throw ex;
 		}
-		statusCheck();
 
 		// check namespace
 		int ns = namespace(title);
@@ -2739,7 +2974,7 @@ public class Wiki implements Serializable {
 		try {
 			// success
 			if (!response.contains("move from"))
-				checkErrors(response, "move");
+				checkErrorsAndUpdateStatus(response, "move");
 		} catch (IOException e) {
 			// retry once
 			if (retry) {
@@ -2757,15 +2992,7 @@ public class Wiki implements Serializable {
 			log(Level.INFO, "move", "Successfully moved " + title + " to "
 					+ newTitle);
 		retry = true;
-
-		// throttle
-		try {
-			long time = throttle - System.currentTimeMillis() + start;
-			if (time > 0)
-				Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// nobody cares
-		}
+		throttle(start);
 	}
 
 	/**
@@ -2774,15 +3001,15 @@ public class Wiki implements Serializable {
 	 * be left untouched):
 	 *
 	 * <pre>
-	 * {
-	 * edit => one of { NO_PROTECTION, SEMI_PROTECTION, FULL_PROTECTION }, // restricts editing
-	 * editexpiry => Calendar, // expiry time for edit protection, null = indefinite
-	 * move, moveexpiry, // as above, prevents page moving
-	 * create, createexpiry, // as above, prevents page creation (no effect on existing pages)
-	 * upload, uploadexpiry, // as above, prevents uploading of files (FILE_NAMESPACE only)
-	 * cascade => Boolean // Enables cascading protection (requires edit=FULL_PROTECTION). Default: false.
-	 * cascadesource => String // souce of cascading protection (here ignored)
-	 * };
+	 *  {
+	 *     edit => one of { NO_PROTECTION, SEMI_PROTECTION, FULL_PROTECTION }, // restricts editing
+	 *     editexpiry => Calendar, // expiry time for edit protection, null = indefinite
+	 *     move, moveexpiry, // as above, prevents page moving
+	 *     create, createexpiry, // as above, prevents page creation (no effect on existing pages)
+	 *     upload, uploadexpiry, // as above, prevents uploading of files (FILE_NAMESPACE only)
+	 *     cascade => Boolean // Enables cascading protection (requires edit=FULL_PROTECTION). Default: false.
+	 *     cascadesource => String // souce of cascading protection (here ignored)
+	 *  };
 	 * </pre>
 	 *
 	 * @param page
@@ -2793,8 +3020,12 @@ public class Wiki implements Serializable {
 	 *            the reason for (un)protection
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialNotFoundException
+	 *             if we cannot protect
 	 * @since 0.30
 	 */
 	public synchronized void protect(String page,
@@ -2804,42 +3035,63 @@ public class Wiki implements Serializable {
 			throw new CredentialNotFoundException(
 					"Cannot protect: permission denied.");
 
-		// This is totally untested. Beware!
-		throw new UnsupportedOperationException("Not implemented yet!");
-		/*
-		 * long start = System.currentTimeMillis(); HashMap info =
-		 * getPageInfo(page); String protectToken = (String)info.get("token");
-		 *
-		 * StringBuilder out = new StringBuilder("title=");
-		 * out.append(URLEncoder.encode(page, "UTF-8")); out.append("&reason=");
-		 * out.append(URLEncoder.encode(reason, "UTF-8"));
-		 * out.append("&token="); out.append(URLEncoder.encode(protectToken,
-		 * "UTF-8")); // cascade protection if
-		 * (protectionstate.containsKey("cascade")) out.append("&cascade=1"); //
-		 * protection levels out.append("&protections="); StringBuilder temp =
-		 * new StringBuilder(); for (Map.Entry<String, Object> entry :
-		 * protectionstate.entrySet()) { String key = entry.getKey(); if
-		 * (!key.contains("expiry") && !key.equals("cascade")) {
-		 * out.append(key); out.append("="); out.append(entry.getValue());
-		 * Calendar expiry = (Calendar)protectionstate.get(key + "expiry");
-		 * temp.append(expiry == null ? "never" : calendarToTimestamp(expiry));
-		 * out.append("%7C"); temp.append("%7C"); } } out.delete(out.length() -
-		 * 3, out.length()); temp.delete(temp.length() - 3, temp.length());
-		 * out.append("&expiry="); out.append(temp); System.out.println(out);
-		 *
-		 * String response = post(apiUrl + "action=protect", out.toString(),
-		 * "protect"); try { checkErrors(response, "post"); } catch (IOException
-		 * e) { // retry once if (retry) { retry = false; log(Level.WARNING,
-		 * "protect", "Exception: " + e.getMessage() + " Retrying...");
-		 * protect(page, protectionstate, reason); } else { log(Level.SEVERE,
-		 * "protect", "EXCEPTION: " + e); throw e; } } if (retry)
-		 * log(Level.INFO, "edit", "Successfully protected " + page); retry =
-		 * true;
-		 *
-		 * // throttle try { long time = throttle - System.currentTimeMillis() +
-		 * start; if (time > 0) Thread.sleep(time); } catch
-		 * (InterruptedException e) { // nobody cares }
-		 */
+		long start = System.currentTimeMillis();
+		HashMap info = getPageInfo(page);
+		String protectToken = (String) info.get("token");
+
+		StringBuilder out = new StringBuilder("title=");
+		out.append(URLEncoder.encode(page, "UTF-8"));
+		out.append("&reason=");
+		out.append(URLEncoder.encode(reason, "UTF-8"));
+		out.append("&token=");
+		out.append(URLEncoder.encode(protectToken, "UTF-8"));
+		// cascade protection
+		if (protectionstate.containsKey("cascade"))
+			out.append("&cascade=1");
+		// protection levels
+		out.append("&protections=");
+		StringBuilder temp = new StringBuilder();
+		for (Map.Entry<String, Object> entry : protectionstate.entrySet()) {
+			String key = entry.getKey();
+			if (!key.contains("expiry") && !key.equals("cascade")) {
+				out.append(key);
+				out.append("=");
+				out.append(entry.getValue());
+				Calendar expiry = (Calendar) protectionstate
+						.get(key + "expiry");
+				temp.append(expiry == null ? "never"
+						: calendarToTimestamp(expiry));
+				out.append("%7C");
+				temp.append("%7C");
+			}
+		}
+		out.delete(out.length() - 3, out.length());
+		temp.delete(temp.length() - 3, temp.length());
+		out.append("&expiry=");
+		out.append(temp);
+		System.out.println(out);
+
+		String response = post(apiUrl + "action=protect", out.toString(),
+				"protect");
+		try {
+			if (!response.contains("<protect "))
+				checkErrorsAndUpdateStatus(response, "protect");
+		} catch (IOException e) {
+			// retry once
+			if (retry) {
+				retry = false;
+				log(Level.WARNING, "protect", "Exception: " + e.getMessage()
+						+ " Retrying...");
+				protect(page, protectionstate, reason);
+			} else {
+				log(Level.SEVERE, "protect", "EXCEPTION: " + e);
+				throw e;
+			}
+		}
+		if (retry)
+			log(Level.INFO, "edit", "Successfully protected " + page);
+		retry = true;
+		throttle(start);
 	}
 
 	/**
@@ -2851,8 +3103,12 @@ public class Wiki implements Serializable {
 	 *            the reason for unprotection
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialNotFoundException
+	 *             if we cannot protect
 	 * @since 0.30
 	 */
 	public void unprotect(String page, String reason) throws IOException,
@@ -2969,8 +3225,12 @@ public class Wiki implements Serializable {
 	 *            for the rollback to succeed
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialNotFoundException
+	 *             if the user is not an admin
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws AccountLockedException
+	 *             if the user is blocked
 	 * @since 0.19
 	 */
 	public void rollback(Revision revision) throws IOException, LoginException {
@@ -2994,8 +3254,12 @@ public class Wiki implements Serializable {
 	 *            ([[MediaWiki:Revertpage]]).
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialNotFoundException
+	 *             if the user is not an admin
+	 * @throws AccountLockedException
+	 *             if the user is blocked
 	 * @since 0.19
 	 */
 	public synchronized void rollback(Revision revision, boolean bot,
@@ -3004,13 +3268,6 @@ public class Wiki implements Serializable {
 		if (user == null || !user.isAllowedTo("rollback"))
 			throw new CredentialNotFoundException(
 					"Permission denied: cannot rollback.");
-		statusCheck();
-		// check if cookies have expired
-		if (!cookies.containsValue(user.getUsername())) {
-			log(Level.SEVERE, "rollback", "Cookies have expired.");
-			logout();
-			throw new CredentialExpiredException("Cookies have expired.");
-		}
 
 		// check whether we are "on top".
 		Revision top = getTopRevision(revision.getPage());
@@ -3053,7 +3310,7 @@ public class Wiki implements Serializable {
 						"Cannot rollback as the page only has one author.");
 			// probably not ignorable (otherwise success)
 			else if (!response.contains("rollback title="))
-				checkErrors(response, "rollback");
+				checkErrorsAndUpdateStatus(response, "rollback");
 		} catch (IOException e) {
 			// retry once
 			if (retry) {
@@ -3088,10 +3345,10 @@ public class Wiki implements Serializable {
 	 *
 	 * <pre>
 	 * wiki.undo(wiki.getRevision(314L), null, reason, false); // undo revision 314
-	 * // only
+	 * 														// only
 	 * wiki.undo(wiki.getRevision(236L), wiki.getRevision(325L), reason, false); // undo
-	 * // revisions
-	 * // 236-325
+	 * 																			// revisions
+	 * 																			// 236-325
 	 * </pre>
 	 *
 	 * This will only work if revision 541 or any subsequent edits do not clash
@@ -3111,15 +3368,20 @@ public class Wiki implements Serializable {
 	 *            whether this is a bot edit
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws CredentialException
+	 *             if page is protected and we can't edit it
+	 * @throws IllegalArgumentException
+	 *             if the revisions are not on the same page.
 	 * @since 0.20
 	 */
 	public synchronized void undo(Revision rev, Revision to, String reason,
 			boolean minor, boolean bot) throws IOException, LoginException {
 		// throttle
 		long start = System.currentTimeMillis();
-		statusCheck();
 
 		// check here to see whether the titles correspond
 		if (to != null && !rev.getPage().equals(to.getPage()))
@@ -3161,7 +3423,7 @@ public class Wiki implements Serializable {
 
 		// done
 		try {
-			checkErrors(response, "undo");
+			checkErrorsAndUpdateStatus(response, "undo");
 		} catch (IOException e) {
 			// retry once
 			if (retry) {
@@ -3181,15 +3443,7 @@ public class Wiki implements Serializable {
 			log(Level.INFO, "undo", log);
 		}
 		retry = true;
-
-		// throttle
-		try {
-			long time = throttle - System.currentTimeMillis() + start;
-			if (time > 0)
-				Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// nobody cares
-		}
+		throttle(start);
 	}
 
 	/**
@@ -3242,6 +3496,8 @@ public class Wiki implements Serializable {
 			size = Integer.parseInt(parseAttribute(xml, "newlen", 0));
 		else if (xml.contains("size=\""))
 			size = Integer.parseInt(parseAttribute(xml, "size", 0));
+		else if (xml.contains("len=\"")) // deletedrevs
+			size = Integer.parseInt(parseAttribute(xml, "len", 0));
 
 		Revision revision = new Revision(oldid, timestamp, title, summary,
 				user2, minor, bot, rvnew, size);
@@ -3478,6 +3734,8 @@ public class Wiki implements Serializable {
 	 *         local repository (i.e. not on Commons or deleted)
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if the entry is not in the upload log
 	 * @since 0.20
 	 */
 	public byte[] getOldImage(LogEntry entry) throws IOException {
@@ -3612,10 +3870,17 @@ public class Wiki implements Serializable {
 	 * @param reason
 	 *            an upload summary (defaults to <tt>contents</tt>, use "" to
 	 *            not specify one)
+	 * @throws CredentialNotFoundException
+	 *             if not logged in
+	 * @throws CredentialException
+	 *             if (page is protected OR file is on a central repository) and
+	 *             we can't upload
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
 	 * @throws IOException
 	 *             if a network/local filesystem error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws AccountLockedException
+	 *             if user is blocked
 	 * @since 0.21
 	 */
 	public synchronized void upload(File file, String filename,
@@ -3634,7 +3899,6 @@ public class Wiki implements Serializable {
 					+ ex);
 			throw ex;
 		}
-		statusCheck();
 		filename = filename.replaceFirst("^(File|Image|"
 				+ namespaceIdentifier(FILE_NAMESPACE) + "):", "");
 
@@ -3716,7 +3980,7 @@ public class Wiki implements Serializable {
 							"Cannot upload - permission denied." + ex);
 					throw ex;
 				}
-				checkErrors(response, "upload");
+				checkErrorsAndUpdateStatus(response, "upload");
 			} catch (IOException e) {
 				fi.close();
 				// don't bother retrying - uploading is a pain
@@ -3738,17 +4002,9 @@ public class Wiki implements Serializable {
 			params.put("filekey", filekey);
 			String response = multipartPost(apiUrl + "action=upload", params,
 					"upload");
-			checkErrors(response, "upload");
+			checkErrorsAndUpdateStatus(response, "upload");
 		}
-
-		// throttle
-		try {
-			long time = throttle - System.currentTimeMillis() + start;
-			if (time > 0)
-				Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// nobody cares
-		}
+		throttle(start);
 		log(Level.INFO, "upload", "Successfully uploaded to File:" + filename
 				+ ".");
 	}
@@ -3868,9 +4124,9 @@ public class Wiki implements Serializable {
 	 * @param username
 	 *            a username
 	 * @return the user with that username
+	 * @since 0.05
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @since 0.05
 	 */
 	public User getUser(String username) throws IOException {
 		return userExists(username) ? new User(normalize(username)) : null;
@@ -3910,7 +4166,7 @@ public class Wiki implements Serializable {
 	 * Gets the contributions by a range of IP v4 addresses. Supported ranges
 	 * are /8, /16 and /24. Do be careful with this, as calls such as
 	 * <tt>enWiki.rangeContribs("152.163.0.0/16"); // let's get all the
-	 * contributions for this AOL range!</tt>
+	 *  contributions for this AOL range!</tt>
 	 * might just kill your program.
 	 *
 	 * @param range
@@ -3918,6 +4174,8 @@ public class Wiki implements Serializable {
 	 * @return the contributions of that range
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws NumberFormatException
+	 *             if we aren't able to parse the range
 	 * @deprecated doesn't support IPv6, and I am way too lazy to make it do so
 	 * @since 0.17
 	 */
@@ -3959,15 +4217,15 @@ public class Wiki implements Serializable {
 	 *
 	 * @param user
 	 *            the user to get contributions for.
+	 * @param start
+	 *            fetch edits no newer than this date
+	 * @param end
+	 *            fetch edits no older than this date
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @param prefix
 	 *            a prefix of usernames. Overrides <tt>user</tt>. Use "" to not
 	 *            specify one.
-	 * @param end
-	 *            fetch edits no older than this date
-	 * @param start
-	 *            fetch edits no newer than this date
-	 * @param ns
-	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return contributions of this user
 	 * @throws IOException
 	 *             if a network error occurs
@@ -4036,16 +4294,21 @@ public class Wiki implements Serializable {
 	 *
 	 * @param user
 	 *            a Wikipedia user with email enabled
-	 * @param message
-	 *            the plain text message
 	 * @param subject
 	 *            the subject of the message
+	 * @param message
+	 *            the plain text message
 	 * @param emailme
 	 *            whether to send a copy of the message to your email address
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialExpiredException
+	 *             if cookies have expired
+	 * @throws AccountLockedException
+	 *             if you have been blocked from sending email
+	 * @throws UnsupportedOperationException
+	 *             if email is disabled or if you do not have a verified email
+	 *             address
 	 * @since 0.24
 	 */
 	public synchronized void emailUser(User user, String message,
@@ -4088,20 +4351,11 @@ public class Wiki implements Serializable {
 				"emailUser");
 
 		// check for errors
-		checkErrors(response, "email");
+		checkErrorsAndUpdateStatus(response, "email");
 		if (response.contains("error code=\"cantsend\""))
 			throw new UnsupportedOperationException(
 					"Email is disabled for this wiki or you do not have a confirmed email address.");
-
-		// throttle
-		try {
-			long time = throttle - System.currentTimeMillis() + start;
-			if (time > 0)
-				Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// nobody cares
-		}
-
+		throttle(start);
 		log(Level.INFO, "emailUser",
 				"Successfully emailed " + user.getUsername() + ".");
 	}
@@ -4157,10 +4411,10 @@ public class Wiki implements Serializable {
 	 * Internal method for interfacing with the watchlist, since the API URLs
 	 * for (un)watching are very similar.
 	 *
-	 * @param unwatch
-	 *            whether we should unwatch these pages
 	 * @param titles
 	 *            the titles to (un)watch
+	 * @param unwatch
+	 *            whether we should unwatch these pages
 	 * @throws IOException
 	 *             if a network error occurs
 	 * @throws CredentialNotFoundException
@@ -4494,10 +4748,10 @@ public class Wiki implements Serializable {
 	 *
 	 * @param title
 	 *            the title of the page
-	 * @param redirects
-	 *            whether we should limit to redirects only
 	 * @param ns
 	 *            a list of namespaces to filter by, empty = all namespaces.
+	 * @param redirects
+	 *            whether we should limit to redirects only
 	 * @return the list of pages linking to the specified page
 	 * @throws IOException
 	 *             if a network error occurs
@@ -4557,7 +4811,7 @@ public class Wiki implements Serializable {
 	public String[] whatTranscludesHere(String title, int... ns)
 			throws IOException {
 		StringBuilder url = new StringBuilder(query);
-		url.append("list=embeddedin&eilimit=max&eititle=Template:");
+		url.append("list=embeddedin&eilimit=max&eititle=");
 		url.append(URLEncoder.encode(normalize(title), "UTF-8"));
 		constructNamespaceString(url, "ei", ns);
 
@@ -4624,9 +4878,8 @@ public class Wiki implements Serializable {
 		name = name.replaceFirst("^(Category|"
 				+ namespaceIdentifier(CATEGORY_NAMESPACE) + "):", "");
 		StringBuilder url = new StringBuilder(query);
-		url.append("list=categorymembers&cmprop=title&cmlimit=max&cmtitle=Category:");
-		//name = normalize(name);
-		url.append(URLEncoder.encode(name, "UTF-8"));
+		url.append("list=categorymembers&cmprop=title&cmlimit=max&cmtitle=");
+		url.append(URLEncoder.encode("Category:" + normalize(name), "UTF-8"));
 		boolean nocat = true;
 		if (subcat && ns.length != 0) {
 			for (int i = 0; nocat && i < ns.length; i++)
@@ -4688,10 +4941,10 @@ public class Wiki implements Serializable {
 	 * @param pattern
 	 *            the pattern (String) to search for (e.g. example.com,
 	 *            *.example.com)
-	 * @return two lists - index 0 is the list of pages (String), index 1 is the
-	 *         list of urls (instance of <tt>java.net.URL</tt>)
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return two lists - index 0 is the list of pages (String), index 1 is the
+	 *         list of urls (instance of <tt>java.net.URL</tt>)
 	 * @since 0.06
 	 */
 	public ArrayList[] linksearch(String pattern) throws IOException {
@@ -4708,16 +4961,16 @@ public class Wiki implements Serializable {
 	 * @param pattern
 	 *            the pattern (String) to search for (e.g. example.com,
 	 *            *.example.com)
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @param protocol
 	 *            one of { http, https, ftp, irc, gopher, telnet, nntp,
 	 *            worldwind, mailto, news, svn, git, mms } or "" (equivalent to
 	 *            http)
-	 * @param ns
-	 *            a list of namespaces to filter by, empty = all namespaces.
-	 * @return two lists - index 0 is the list of pages (String), index 1 is the
-	 *         list of urls (instance of <tt>java.net.URL</tt>)
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return two lists - index 0 is the list of pages (String), index 1 is the
+	 *         list of urls (instance of <tt>java.net.URL</tt>)
 	 * @since 0.24
 	 */
 	public ArrayList[] linksearch(String pattern, String protocol, int... ns)
@@ -4821,6 +5074,8 @@ public class Wiki implements Serializable {
 	 * @return a LogEntry[] of the blocks
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if start date is before end date
 	 * @since 0.12
 	 */
 	protected LogEntry[] getIPBlockList(String user, Calendar start,
@@ -4913,6 +5168,8 @@ public class Wiki implements Serializable {
 	 * @return the most recent set of log entries
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if amount < 1
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(int amount) throws IOException {
@@ -4925,9 +5182,9 @@ public class Wiki implements Serializable {
 	 *
 	 * @param user
 	 *            the user to get log entries for
-	 * @return the set of log entries created by that user
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return the set of log entries created by that user
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(User user) throws IOException {
@@ -4941,9 +5198,9 @@ public class Wiki implements Serializable {
 	 *
 	 * @param target
 	 *            the target of the action(s).
-	 * @return the specified log entries
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return the specified log entries
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(String target) throws IOException {
@@ -4960,9 +5217,11 @@ public class Wiki implements Serializable {
 	 *            what timestamp to start. Use null to not specify one.
 	 * @param end
 	 *            what timestamp to end. Use null to not specify one.
-	 * @return the specified log entries
 	 * @throws IOException
 	 *             if something goes wrong
+	 * @throws IllegalArgumentException
+	 *             if start &lt; end
+	 * @return the specified log entries
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(Calendar start, Calendar end)
@@ -4983,9 +5242,11 @@ public class Wiki implements Serializable {
 	 * @param action
 	 *            what action to get (e.g. delete, undelete, etc.), use "" to
 	 *            not specify one
-	 * @return the specified log entries
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if the log type doesn't exist
+	 * @return the specified log entries
 	 */
 	public LogEntry[] getLogEntries(int amount, String type, String action)
 			throws IOException {
@@ -5019,9 +5280,11 @@ public class Wiki implements Serializable {
 	 * @param namespace
 	 *            filters by namespace. Returns empty if namespace doesn't
 	 *            exist.
-	 * @return the specified log entries
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if start &lt; end or amount &lt; 1
+	 * @return the specified log entries
 	 * @since 0.08
 	 */
 	public LogEntry[] getLogEntries(Calendar start, Calendar end, int amount,
@@ -5255,9 +5518,9 @@ public class Wiki implements Serializable {
 	 *            the maximum size in bytes these short pages can be
 	 * @param namespace
 	 *            a namespace
-	 * @return pages below that size in that namespace
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return pages below that size in that namespace
 	 * @since 0.15
 	 */
 	public String[] shortPages(int cutoff, int namespace) throws IOException {
@@ -5313,9 +5576,9 @@ public class Wiki implements Serializable {
 	 *            a namespace. ALL_NAMESPACES is not suppported, an
 	 *            UnsupportedOperationException will be thrown.
 	 * @return the specified list of pages
+	 * @since 0.09
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @since 0.09
 	 */
 	public String[] listPages(String prefix,
 			HashMap<String, Object> protectionstate, int namespace)
@@ -5347,9 +5610,9 @@ public class Wiki implements Serializable {
 	 *            the maximum size in bytes these pages can be. Use -1 to not
 	 *            specify one.
 	 * @return the specified list of pages
+	 * @since 0.09
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @since 0.09
 	 */
 	public String[] listPages(String prefix,
 			HashMap<String, Object> protectionstate, int namespace,
@@ -5515,11 +5778,11 @@ public class Wiki implements Serializable {
 	 * changes table only stores new pages for about a month. It is not possible
 	 * to retrieve changes before then. Equivalent to [[Special:Newpages]].
 	 *
-	 * @param amount
-	 *            the amount of new pages to get
 	 * @param rcoptions
 	 *            a bitmask of HIDE_ANON etc that dictate which pages we return
 	 *            (e.g. exclude patrolled pages => rcoptions = HIDE_PATROLLED).
+	 * @param amount
+	 *            the amount of new pages to get
 	 * @return the revisions that created the pages satisfying the requirements
 	 *         above
 	 * @throws IOException
@@ -5536,11 +5799,11 @@ public class Wiki implements Serializable {
 	 * changes table only stores new pages for about a month. It is not possible
 	 * to retrieve changes before then. Equivalent to [[Special:Newpages]].
 	 *
-	 * @param amount
-	 *            the amount of new pages to get
 	 * @param rcoptions
 	 *            a bitmask of HIDE_ANON etc that dictate which pages we return
 	 *            (e.g. exclude patrolled pages => rcoptions = HIDE_PATROLLED).
+	 * @param amount
+	 *            the amount of new pages to get
 	 * @param ns
 	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return the revisions that created the pages satisfying the requirements
@@ -5605,10 +5868,10 @@ public class Wiki implements Serializable {
 	 *
 	 * @param amount
 	 *            the number of entries to return
-	 * @param rcoptions
-	 *            a bitmask of HIDE_ANON etc that dictate which pages we return.
 	 * @param ns
 	 *            a list of namespaces to filter by, empty = all namespaces.
+	 * @param rcoptions
+	 *            a bitmask of HIDE_ANON etc that dictate which pages we return.
 	 * @return the recent changes that satisfy these criteria
 	 * @throws IOException
 	 *             if a network error occurs
@@ -5629,12 +5892,12 @@ public class Wiki implements Serializable {
 	 *
 	 * @param amount
 	 *            the number of entries to return
+	 * @param ns
+	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @param rcoptions
 	 *            a bitmask of HIDE_ANON etc that dictate which pages we return.
 	 * @param newpages
 	 *            show new pages only
-	 * @param ns
-	 *            a list of namespaces to filter by, empty = all namespaces.
 	 * @return the recent changes that satisfy these criteria
 	 * @throws IOException
 	 *             if a network error occurs
@@ -5729,7 +5992,7 @@ public class Wiki implements Serializable {
 	 * <p>
 	 * Example: If [[Test]] and [[Spam]] both contain the interwiki link
 	 * [[testwiki:Blah]] then <tt>getInterWikiBacklinks("testwiki", "Blah");
-	 * </tt> will return (sorted by <tt>title</tt>)
+	 *  </tt> will return (sorted by <tt>title</tt>)
 	 *
 	 * <pre>
 	 * { { &quot;Spam&quot;, &quot;testwiki:Blah&quot; }, { &quot;Test&quot;, &quot;testwiki:Blah&quot; } }
@@ -5750,6 +6013,9 @@ public class Wiki implements Serializable {
 	 *         parameters given
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws IllegalArgumentException
+	 *             if a title is specified without a prefix (the MediaWiki API
+	 *             doesn't like this)
 	 * @since 0.23
 	 */
 	public String[][] getInterWikiBacklinks(String prefix, String title)
@@ -5808,14 +6074,8 @@ public class Wiki implements Serializable {
 	 * @since 0.05
 	 */
 	public class User implements Cloneable {
-
-		/** The username. */
 		private String username;
-
-		/** The rights. */
 		private String[] rights = null; // cache
-
-		/** The groups. */
 		private String[] groups = null; // cache
 
 		/**
@@ -5916,9 +6176,9 @@ public class Wiki implements Serializable {
 		 * @param right
 		 *            a specific action
 		 * @return whether the user is allowed to execute it
+		 * @since 0.24
 		 * @throws IOException
 		 *             if a network error occurs
-		 * @since 0.24
 		 */
 		public boolean isAllowedTo(String right) throws IOException {
 			// We can safely assume the user is allowed to { read, edit, create,
@@ -5938,9 +6198,9 @@ public class Wiki implements Serializable {
 		 * @param group
 		 *            a specific group
 		 * @return whether the user is in it
+		 * @since 0.24
 		 * @throws IOException
 		 *             if a network error occurs
-		 * @since 0.24
 		 */
 		public boolean isA(String group) throws IOException {
 			if (groups == null)
@@ -6026,8 +6286,6 @@ public class Wiki implements Serializable {
 		/**
 		 * Tests whether this user is equal to another one.
 		 *
-		 * @param x
-		 *            the x
 		 * @return whether the users are equal
 		 * @since 0.08
 		 */
@@ -6073,25 +6331,12 @@ public class Wiki implements Serializable {
 	 */
 	public class LogEntry implements Comparable<LogEntry> {
 		// internal data storage
-		/** The type. */
 		private String type;
-
-		/** The action. */
 		private String action;
-
-		/** The reason. */
 		private String reason;
-
-		/** The user. */
 		private User user;
-
-		/** The target. */
 		private String target;
-
-		/** The timestamp. */
 		private Calendar timestamp;
-
-		/** The details. */
 		private Object details;
 
 		/**
@@ -6289,35 +6534,15 @@ public class Wiki implements Serializable {
 	 * @since 0.17
 	 */
 	public class Revision implements Comparable<Revision> {
-
-		/** The rvnew. */
 		private boolean minor, bot, rvnew;
-
-		/** The summary. */
 		private String summary;
-
-		/** The rcid. */
 		private long revid, rcid = -1;
-
-		/** The next. */
 		private long previous = 0, next = 0;
-
-		/** The timestamp. */
 		private Calendar timestamp;
-
-		/** The user. */
 		private String user;
-
-		/** The title. */
 		private String title;
-
-		/** The rollbacktoken. */
 		private String rollbacktoken = null;
-
-		/** The size. */
 		private int size = 0;
-
-		/** The sizediff. */
 		private int sizediff = 0;
 
 		/**
@@ -6367,6 +6592,8 @@ public class Wiki implements Serializable {
 		 * @return the contents of the appropriate article at <tt>timestamp</tt>
 		 * @throws IOException
 		 *             if a network error occurs
+		 * @throws IllegalArgumentException
+		 *             if page == Special:Log/xxx.
 		 * @since 0.17
 		 */
 		public String getText() throws IOException {
@@ -6392,6 +6619,8 @@ public class Wiki implements Serializable {
 		 *         <tt>timestamp</tt>
 		 * @throws IOException
 		 *             if a network error occurs
+		 * @throws IllegalArgumentException
+		 *             if page == Special:Log/xxx.
 		 * @since 0.17
 		 */
 		public String getRenderedText() throws IOException {
@@ -6771,8 +7000,12 @@ public class Wiki implements Serializable {
 		 *
 		 * @throws IOException
 		 *             if a network error occurs
-		 * @throws LoginException
-		 *             the login exception
+		 * @throws CredentialNotFoundException
+		 *             if not logged in or user is not an admin
+		 * @throws CredentialExpiredException
+		 *             if cookies have expired
+		 * @throws AccountLockedException
+		 *             if the user is blocked
 		 * @since 0.19
 		 */
 		public void rollback() throws IOException, LoginException {
@@ -6789,8 +7022,12 @@ public class Wiki implements Serializable {
 		 *            (optional) a custom reason
 		 * @throws IOException
 		 *             if a network error occurs
-		 * @throws LoginException
-		 *             the login exception
+		 * @throws CredentialNotFoundException
+		 *             if not logged in or user is not an admin
+		 * @throws CredentialExpiredException
+		 *             if cookies have expired
+		 * @throws AccountLockedException
+		 *             if the user is blocked
 		 * @since 0.19
 		 */
 		public void rollback(boolean bot, String reason) throws IOException,
@@ -6820,6 +7057,8 @@ public class Wiki implements Serializable {
 	 * @return the content of the fetched URL
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @throws AssertionError
+	 *             if assert=user|bot fails
 	 * @since 0.18
 	 */
 	protected String fetch(String url, String caller) throws IOException {
@@ -6861,12 +7100,28 @@ public class Wiki implements Serializable {
 		}
 		in.close();
 		String temp = text.toString();
-		if (temp.contains("<error code="))
+		if (temp.contains("<error code=")) {
+			// assertions
+			if ((assertion & ASSERT_BOT) == ASSERT_BOT
+					&& line.contains("error code=\"assertbotfailed\""))
+				// assert !line.contains("error code=\"assertbotfailed\"") :
+				// "Bot privileges missing or revoked, or session expired.";
+				throw new AssertionError(
+						"Bot privileges missing or revoked, or session expired.");
+			if ((assertion & ASSERT_USER) == ASSERT_USER
+					&& line.contains("error code=\"assertuserfailed\""))
+				// assert !line.contains("error code=\"assertuserfailed\"") :
+				// "Session expired.";
+				throw new AssertionError("Session expired.");
 			// Something *really* bad happened. Most of these are
 			// self-explanatory
 			// and are indicative of bugs (not necessarily in this framework) or
 			// can be avoided entirely.
-			throw new UnknownError("MW API error. Server response was: " + temp);
+			if (!temp.matches("code=\"(rvnosuchsection)")) // list "good" errors
+															// here
+				throw new UnknownError("MW API error. Server response was: "
+						+ temp);
+		}
 		return temp;
 	}
 
@@ -6879,9 +7134,9 @@ public class Wiki implements Serializable {
 	 *            the text to post
 	 * @param caller
 	 *            the caller of this method
-	 * @return the server response
 	 * @throws IOException
 	 *             if a network error occurs
+	 * @return the server response
 	 * @see #multipartPost(java.lang.String, java.util.Map, java.lang.String)
 	 * @since 0.24
 	 */
@@ -6991,26 +7246,70 @@ public class Wiki implements Serializable {
 	}
 
 	/**
-	 * Checks for errors from standard read/write requests.
+	 * Checks for errors from standard read/write requests and performs
+	 * occasional status checks.
 	 *
 	 * @param line
 	 *            the response from the server to analyze
 	 * @param caller
 	 *            what we tried to do
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws LoginException
-	 *             the login exception
+	 * @throws CredentialNotFoundException
+	 *             if permission denied
+	 * @throws AccountLockedException
+	 *             if the user is blocked
+	 * @throws HttpRetryException
+	 *             if the database is locked or action was throttled and a retry
+	 *             failed
+	 * @throws AssertionError
+	 *             if assertions fail
+	 * @throws UnknownError
+	 *             in the case of a MediaWiki bug
 	 * @since 0.18
 	 */
-	protected void checkErrors(String line, String caller) throws IOException,
-			LoginException {
-		// empty response from server
-		if (line.isEmpty())
-			throw new UnknownError("Received empty response from server!");
+	protected void checkErrorsAndUpdateStatus(String line, String caller)
+			throws IOException, LoginException {
+		// perform various status checks every 100 or so edits
+		if (statuscounter > statusinterval) {
+			// purge user rights in case of desysop or loss of other priviliges
+			user.getUserInfo();
+			if ((assertion & ASSERT_SYSOP) == ASSERT_SYSOP
+					&& !user.isA("sysop"))
+				// assert user.isA("sysop") :
+				// "Sysop privileges missing or revoked, or session expired";
+				throw new AssertionError(
+						"Sysop privileges missing or revoked, or session expired");
+			// check for new messages
+			if ((assertion & ASSERT_NO_MESSAGES) == ASSERT_NO_MESSAGES
+					&& hasNewMessages())
+				// assert !hasNewMessages() : "User has new messages";
+				throw new AssertionError("User has new messages");
+			statuscounter = 0;
+		} else
+			statuscounter++;
+
 		// successful
 		if (line.contains("result=\"Success\""))
 			return;
+		// empty response from server
+		if (line.isEmpty())
+			throw new UnknownError("Received empty response from server!");
+		// assertions
+		if ((assertion & ASSERT_BOT) == ASSERT_BOT
+				&& line.contains("error code=\"assertbotfailed\""))
+			// assert !line.contains("error code=\"assertbotfailed\"") :
+			// "Bot privileges missing or revoked, or session expired.";
+			throw new AssertionError(
+					"Bot privileges missing or revoked, or session expired.");
+		if ((assertion & ASSERT_USER) == ASSERT_USER
+				&& line.contains("error code=\"assertuserfailed\""))
+			// assert !line.contains("error code=\"assertuserfailed\"") :
+			// "Session expired.";
+			throw new AssertionError("Session expired.");
+		if (line.contains("error code=\"permissiondenied\""))
+			throw new CredentialNotFoundException("Permission denied."); // session
+																			// expired
+																			// or
+																			// stupidity
 		// rate limit (automatic retry), though might be a long one (e.g. email)
 		if (line.contains("error code=\"ratelimited\"")) {
 			log(Level.WARNING, caller, "Server-side throttle hit.");
@@ -7023,12 +7322,6 @@ public class Wiki implements Serializable {
 			log(Level.SEVERE, caller, "Cannot " + caller
 					+ " - user is blocked!.");
 			throw new AccountLockedException("Current user is blocked!");
-		}
-		// cascade protected
-		if (line.contains("error code=\"cascadeprotected\"")) {
-			log(Level.WARNING, caller, "Cannot " + caller
-					+ " - page is subject to cascading protection.");
-			throw new CredentialException("Page is cascade protected");
 		}
 		// database lock (automatic retry)
 		if (line.contains("error code=\"readonly\"")) {
@@ -7153,6 +7446,8 @@ public class Wiki implements Serializable {
 	 * @param s
 	 *            the string to normalize
 	 * @return the normalized string
+	 * @throws IllegalArgumentException
+	 *             if the title is invalid
 	 * @throws IOException
 	 *             if a network error occurs (rare)
 	 * @since 0.27
@@ -7192,6 +7487,24 @@ public class Wiki implements Serializable {
 		return Normalizer.normalize(new String(temp), Normalizer.Form.NFC);
 	}
 
+	/**
+	 * Ensures no less than <tt>throttle</tt> milliseconds pass between edits
+	 * and other write actions.
+	 *
+	 * @param start
+	 *            the time at which the write method was entered
+	 * @since 0.30
+	 */
+	private synchronized void throttle(long start) {
+		try {
+			long time = throttle - System.currentTimeMillis() + start;
+			if (time > 0)
+				Thread.sleep(time);
+		} catch (InterruptedException e) {
+			// nobody cares
+		}
+	}
+
 	// user rights methods
 
 	/**
@@ -7205,20 +7518,10 @@ public class Wiki implements Serializable {
 	 * @return whether the user can perform the specified action
 	 * @throws IOException
 	 *             if a network error occurs
-	 * @throws CredentialException
-	 *             the credential exception
 	 * @since 0.10
 	 */
 	protected boolean checkRights(HashMap<String, Object> pageinfo,
-			String action) throws IOException, CredentialException {
-		// Check if we are logged out. Easiest way is via the edit token.
-		String token = (String) pageinfo.get("token");
-		if (token.equals("\\+") && user != null) {
-			log(Level.SEVERE, "", "Session has expired!");
-			logout();
-			throw new CredentialExpiredException("Cookies have expired.");
-		}
-		// check protection
+			String action) throws IOException {
 		HashMap<String, Object> protectionstate = (HashMap<String, Object>) pageinfo
 				.get("protection");
 		if (protectionstate.containsKey(action)) {
@@ -7226,38 +7529,12 @@ public class Wiki implements Serializable {
 			if (level.equals(SEMI_PROTECTION))
 				return user.isAllowedTo("autoconfirmed");
 			if (level.equals(FULL_PROTECTION))
-				return user.isA("sysop");
+				return user.isAllowedTo("editprotected");
 		}
+		if ((Boolean) protectionstate.get("cascade") == Boolean.TRUE) // can be
+																		// null
+			return user.isAllowedTo("editprotected");
 		return true;
-	}
-
-	/**
-	 * Performs a status check, including assertions.
-	 *
-	 * @throws IOException
-	 *             if a network error occurs
-	 * @see #setAssertionMode
-	 * @since 0.11
-	 */
-	protected void statusCheck() throws IOException {
-		// @revised 0.18 was assertions(), put some more stuff in here
-
-		// perform various status checks every 100 or so edits
-		if (statuscounter > statusinterval) {
-			// purge user rights in case of desysop or loss of other priviliges
-			if (user != null)
-				user.getUserInfo();
-			// check for new messages
-			if ((assertion & ASSERT_NO_MESSAGES) == ASSERT_NO_MESSAGES)
-				assert !(hasNewMessages()) : "User has new messages";
-
-			statuscounter = 0;
-		} else
-			statuscounter++;
-
-		// do some more assertions
-		if ((assertion & ASSERT_BOT) == ASSERT_BOT)
-			assert user.isA("bot") : "Not a bot";
 	}
 
 	// cookie methods
@@ -7290,6 +7567,8 @@ public class Wiki implements Serializable {
 	 *
 	 * @param u
 	 *            an unconnected URLConnection
+	 * @param map
+	 *            the cookie store
 	 */
 	private void grabCookies(URLConnection u) {
 		String headerName;
@@ -7309,18 +7588,18 @@ public class Wiki implements Serializable {
 	/**
 	 * Logs a successful result.
 	 *
-	 * @param level
-	 *            the level to log at
-	 * @param method
-	 *            what we are currently doing
 	 * @param text
 	 *            string the string to log
+	 * @param method
+	 *            what we are currently doing
+	 * @param level
+	 *            the level to log at
 	 * @since 0.06
 	 */
 	protected void log(Level level, String method, String text) {
-		// Logger logger = Logger.getLogger("wiki");
-		// logger.logp(level, "Wiki", method, "[{0}] {1}", new Object[] {
-		// domain, text });
+		Logger logger = Logger.getLogger("wiki");
+		logger.logp(level, "Wiki", method, "[{0}] {1}", new Object[] { domain,
+				text });
 	}
 
 	/**
@@ -7333,8 +7612,8 @@ public class Wiki implements Serializable {
 	 * @since 0.08
 	 */
 	protected void logurl(String url, String method) {
-		// Logger logger = Logger.getLogger("wiki");
-		// logger.logp(Level.INFO, "Wiki", method, "Fetching URL {0}", url);
+		Logger logger = Logger.getLogger("wiki");
+		logger.logp(Level.INFO, "Wiki", method, "Fetching URL {0}", url);
 	}
 
 	// calendar/timestamp methods
@@ -7380,6 +7659,7 @@ public class Wiki implements Serializable {
 	 * @since 0.08
 	 */
 	protected final Calendar timestampToCalendar(String timestamp, boolean api) {
+		// TODO: move to Java 1.8
 		Calendar calendar = makeCalendar();
 		if (api)
 			timestamp = convertTimestamp(timestamp);
@@ -7405,6 +7685,7 @@ public class Wiki implements Serializable {
 	 * @since 0.12
 	 */
 	protected String convertTimestamp(String timestamp) {
+		// TODO: remove this once Java 1.8 comes around
 		StringBuilder ts = new StringBuilder(timestamp.substring(0, 4));
 		ts.append(timestamp.substring(5, 7));
 		ts.append(timestamp.substring(8, 10));
@@ -7425,7 +7706,7 @@ public class Wiki implements Serializable {
 	 *             if there are local IO problems
 	 * @since 0.10
 	 */
-	public void writeObject(ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeObject(user.getUsername());
 		out.writeObject(cookies);
 		out.writeInt(throttle);
@@ -7449,7 +7730,7 @@ public class Wiki implements Serializable {
 	 *             if we can't recognize the input
 	 * @since 0.10
 	 */
-	public void readObject(ObjectInputStream in) throws IOException,
+	private void readObject(ObjectInputStream in) throws IOException,
 			ClassNotFoundException {
 		String z = (String) in.readObject();
 		user = new User(z);
@@ -7468,6 +7749,69 @@ public class Wiki implements Serializable {
 
 		// force a status check on next edit
 		statuscounter = statusinterval;
+	}
+
+	public void login() throws ClassNotFoundException, FileNotFoundException,
+			IOException {
+		readObject(new ObjectInputStream(new FileInputStream("wiki")));
+	}
+
+	public void loginAndSaveobject(String username, String password)
+			throws FailedLoginException, IOException {
+		login(username, password.toCharArray());
+		writeObject(new ObjectOutputStream(new FileOutputStream("wiki")));
+	}
+
+	/**
+	 * Gets the raw wikicode for a page. WARNING: does not support special
+	 * pages. Check [[User talk:MER-C/Wiki.java#Special page equivalents]] for
+	 * fetching the contents of special pages. Use <tt>getImage()</tt> to fetch
+	 * an image.
+	 *
+	 * @param title
+	 *            the title of the page.
+	 * @param redirect
+	 *            the redirect
+	 * @return the raw wikicode of a page.
+	 * @throws IOException
+	 *             if a network error occurs
+	 * @see #edit
+	 */
+	public String getPageText(String title, boolean redirect)
+			throws IOException {
+		// pitfall check
+		if (namespace(title) < 0)
+			throw new UnsupportedOperationException(
+					"Cannot retrieve Special: or Media: pages!");
+
+		// go for it
+		String url = base + URLEncoder.encode(normalize(title), "UTF-8")
+				+ "&action=raw";
+		String temp = fetch(url, "getPageText");
+		log(Level.INFO, "getPageText", "Successfully retrieved text of "
+				+ title);
+		if (redirect) {
+			Pattern p = Pattern.compile("#REDIRECT\\[\\[(.*?)\\]\\]");
+			Matcher m = p.matcher(temp);
+			if (m.find())
+				return getPageText(m.group(1), false);
+		}
+		return temp;
+	}
+
+	/**
+	 * Exists.
+	 *
+	 * @param title
+	 *            the title
+	 * @return true, if successful
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public boolean exists(String title) throws IOException {
+		String[] s = new String[1];
+		s[0] = title;
+		return exists(s)[0];
 	}
 
 	/**
@@ -7495,20 +7839,5 @@ public class Wiki implements Serializable {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	/**
-	 * Exists.
-	 *
-	 * @param title
-	 *            the title
-	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public boolean exists(String title) throws IOException {
-		String[] s = new String[1];
-		s[0] = title;
-		return exists(s)[0];
 	}
 }
