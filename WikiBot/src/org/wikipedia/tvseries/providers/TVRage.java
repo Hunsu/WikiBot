@@ -257,7 +257,7 @@ public class TVRage {
 				.clean(prettyPrintedBodyFragment, "", Whitelist.none(),
 						new OutputSettings().prettyPrint(false))
 				.replaceAll(",\\n", ",").replaceAll(" +", " ")
-				.replace("\\s*\\n", "\n");
+				.replace("  *\\n", "\n");
 	}
 
 	private String parsePoster(Document doc) {

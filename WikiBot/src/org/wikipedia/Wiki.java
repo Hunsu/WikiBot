@@ -7597,9 +7597,9 @@ public class Wiki implements Serializable {
 	 * @since 0.06
 	 */
 	protected void log(Level level, String method, String text) {
-		Logger logger = Logger.getLogger("wiki");
-		logger.logp(level, "Wiki", method, "[{0}] {1}", new Object[] { domain,
-				text });
+		//Logger logger = Logger.getLogger("wiki");
+		//logger.logp(level, "Wiki", method, "[{0}] {1}", new Object[] { domain,
+			//	text });
 	}
 
 	/**
@@ -7612,8 +7612,8 @@ public class Wiki implements Serializable {
 	 * @since 0.08
 	 */
 	protected void logurl(String url, String method) {
-		Logger logger = Logger.getLogger("wiki");
-		logger.logp(Level.INFO, "Wiki", method, "Fetching URL {0}", url);
+		//Logger logger = Logger.getLogger("wiki");
+		//logger.logp(Level.INFO, "Wiki", method, "Fetching URL {0}", url);
 	}
 
 	// calendar/timestamp methods
