@@ -40,7 +40,8 @@ public class TranslatedFrom {
 					String text = wiki.getPageText(titles[i]);
 					String oldText = text;
 					ArrayList<String> al = ParseUtils.getTemplates("Traduit de", text);
-					//al.addAll(ParseUtils.getTemplates("multi bandeau", text));
+					System.out.println(al);
+					al.addAll(ParseUtils.getTemplates("Traduction de", text));
 					if(al.size() != 1)
 						continue;
 					text = text.replace(al.get(0)+"\n", "");

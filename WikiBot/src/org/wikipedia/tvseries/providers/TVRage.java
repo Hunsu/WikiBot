@@ -129,7 +129,7 @@ public class TVRage {
 		int beginIndex = text.indexOf(info);
 		if (beginIndex == -1)
 			return null;
-		beginIndex += info.length() + 1;
+		beginIndex += info.length();
 		int endIndex = text.indexOf("<br />", beginIndex);
 		if (endIndex == -1)
 			endIndex = text.length();
