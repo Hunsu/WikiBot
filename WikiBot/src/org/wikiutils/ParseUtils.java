@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -795,4 +796,23 @@ public class ParseUtils {
 		else
 			return internalLink;
 	}
+
+	public static String formatTemplate(String template) {
+		LinkedHashMap<String, String> map = ParseUtils
+			.getTemplateParametersWithValue(template);
+		LinkedHashMap<String, String> newMap = new LinkedHashMap<String, String>();
+		for (Entry<String, String> entry : map.entrySet()) {
+		    String key = entry.getKey();
+		    String value = entry.getValue();
+		    if (!value.endsWith(" "))
+			value += " ";
+		    if (!key.equals("templateName") && !key.startsWith(" "))
+			key = " " + key;
+		    if (!value.startsWith(" ") && !key.equals("templateName") && !key.startsWith("ParamWithoutName"))
+			value = " " + value;
+		    newMap.put(key, value);
+		}
+		return ParseUtils.templateFromMap(ParseUtils.adjust(newMap)).replace(
+			"\n }}", "\n}}");
+	    }
 }
