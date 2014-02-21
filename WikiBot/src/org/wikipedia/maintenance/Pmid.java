@@ -44,7 +44,7 @@ public class Pmid {
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		try {
 			Login login = new Login();
-			wiki.login(login.getLogin(), login.getPassword());
+			wiki.login(login.getLogin() + "Bot", login.getPassword());
 			String[] pages = wiki.getCategoryMembers("Page_avec_une_référence_PMID_incomplète");
 			int size = pages.length;
 			for(int i=0;i<size;i++){

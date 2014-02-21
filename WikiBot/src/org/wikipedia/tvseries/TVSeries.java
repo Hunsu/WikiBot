@@ -1,5 +1,6 @@
 package org.wikipedia.tvseries;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 
+import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
 import org.wikipedia.login.Login;
 import org.wikipedia.test.LoggedInTests;
@@ -18,7 +20,6 @@ import org.wikipedia.tools.StringUtils;
 import org.wikiutils.ParseUtils;
 
 import com.omertron.thetvdbapi.TheTVDBApi;
-import com.omertron.thetvdbapi.model.Actor;
 import com.omertron.thetvdbapi.model.Episode;
 import com.omertron.thetvdbapi.model.Series;
 
@@ -37,7 +38,7 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	UpdateFRArticle("Épisodes du Retour de K 2000");
+	UpdateFRArticle("Saison 2 d'Elementary");
     }
 
     /**
@@ -339,6 +340,9 @@ public class TVSeries {
     private static String getViewers(String viewers) {
 	if (viewers == null)
 	    return "";
+	viewers = ParseUtils.removeCommentsAndNoWikiText(viewers);
+	if(viewers.trim().equals(""))
+	    return "";
 	Pattern p = Pattern.compile("[^\\|](\\d\\d?)[\\.,]?(\\d\\d?)?[^\\|]");
 	String[] viewer = viewers.trim().split("\n");
 	viewers = "";
@@ -502,7 +506,7 @@ public class TVSeries {
      *            the text
      * @return the string
      */
-    private static String translateInternalLinks(String text) {
+    public static String translateInternalLinks(String text) {
 	ArrayList<String> al = ParseUtils.getInternalLinks(text);
 	int size = al.size();
 	for (int i = 0; i < size; i++) {
@@ -518,6 +522,7 @@ public class TVSeries {
 		enTitle = internalLink;
 		title = enTitle;
 	    }
+
 
 	    String frTitle = wiki.getArticleInSpecifLang(enTitle, "fr");
 	    if (frTitle == null)

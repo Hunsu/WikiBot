@@ -1027,6 +1027,7 @@ public class Wiki implements Serializable {
 	public synchronized void login(String username, String password)
 			throws IOException, FailedLoginException {
 		login(username, password.toCharArray());
+		
 	}
 
 	/**

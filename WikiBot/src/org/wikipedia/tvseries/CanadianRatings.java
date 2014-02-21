@@ -84,9 +84,9 @@ public class CanadianRatings {
 									.replace("{{BE}}", "{{Belgique}}")
 									.replace("{{QUE}}", "{{Québec}}")
 									.replace("{{QC}}", "{{Québec}}");
-							wiki.edit(title, newText,
-									"bot: Ajout de l'audience au Canada");
-						} catch (LoginException e) {
+							//wiki.edit(title, newText,
+							//		"bot: Ajout de l'audience au Canada");
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 				}
@@ -195,7 +195,7 @@ public class CanadianRatings {
 		if (oldValue == null || oldValue.trim().equals(""))
 			return canadianRating;
 		oldValue = oldValue.trim();
-		oldValue = oldValue.replaceAll("<\\!-- \\* \\{\\{Audience\\|Canada.*?-->\n", "");
+		oldValue = oldValue.replaceAll("<!-- \\* \\{\\{[a|A]udience\\|Canada.*?-->", "");
 		int index = oldValue.indexOf("\n");
 		if (index == -1)
 			return "\n" + oldValue + "\n" + canadianRating;
