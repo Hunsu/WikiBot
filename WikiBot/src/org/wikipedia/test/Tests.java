@@ -1,13 +1,11 @@
 package org.wikipedia.test;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 
 import javax.security.auth.login.FailedLoginException;
 
 import org.wikipedia.Wiki;
-import org.wikipedia.tvseries.TVSeries;
-import org.wikipedia.tvseries.model.Episode;
+import org.wikipedia.tvseries.model.Season;
 import org.wikipedia.tvseries.providers.TVRage;
 import org.wikiutils.ParseUtils;
 
@@ -33,7 +31,10 @@ public class Tests {
      */
     public static void main(String[] args) throws IOException,
 	    FailedLoginException {
-
+	
+	TVRage tvRage = new TVRage();
+	Season season = tvRage.getSeason("The Walking Dead", "3");
+	
 	Wiki wiki = new Wiki("fr.wikipedia.org");
 	
 	String template = "{{Episode list/sublist|List of The Walking Dead episodes" +

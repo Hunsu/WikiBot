@@ -32,7 +32,7 @@ public class Wikification {
      *            the arguments
      */
     public static void main(String[] args) {
-	String category = "Saison de K 2000";
+	String category = "Saison de Kaamelott";
 	try {
 	    boolean dosave = true;
 	    boolean test = false;
