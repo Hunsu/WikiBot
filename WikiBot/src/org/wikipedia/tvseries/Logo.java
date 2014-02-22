@@ -1,13 +1,11 @@
 package org.wikipedia.tvseries;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 
-import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
 import org.wikipedia.login.Login;
 import org.wikiutils.ParseUtils;

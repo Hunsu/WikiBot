@@ -1213,7 +1213,7 @@ public class Wiki implements Serializable {
 		url.append("list=random");
 		constructNamespaceString(url, "rn", ns);
 		String line = fetch(url.toString(), "random");
-		return parseAttribute(line, "title", 0);
+		return decode(parseAttribute(line, "title", 0));
 	}
 
 	// STATIC MEMBERS

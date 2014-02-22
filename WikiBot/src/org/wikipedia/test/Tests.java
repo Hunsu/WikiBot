@@ -1,9 +1,11 @@
 package org.wikipedia.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.security.auth.login.FailedLoginException;
 
+import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
 import org.wikipedia.tvseries.model.Season;
 import org.wikipedia.tvseries.providers.TVRage;
@@ -32,34 +34,26 @@ public class Tests {
     public static void main(String[] args) throws IOException,
 	    FailedLoginException {
 	
-	TVRage tvRage = new TVRage();
-	Season season = tvRage.getSeason("The Walking Dead", "3");
+	//TVRage tvRage = new TVRage();
+	//Season season = tvRage.getSeason("The Walking Dead", "3");
 	
+	String refs = "";
 	Wiki wiki = new Wiki("fr.wikipedia.org");
+	refs += ParseUtils.getRefs(wiki.getPageText("Ursula Moore")).toString();
+	for (int i = 0; i < 10; i++) {
+	    String title = wiki.random();
+	    System.out.println(title);
+	    String text = wiki.getPageText(title);
+	    refs += "\n\n" + ParseUtils.getRefs(text).toString(); 
+	}
 	
-	String template = "{{Episode list/sublist|List of The Walking Dead episodes" +
-			  "|EpisodeNumber = 47"
-			  + " |EpisodeNumber2 = 12"
-			  + " |Title = Still"
-			  + " |RTitle = <ref>{{Cite web|url=http://tvlistings.zap2it.com/tv/the-walking-dead"
-			  + "-still/EP013240020064|title=The Walking Dead : ''Still''|work=Zap2It|accessdat*"
-			  + "e=January 29, 2014}}</ref>"
-			  + " |DirectedBy = Seith Mann<ref name=\"director list\"/>"
- 	+ "	|WrittenBy = "
- 	+ " |OriginalAirDate = {{Start date|2014|3|2}}"
- 	+ " |Viewers = "
- 	+ " |ShortSummary = <!-- DO NOT copy and paste summaries from other sites. "
- 	+ "Even if referenced that is a COPYRIGHT VIOLATION and will be REMOVED. "
- 	+ "Please save responsible editors the time by adding summaries IN YOUR OWN WORDS. -->"
- 	+ "	|LineColor = 4a6c61"
- 	+ "}}"	;
-	
+	FileUtils.write(new File("refs"),refs);
 	
 	//String text = wiki.getPageText("Saison 1 de K 2000");
 	//String template = ParseUtils.getTemplates("Saison de série télévisée/Épisode", text).get(0);
 	
 	
-	System.out.println(ParseUtils.getTemplateParam(template, "DirectedBy", true));
+	//System.out.println(ParseUtils.getTemplateParam(template, "DirectedBy", true));
 	
 	//LinkedHashMap<String, String> map = ParseUtils.getTemplateParametersWithValue(template);
 	
