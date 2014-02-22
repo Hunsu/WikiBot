@@ -32,4 +32,8 @@ public class Login {
 		return password;
 	}
 
+	public String getBotLogin() {
+	    return login + "Bot";
+	}
+
 }
