@@ -318,8 +318,7 @@ public class ParseUtils {
 	    return null; // the template doesn't have parameters;
 	template = template.substring(i + 1, template.length() - 2);
 	for (String s : template.split("\\|"))
-	    f.add(s.trim());
-
+	    f.add(s);
 	for (i = 0; i < f.size(); i++) {
 	    String s = f.get(i);
 	    if ((countOccurrences(s, "{{") != countOccurrences(s, "}}") || countOccurrences(

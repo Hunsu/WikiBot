@@ -36,7 +36,7 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	UpdateFRArticle("Saison 2 d'Elementary");
+	UpdateFRArticle("Saison 4 du Trône de fer");
     }
 
     /**
@@ -133,7 +133,7 @@ public class TVSeries {
 		    "{{Références|colonnes=2}}");
 
 	    frWiki.edit(articleTitle, frArticle,
-		    "bot : ajout d'infos depuis WPen");
+		   "bot : ajout d'infos depuis WPen");
 
 	} catch (FailedLoginException e) {
 	    e.printStackTrace();
@@ -269,7 +269,7 @@ public class TVSeries {
 	    LinkedHashMap<String, String> map) {
 	String viewers = ParseUtils
 		.getTemplateParam(template, "audience", true);
-	String frViewers = ParseUtils.removeCommentsAndNoWikiText(getViewers(viewers));
+	String frViewers = getViewers(viewers);
 	if (!frViewers.toLowerCase().contains("tats-unis")) {
 	    viewers = ParseUtils
 		    .removeCommentsAndNoWikiText(formatViewers(ParseUtils
@@ -366,7 +366,8 @@ public class TVSeries {
 	if (title == null || title.trim().equals("")) {
 	    String enTitle = ParseUtils.getInternalLinkTitle(ParseUtils
 		    .getTemplateParam(map, "Title", true));
-	    if (enTitle != null)
+	    enTitle = ParseUtils.removeCommentsAndNoWikiText(enTitle);
+	    if (enTitle != null && !enTitle.equals(""))
 
 		return ParseUtils.setTemplateParam(template, "titre original",
 			enTitle + "\n", true);
@@ -468,7 +469,7 @@ public class TVSeries {
      * @return the string
      */
     private static String formatViewers(String viewers) {
-	if (viewers == null)
+	if (viewers == null || viewers.equals(""))
 	    return null;
 	if (viewers.toLowerCase().indexOf("n/a") != -1)
 	    return null;
