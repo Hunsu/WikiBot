@@ -36,7 +36,7 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	UpdateFRArticle("Saison 4 du Trône de fer");
+	UpdateFRArticle("Saison 1 de Vikings");
     }
 
     /**
@@ -161,6 +161,7 @@ public class TVSeries {
 	if (frEpisodeNumber == null && title == null)
 	    return null;
 	int size = enAl.size();
+	String possibleTemplate = "";
 	for (int i = 0; i < size; i++) {
 	    String enEpisodeNumber = ParseUtils.getTemplateParam(enAl.get(i),
 		    "EpisodeNumber", true);
@@ -193,16 +194,21 @@ public class TVSeries {
 		    || (enTitle == null && frEpisodeNumber == null)
 		    || (enEpisodeNumber == null && title == null))
 		return null;
-	    if ((frEpisodeNumber != null && (frEpisodeNumber
+	    if((frEpisodeNumber != null && (frEpisodeNumber
 		    .startsWith(enEpisodeNumber + " (") || frEpisodeNumber
-		    .equals(enEpisodeNumber)))
-		    || (enTitle != null
+		    .equals(enEpisodeNumber))))
+	    {
+		String template = enAl.get(i);
+		enAl.remove(i);
+		return template;
+	    }
+	    if ((enTitle != null && !title.equals("") 
 			    && title.toLowerCase().contains(enTitle) || enTitle
 				.contains(title.toLowerCase()))
 		    || StringUtils.longestSubstr(enTitle, title.toLowerCase()) > len)
-		return enAl.get(i);
+		possibleTemplate = enAl.get(i);
 	}
-	return null;
+	return possibleTemplate;
     }
 
     /**
@@ -225,7 +231,7 @@ public class TVSeries {
 	template = addProdCode(template,map);
 	template = addDate(template,map);
 
-	return template;
+	return ParseUtils.formatTemplate(template);
     }
 
     private static String addDate(String template,

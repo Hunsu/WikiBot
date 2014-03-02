@@ -84,8 +84,8 @@ public class CanadianRatings {
 				    .replace("{{BE}}", "{{Belgique}}")
 				    .replace("{{QUE}}", "{{Québec}}")
 				    .replace("{{QC}}", "{{Québec}}");
-			    // wiki.edit(title, newText,
-			    // "bot: Ajout de l'audience au Canada");
+			     wiki.edit(title, newText,
+			     "bot: Ajout de l'audience au Canada");
 			} catch (Exception e) {
 			    e.printStackTrace();
 			}

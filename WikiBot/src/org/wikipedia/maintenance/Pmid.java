@@ -199,7 +199,7 @@ public class Pmid {
 	journal += "| volume = "
 		+ element.getChild("JournalIssue").getChildText("Volume")
 		+ "\n";
-	journal += "|  = "
+	journal += "| numéro = "
 		+ element.getChild("JournalIssue").getChildText("Issue") + "\n";
 	journal += "| année = "
 		+ element.getChild("JournalIssue").getChild("PubDate")
