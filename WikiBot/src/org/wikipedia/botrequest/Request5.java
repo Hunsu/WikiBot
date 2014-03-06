@@ -27,7 +27,7 @@ public class Request5 {
 
 	Set<String> titles = new HashSet<String>();
 
-	String[] temp = wiki.whatTranscludesHere("Modèle:Portail Sous-marins",0);
+	String[] temp = wiki.getCategoryMembers("Catégorie:Portail:Sous-marins/Articles_liés");
 
 	titles.addAll(Arrays.asList(temp));
 	System.out.println(titles.size());
@@ -35,36 +35,51 @@ public class Request5 {
 	for (String title : titles) {
 	    String talkPage = "Discussion:" + title;
 	    try {
+		String evaluation = "?";
+		String text = wiki.getPageText(title);
+		if(text.indexOf("{{Ébauche") != -1 || text.indexOf("{{ébauche") != -1)
+		    evaluation = "ébauche";
 		if (!wiki.exists(talkPage)) {
 		    wiki.edit(talkPage,
-			    "{{Wikiprojet|Sous-marins|?|avancement=?}}",
+			    "{{Wikiprojet|Sous-marins|?|avancement=" + evaluation + "}}",
 			    "Ajout évaluation");
 		    continue;
 		}
-		String text = wiki.getPageText(talkPage);
+		text = wiki.getPageText(talkPage);
 		ArrayList<String> al = ParseUtils.getTemplates("Wikiprojet", text);
 		if(al.isEmpty()){
 		    wiki.edit(talkPage,
-			    "{{Wikiprojet|Sous-marins|?|avancement=?}}\n" + text,
+			    "{{Wikiprojet|Sous-marins|?|avancement=" + evaluation + "}}\n" + text,
 			    "Ajout évaluation");
 		    continue;
 		}
 		String template = al.get(0);
+		String oldTemplate = template;
 		if(!template.contains("Sous-marins") && !template.contains("sous-marins")){
-		    String oldTemplate = template;
 		    String oldText = text;
 		    template = template.replace("{{Wikiprojet|", "{{Wikiprojet|Sous-marins|?|");
 		    template = template.replace("{{Wikiprojet\n", "{{Wikiprojet\n|Sous-marins|?\n");
 		    template = template.replace("{{wikiprojet|", "{{wikiprojet|Sous-marins|?|");
 		    template = template.replace("{{wikiprojet\n", "{{wikiprojet\n|Sous-marins|?\n");
+		    String avancement = ParseUtils.getTemplateParam(template, "avancement", true);
+		    if(!evaluation.equals("?") && (avancement == null || avancement.equals("?")))
+			template = ParseUtils.setTemplateParam(template, "avancement", evaluation, false);
 		    text = text.replace(oldTemplate, template);
 		    if(text.length() == oldText.length()){
 			System.out.println(talkPage);
 			continue;
 		    }
 		    wiki.edit(talkPage, text, "Ajout évaluation");
+		} else {
+		    template = template.replace("Sous-marins|ébauche", "Sous-marins|?");
+		    String avancement = ParseUtils.getTemplateParam(template, "avancement", true);
+		    if(!evaluation.equals("?") && (avancement == null || avancement.equals("?")))
+			template = ParseUtils.setTemplateParam(template, "avancement", evaluation, false);
+		    text = text.replace(oldTemplate, template);
+		    if(!oldTemplate.equals(template))
+			 wiki.edit(talkPage, text, "Ajout évaluation");
 		}
-		
+
 	    } catch (LoginException e) {
 		e.printStackTrace();
 		continue;

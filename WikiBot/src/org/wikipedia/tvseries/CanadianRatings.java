@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.security.auth.login.FailedLoginException;
-import javax.security.auth.login.LoginException;
 
 import org.apache.commons.io.FileUtils;
 import org.wikipedia.Wiki;
@@ -84,8 +83,8 @@ public class CanadianRatings {
 				    .replace("{{BE}}", "{{Belgique}}")
 				    .replace("{{QUE}}", "{{Québec}}")
 				    .replace("{{QC}}", "{{Québec}}");
-			     wiki.edit(title, newText,
-			     "bot: Ajout de l'audience au Canada");
+			    wiki.edit(title, newText,
+				    "bot: Ajout audience au Canada");
 			} catch (Exception e) {
 			    e.printStackTrace();
 			}
@@ -116,8 +115,10 @@ public class CanadianRatings {
 	    System.out.println(template);
 	    return template;
 	}
+
 	if (conainsCanadianRatings(template))
 	    return template;
+
 	String[] possibleDates = getCanadianOrAmericanDate(date);
 	if (possibleDates == null)
 	    return template;
@@ -132,12 +133,27 @@ public class CanadianRatings {
 			"audience", false);
 		if (oldValue == null || oldValue.trim().equals(""))
 		    oldValue = "\n";
+		String epNumber = getEpisodeNumber(template);
+		if (epNumber != null)
+		    rating = rating.replace("de l'épisode", "du {{" + epNumber
+			    + "e}} épisode");
 		template = ParseUtils.setTemplateParam(template, "audience",
 			formatRatings(oldValue, rating.trim()) + "\n", true);
 		return template;
 	    }
 	}
 	return template;
+    }
+
+    private static String getEpisodeNumber(String template) {
+	String number = ParseUtils.getTemplateParam(template, "numéro", true);
+	if (number == null)
+	    return null;
+	Pattern p = Pattern.compile("-(\\d\\d?+)\\)");
+	Matcher m = p.matcher(number);
+	if (m.find())
+	    return m.group(1);
+	return null;
     }
 
     private static String addCanadianDate(String text) {
