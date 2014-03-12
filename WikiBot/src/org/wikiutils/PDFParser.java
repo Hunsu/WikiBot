@@ -235,7 +235,7 @@ public class PDFParser {
 		+ cal.get(Calendar.YEAR);
 	return "<ref>{{Lien web|langue=en|format=pdf|url="
 		+ url
-		+ "|titre=Audience de l'épisode au Canada|éditeur=BBM|site=bbm.ca|consulté le="
+		+ "|titre=Audience de l'épisode au Canada|éditeur=BBM|site=Bbm.ca|consulté le="
 		+ date + "}}</ref>";
     }
 

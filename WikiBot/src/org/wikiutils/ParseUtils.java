@@ -10,9 +10,9 @@ import org.wikipedia.Wiki;
 
 /**
  * Useful parsing methods for MediaWiki syntax.
- *
+ * 
  * @author Fastily
- *
+ * 
  * @see org.wikiutils.CollectionUtils
  * @see org.wikiutils.DateUtils
  * @see org.wikiutils.GUIUtils
@@ -31,14 +31,14 @@ public class ParseUtils {
     /**
      * Gets the target of the redirect page. </br><b>PRECONDITION</b>:
      * <tt>redirect</tt> must be a Redirect.
-     *
+     * 
      * @param redirect
      *            The title of the redirect to get the target for.
      * @param wiki
      *            The wiki object to use.
-     *
+     * 
      * @return String The title of the redirect's target.
-     *
+     * 
      * @throws UnsupportedOperationException
      *             If the page was not a redirect page.
      * @throws IOException
@@ -60,17 +60,17 @@ public class ParseUtils {
      * Gets redirects of a template, returns then as a String regex. Ready for
      * replacing instances of templates. Pass in template with "Template:"
      * prefix.
-     *
+     * 
      * @param template
      *            The title of the main Template (CANNOT BE REDIRECT), including
      *            the "Template:" prefix.
      * @param wiki
      *            The wiki object to use.
-     *
+     * 
      * @return The regex, in the form
      *         (?si)\{\{(Template:)??)(XXXXX|XXXX|XXXX...).*?\}\}, where XXXX is
      *         the template and its redirects.
-     *
+     * 
      * @throws IOException
      *             If network error.
      */
@@ -90,16 +90,16 @@ public class ParseUtils {
     /**
      * Used to check if <tt>{{bots}}</tt> or <tt>{{robots}}</tt>,
      * case-insensitive, is present in a String.
-     *
+     * 
      * @param text
      *            The String to check for <tt>{{bots}}</tt> or
      *            <tt>{{nobots}}</tt>
      * @param user
      *            The account to check for, without the "User:" prefix.
-     *
+     * 
      * @return boolean True if this particular bot should be allowed to edit
      *         this page.
-     *
+     * 
      */
 
     public static boolean allowBots(String text, String user) {
@@ -110,7 +110,7 @@ public class ParseUtils {
 
     /**
      * Replaces all transclusions of a template/page with specified text
-     *
+     * 
      * @param template
      *            The template (including namespace prefix) to be replaced
      * @param replacementText
@@ -119,11 +119,11 @@ public class ParseUtils {
      *            Edit summary to use
      * @param wiki
      *            The wiki object to use.
-     *
+     * 
      * @throws IOException
      *             If network error.
-     *
-     *
+     * 
+     * 
      */
 
     public static void templateReplace(String template, String replacementText,
@@ -149,7 +149,7 @@ public class ParseUtils {
      * Strips the namespace prefix of a page, if applicable. If there is no
      * namespace attached to the passed in string, then the original string is
      * returned.
-     *
+     * 
      * @param title
      *            The String to remove a namespace identifier from.
      * @param wiki
@@ -157,7 +157,7 @@ public class ParseUtils {
      * @return The String without a namespace identifier.
      * @throws IOException
      *             if a network error occurs (rare)
-     *
+     * 
      */
     public static String namespaceStrip(String title, Wiki wiki)
 	    throws IOException {
@@ -167,13 +167,13 @@ public class ParseUtils {
 
     /**
      * Attempts to parse out a template parameter.
-     *
+     * 
      * @param template
      *            The template to work on. Must be entered in format
      *            {{NAME|PARM1|PARAM2|...}}
      * @param number
      *            The parameter to retrieve: {{NAME|1|2|3|4...}}
-     *
+     * 
      * @return The param we parsed out or null if we didn't find a param
      *         matching the specified criteria
      */
@@ -197,7 +197,7 @@ public class ParseUtils {
 
     /**
      * Attempts to parse out a template parameter based on specification
-     *
+     * 
      * @param template
      *            The template to work on. Must be entered in format
      *            {{NAME|PARM1|PARAM2|...}}
@@ -223,7 +223,7 @@ public class ParseUtils {
     /**
      * Returns the param of a template. e.g. If we get "|foo = baz", we return
      * baz.
-     *
+     * 
      * @param p
      *            Must be a param in the form "|foo = baz" or "foo = baz"
      * @return The param we parsed out
@@ -239,7 +239,7 @@ public class ParseUtils {
     /**
      * Parses out the first instance of a template from a body of text, based on
      * specified template.
-     *
+     * 
      * @param text
      *            Text to search
      * @param template
@@ -250,7 +250,7 @@ public class ParseUtils {
      *            job for this template.
      * @param wiki
      *            The wiki object to use
-     *
+     * 
      * @return The template we parsed out, in the form
      *         {{TEMPLATE|ARG1|ARG2|...}} or NULL, if we didn't find the
      *         specified template.
@@ -269,14 +269,14 @@ public class ParseUtils {
     /**
      * Parses out the first group of matching text, based on specified regex.
      * Useful for parsing out templates.
-     *
+     * 
      * @param text
      *            Text to search
      * @param regex
      *            The regex to use
-     *
+     * 
      * @return The text we parsed out, or null if we didn't find anything.
-     *
+     * 
      */
     public static String parseFromPageRegex(String text, String regex) {
 	Matcher m = Pattern.compile(regex).matcher(text);
@@ -288,7 +288,7 @@ public class ParseUtils {
 
     /**
      * Counts the occurrences of a regular expression in the given string.
-     *
+     * 
      * @param text
      *            the string to examine
      * @param regex
@@ -306,7 +306,7 @@ public class ParseUtils {
 
     /**
      * Returns the list of parameters used in the given template.
-     *
+     * 
      * @param template
      *            the string to parse
      * @return (see above) Contributed by Hunsu
@@ -337,7 +337,7 @@ public class ParseUtils {
      * Removes the given template parameter from the input string. Example:
      * removeTemplateParam("{{template|X=A|Y=B|Z=C}}", "Y") ==
      * {{template|X=A|Z=C}}.
-     *
+     * 
      * @param template
      *            the input string
      * @param param
@@ -360,7 +360,7 @@ public class ParseUtils {
 
     /**
      * Removes the given template parameter from the input string.
-     *
+     * 
      * @param template
      *            the template
      * @param number
@@ -384,7 +384,7 @@ public class ParseUtils {
 
     /**
      * Creates a string consisting of the given character repeated len times.
-     *
+     * 
      * @param c
      *            the character
      * @param len
@@ -399,7 +399,7 @@ public class ParseUtils {
 
     /**
      * Insert a substring into the given string.
-     *
+     * 
      * @param s1
      *            the String
      * @param s2
@@ -416,7 +416,7 @@ public class ParseUtils {
 
     /**
      * Gets all instances of the template <i>template</i> in the given wikitext.
-     *
+     * 
      * @param template
      *            the template name
      * @param text
@@ -468,7 +468,7 @@ public class ParseUtils {
 
     /**
      * Removes comments and &lt;nowiki&gt; text from the given wikitext.
-     *
+     * 
      * @param text
      *            the wikitext
      * @return the new wikitext
@@ -483,7 +483,7 @@ public class ParseUtils {
     /**
      * Checks if the given position must be ignored. Useful to not change text
      * between noWiki tags or comments text
-     *
+     * 
      * @param map
      *            the map that contains position to ignore
      * @param position
@@ -504,7 +504,7 @@ public class ParseUtils {
      * Gets the position of the text that start with a specified String and ends
      * with a specfied string. Used to get the start and end position of noWiki
      * text and comments
-     *
+     * 
      * @param text
      *            the text
      * @param start
@@ -534,7 +534,7 @@ public class ParseUtils {
 
     /**
      * Gets the internal links contained in the given wikitext.
-     *
+     * 
      * @param text
      *            the wikitext
      * @return the internal links Contributed by Hunsu.
@@ -552,7 +552,7 @@ public class ParseUtils {
     /**
      * Add a parameter to a given template. If the parameter already exist we
      * replace its value by the new value.
-     *
+     * 
      * @param template
      *            wikitext that consists of only a template call e.g.
      *            {{example|1=Blah|2=Blah2}}
@@ -584,7 +584,7 @@ public class ParseUtils {
     /**
      * Construct template wikitext from a map that contains template parameters
      * and their values.
-     *
+     * 
      * @param map
      *            the map
      * @return the template wikitext e.g. {{example|1=Blah|2=Blah2}} Contributed
@@ -608,7 +608,7 @@ public class ParseUtils {
 
     /**
      * Rename a template parameter in the given template.
-     *
+     * 
      * @param template
      *            wikitext that consists of only a template call e.g.
      *            {{example|1=Blah|2=Blah2}}
@@ -639,7 +639,7 @@ public class ParseUtils {
     /**
      * Pads all template parameters to be the same length. Useful with
      * infoboxes.
-     *
+     * 
      * @param map
      *            the map that contains the template parameters
      * @return the new map
@@ -660,14 +660,14 @@ public class ParseUtils {
 	    if (key.trim().equals("templateName"))
 		newMap.put(key, map.get(key));
 	    else
-		newMap.put(adjust(key, length), map.get(key));
+		newMap.put(adjust(key, length +1), map.get(key));
 	}
 	return newMap;
     }
 
     /**
      * Pads a string with spaces until it is the given length.
-     *
+     * 
      * @param key
      *            the string to pad
      * @param length
@@ -685,7 +685,7 @@ public class ParseUtils {
     /**
      * Gets the template parameters with their value. If a parameter appears
      * many times in the template just its last value will be taken.
-     *
+     * 
      * @param template
      *            wikitext that consists of only a template call e.g.
      *            {{example|1=Blah|2=Blah2}}
@@ -724,7 +724,7 @@ public class ParseUtils {
 
     /**
      * Gets the template parameter.
-     *
+     * 
      * @param map
      *            a map containing template parameters
      * @param param
@@ -743,7 +743,7 @@ public class ParseUtils {
 
     /**
      * Gets the template name.
-     *
+     * 
      * @param template
      *            wikitext that consists of only a template call e.g.
      *            {{example|1=Blah|2=Blah2}}
@@ -763,7 +763,7 @@ public class ParseUtils {
 
     /**
      * TODO.
-     *
+     * 
      * @param internalLink
      * @return Contributed by Hunsu.
      */
@@ -822,15 +822,22 @@ public class ParseUtils {
 		.getTemplateParametersWithValue(template);
 	LinkedHashMap<String, String> newMap = new LinkedHashMap<String, String>();
 	for (Entry<String, String> entry : map.entrySet()) {
-	    String key = entry.getKey();
+	    String key = entry.getKey().trim();
 	    String value = entry.getValue();
-	    if (!value.endsWith(" "))
-		value += " ";
-	    if (!key.equals("templateName") && !key.startsWith(" "))
+
+	    if (!key.equals("templateName")
+		    && !key.startsWith("ParamWithoutName")) {
+		if (!value.trim().equals("")) {
+		    if (value.startsWith("\n"))
+			value = "\n" + value.trim() + "\n ";
+		    else
+			value = " " + value.trim() + "\n ";
+		} else 
+		    value = "\n ";
 		key = " " + key;
-	    if (!value.startsWith(" ") && !key.equals("templateName")
-		    && !key.startsWith("ParamWithoutName"))
-		value = " " + value;
+	    }
+	    if (key.equals("templateName"))
+		value = value.trim() + "\n ";
 	    newMap.put(key, value);
 	}
 	return ParseUtils.templateFromMap(ParseUtils.adjust(newMap)).replace(

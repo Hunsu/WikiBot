@@ -36,7 +36,7 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	UpdateFRArticle("Saison 1 de Vikings");
+	UpdateFRArticle("Saison 2 de Banshee");
     }
 
     /**
