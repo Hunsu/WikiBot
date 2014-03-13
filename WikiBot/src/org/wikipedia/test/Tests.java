@@ -34,9 +34,10 @@ public class Tests {
     public static void main(String[] args) throws IOException,
 	    FailedLoginException {
 	
-	//TVRage tvRage = new TVRage();
-	//Season season = tvRage.getSeason("The Walking Dead", "3");
-	
+	TVRage tvRage = new TVRage();
+	Season season = tvRage.getSeason("Law_And_Order_SVU", "1");
+	season.getEpisodesInfos();
+	System.out.println(season);
 	String refs = "";
 	Wiki wiki = new Wiki("fr.wikipedia.org");
 	refs += ParseUtils.getRefs(wiki.getPageText("Ursula Moore")).toString();

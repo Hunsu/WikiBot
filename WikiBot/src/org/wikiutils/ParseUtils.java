@@ -195,6 +195,12 @@ public class ParseUtils {
 	return map.get("ParamWithoutName" + i);
     }
 
+    public static LinkedHashMap<String, String> getTemplateParametersWithValue(
+	    String template) {
+	return getTemplateParametersWithValue(template,false);
+	
+    }
+
     /**
      * Attempts to parse out a template parameter based on specification
      * 
@@ -689,10 +695,11 @@ public class ParseUtils {
      * @param template
      *            wikitext that consists of only a template call e.g.
      *            {{example|1=Blah|2=Blah2}}
+     * @param trim 
      * @return the template parameters with value Contributed by Hunsu.
      */
     public static LinkedHashMap<String, String> getTemplateParametersWithValue(
-	    String template) {
+	    String template, boolean trim) {
 	if (template == null)
 	    return null;
 	int index = template.indexOf("|");
@@ -714,7 +721,11 @@ public class ParseUtils {
 		map.put("ParamWithoutName" + (j), al.get(i));
 		j++;
 	    } else {
-		String param = al.get(i).substring(0, index); // don't trim
+		String param ;
+		if(trim)
+		    param = al.get(i).substring(0, index).trim(); // don't trim
+		else
+		    param = al.get(i).substring(0,index);
 		String value = al.get(i).substring(index + 1);
 		map.put(param, value);
 	    }

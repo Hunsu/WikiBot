@@ -32,10 +32,10 @@ public class Logo {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	String title = "Banshee";
+	String title = "New York, unité spéciale";
 	if (title.endsWith(" (série télévisée)"))
 	    title = title.substring(0, title.length() - 18);
-	addLogo(title, "TV series - Banshee Title Card.jpg");
+	addLogo(title, "SVUopening.jpg");
     }
 
     /**

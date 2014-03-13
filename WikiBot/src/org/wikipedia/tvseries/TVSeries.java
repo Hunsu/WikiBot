@@ -36,7 +36,7 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	UpdateFRArticle("Saison 2 de Banshee");
+	UpdateFRArticle("Saison 4 de The Walking Dead");
     }
 
     /**
@@ -321,8 +321,8 @@ public class TVSeries {
 		    .getTemplateParam(map, "WrittenBy", true)
 		    .replace("&", "et").replace("\"", "")
 		    .replace(" and ", " et ").trim());
-	    writtenBy = writtenBy.replace("Story", "Histoire").replace(
-		    "Teleplay", "Mise en scène");
+	    writtenBy = writtenBy.replaceAll("Story( by)?", "Histoire").replaceAll(
+		    "Teleplay( by)?", "Mise en scène");
 	    template = ParseUtils.setTemplateParam(template, "scénariste",
 
 	    writtenBy + "\n", true);

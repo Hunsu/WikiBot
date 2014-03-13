@@ -19,6 +19,7 @@
  */
 package org.wikipedia.tvseries.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.wikipedia.tvseries.providers.TVRage;
 
 /**
  *
@@ -321,5 +323,12 @@ public class Episode implements Serializable {
 
 	public List<String> getStoryWriters(){
 		return storyWriters;
+	}
+
+	public void getInfos() throws IOException {
+	    if(link == null)
+		return;
+	    TVRage.getEpisodeInfos(this);
+	    
 	}
 }

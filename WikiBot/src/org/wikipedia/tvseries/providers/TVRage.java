@@ -26,7 +26,7 @@ import org.wikipedia.tvseries.model.Season;
 import org.wikipedia.tvseries.model.Series;
 
 public class TVRage {
-    private String url = "http://www.tvrage.com/";
+    private static String url = "http://www.tvrage.com/";
 
     public TVRage() {
     }
@@ -74,7 +74,7 @@ public class TVRage {
 		.userAgent(
 			"Mozilla/5.0 (Ubuntu 13.10) Gecko/20100101 Firefox/27.0")
 		.get();
-	episodes = getEpisodesList(doc,seasonNumber);
+	episodes = getEpisodesList(doc, seasonNumber);
 	season.setEpisodes(episodes);
 	return season;
     }
@@ -95,7 +95,8 @@ public class TVRage {
 	    episode.setAbsoluteNumber(e.text());
 	    e = iterator.next();
 	    String text = e.text();
-	    episode.setEpisodeNumber(Integer.valueOf(text.substring(text.indexOf("x") +1)));
+	    episode.setEpisodeNumber(Integer.valueOf(text.substring(text
+		    .indexOf("x") + 1)));
 	    episode.setFirstAired(parseEpisodeAirDate(iterator.next().text()));
 	    e = iterator.next().getElementsByTag("a").last();
 	    episode.setLink(url + e.attr("href").substring(1));
@@ -108,19 +109,23 @@ public class TVRage {
 	return episodes;
     }
 
-    public Episode getEoisode(String serieName, String seasonNumber,
-	    String episodeNumberInSeason) throws IOException {
-	Episode episode = new Episode();
-	episode.setSeasonNumber(Integer.valueOf(seasonNumber));
-	String[] tab = getEpisodeLinkAndAbsoluteNumber(serieName, seasonNumber,
-		episodeNumberInSeason);
-	episode.setEpisodeNumber(Integer.valueOf(episodeNumberInSeason));
-	episode.setLink(tab[0]);
-	episode.setAbsoluteNumber(tab[1]);
-	episode.setEpisodeName(tab[3]);
-	episode.setFirstAired(parseEpisodeAirDate(tab[2]));
-	String link = tab[0];
-	episode.setId(getId(link));
+    public static Episode getEoisode(Episode episode, String serieName,
+	    String seasonNumber, String episodeNumberInSeason)
+	    throws IOException {
+	if (episode == null) {
+	    episode = new Episode();
+	    episode.setSeasonNumber(Integer.valueOf(seasonNumber));
+	    String[] tab = getEpisodeLinkAndAbsoluteNumber(serieName,
+		    seasonNumber, episodeNumberInSeason);
+	    episode.setEpisodeNumber(Integer.valueOf(episodeNumberInSeason));
+	    episode.setLink(tab[0]);
+	    episode.setAbsoluteNumber(tab[1]);
+	    episode.setEpisodeName(tab[3]);
+	    episode.setFirstAired(parseEpisodeAirDate(tab[2]));
+	    String link = tab[0];
+	    episode.setId(getId(link));
+	}
+	String link = episode.getLink();
 	Document doc = Jsoup.connect(link).get();
 	String info = getInfo(doc);
 	// System.out.println(info);
@@ -146,7 +151,7 @@ public class TVRage {
      * OutputSettings().prettyPrint(false)); }
      */
 
-    private String parseEpisodeImage(Document doc) {
+    private static String parseEpisodeImage(Document doc) {
 	Element element = doc.select("span.left.margin_top_bottom").first();
 	element = element.getElementsByTag("img").first();
 	if (element != null)
@@ -154,7 +159,7 @@ public class TVRage {
 	return null;
     }
 
-    private HashMap<String, String> getGuestStar(Document doc) {
+    private static HashMap<String, String> getGuestStar(Document doc) {
 	HashMap<String, String> map = new HashMap<String, String>();
 	Elements elements = doc.select("div.grid_7_5.box.margin_top_bottom")
 		.not("div.left").first().select("td");
@@ -172,7 +177,7 @@ public class TVRage {
 	return map;
     }
 
-    public String getInfo(String info, String text) {
+    public static String getInfo(String info, String text) {
 	int beginIndex = text.indexOf(info);
 	if (beginIndex == -1)
 	    return null;
@@ -184,7 +189,7 @@ public class TVRage {
 		.replaceAll("\\n\\s*", "");
     }
 
-    private List<String> parseWriters(String text) {
+    private static List<String> parseWriters(String text) {
 	String info = getInfo("<b>Writer: </b>", text);
 	List<String> writers = new ArrayList<String>();
 	if (info != null)
@@ -192,7 +197,7 @@ public class TVRage {
 	return writers;
     }
 
-    private List<String> parseTeleplayWriters(String text) {
+    private static List<String> parseTeleplayWriters(String text) {
 	String info = getInfo("<b>Teleplay: </b>", text);
 	List<String> list = new ArrayList<String>();
 	if (info != null)
@@ -200,7 +205,7 @@ public class TVRage {
 	return list;
     }
 
-    private List<String> parseStoryWriters(String text) {
+    private static List<String> parseStoryWriters(String text) {
 	String info = getInfo("<b>Story: </b>", text);
 	List<String> list = new ArrayList<String>();
 	if (info != null)
@@ -208,21 +213,21 @@ public class TVRage {
 	return list;
     }
 
-    private List<String> parseDirectors(String info) {
+    private static List<String> parseDirectors(String info) {
 	info = getInfo("<b>Director: </b>", info);
 	if (info == null)
 	    return null;
 	return getList(info, ",");
     }
 
-    private List<String> getList(String str, String separator) {
+    private static List<String> getList(String str, String separator) {
 	String[] directors = str.trim().split(
 		"\\s*" + Pattern.quote(separator) + "\\s*");
 
 	return Arrays.asList(directors);
     }
 
-    private Date parseEpisodeAirDate(String date) {
+    private static Date parseEpisodeAirDate(String date) {
 	SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy",
 		Locale.ENGLISH);
 	try {
@@ -232,19 +237,19 @@ public class TVRage {
 	}
     }
 
-    private String getInfo(Document doc) {
+    private static String getInfo(Document doc) {
 	Elements elements = doc.select("div.left.padding_left_right");
 	if (elements != null && elements.size() > 0)
 	    return elements.first().html();
 	return null;
     }
 
-    private String getId(String link) {
+    private static String getId(String link) {
 	int index = link.lastIndexOf("/");
 	return link.substring(index + 1);
     }
 
-    private String[] getEpisodeLinkAndAbsoluteNumber(String serieName,
+    private static String[] getEpisodeLinkAndAbsoluteNumber(String serieName,
 	    String seasonNumber, String episodeNumberInSeason)
 	    throws IOException {
 	StringBuilder sb = new StringBuilder(url);
@@ -258,7 +263,7 @@ public class TVRage {
 	return getEpisodeLink(episodeNumberInSeason, doc);
     }
 
-    private String[] getEpisodeLink(String episodeNumberInSeason, Document doc) {
+    private static String[] getEpisodeLink(String episodeNumberInSeason, Document doc) {
 	if (episodeNumberInSeason.length() == 1)
 	    episodeNumberInSeason = "0" + episodeNumberInSeason;
 	Elements elements = doc.select("table.b");
@@ -290,7 +295,7 @@ public class TVRage {
 	return null;
     }
 
-    private String parseOverview(Document doc) {
+    private static String parseOverview(Document doc) {
 	Elements elements = doc.select("div.show_synopsis");
 	Element elem = elements.get(0);
 	elem.select("div").remove();
@@ -418,5 +423,11 @@ public class TVRage {
 
     private String parseStatut(String text) {
 	return getInfo("<b>Status</b>:", text);
+    }
+
+    public static void getEpisodeInfos(Episode episode) throws IOException {
+	if (episode.getLink() != null)
+	    getEoisode(episode, null, null, null);
+
     }
 }

@@ -1,5 +1,6 @@
 package org.wikipedia.tvseries.model;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Season {
@@ -53,6 +54,10 @@ public class Season {
 
     public List<Episode> getEpisodes(){
 	return episodes;
+    }
+    public void getEpisodesInfos() throws IOException{
+	for (Episode episode : episodes)
+	    episode.getInfos();
     }
 
 }
