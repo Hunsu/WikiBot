@@ -36,7 +36,10 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	UpdateFRArticle("Saison 4 de The Walking Dead");
+	UpdateFRArticle("Saison 1 de Bonne chance Charlie");
+	UpdateFRArticle("Saison 2 de Bonne chance Charlie");
+	UpdateFRArticle("Saison 3 de Bonne chance Charlie");
+	UpdateFRArticle("Saison 4 de Bonne chance Charlie");
     }
 
     /**
@@ -161,7 +164,7 @@ public class TVSeries {
 	if (frEpisodeNumber == null && title == null)
 	    return null;
 	int size = enAl.size();
-	String possibleTemplate = "";
+	String possibleTemplate = null;
 	for (int i = 0; i < size; i++) {
 	    String enEpisodeNumber = ParseUtils.getTemplateParam(enAl.get(i),
 		    "EpisodeNumber", true);
@@ -287,11 +290,11 @@ public class TVSeries {
 	    if (viewers != null)
 		template = ParseUtils.setTemplateParam(template, "audience",
 			(viewers + frViewers).replace("\n\n", "\n"), true);
-	} else {
+	} /*else {
 	    if(!frViewers.equals(""))
 		template = ParseUtils.setTemplateParam(template, "audience",
 			    frViewers.replace("\n\n", "\n"), true);
-	}
+	}*/
 
 	return template;
     }

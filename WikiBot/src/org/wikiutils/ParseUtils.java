@@ -839,7 +839,7 @@ public class ParseUtils {
 	    if (!key.equals("templateName")
 		    && !key.startsWith("ParamWithoutName")) {
 		if (!value.trim().equals("")) {
-		    if (value.startsWith("\n"))
+		    if (value.startsWith("\n") || value.indexOf("\n") < value.length()/2)
 			value = "\n" + value.trim() + "\n ";
 		    else
 			value = " " + value.trim() + "\n ";
