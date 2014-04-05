@@ -14,8 +14,8 @@ public class SeasonArticleImporter {
     private static Wiki frWiki;
 
     public static void main(String[] args) throws IOException {
-	String frArticle = importEnArticle(
-		"Law & Order: Special Victims Unit (season 1)", "1");
+	String frArticle = importEnArticle("List_of_Anger_Management_episodes",
+		"2");
 	FileUtils.writeStringToFile(new File("article"), frArticle);
     }
 
@@ -30,22 +30,25 @@ public class SeasonArticleImporter {
 	String enArticle = wiki.getPageText(title);
 	String[] frTitles = loadFrTitles(title);
 	String frArticle = "";
-	List<String> al = ParseUtils.getTemplates("Episode list/sublist",
-		enArticle);
+	List<String> al = ParseUtils.getTemplates("Episode list", enArticle);
 
-	int size = al.size() < frTitles.length ? al.size() : frTitles.length;
-
+	int size = al.size();
+	String frTitle = "";
 	for (int i = 0; i < size; i++) {
 	    LinkedHashMap<String, String> map = ParseUtils
 		    .getTemplateParametersWithValue(al.get(i));
-	    String frTemplate = translateTemplate(map, frTitles[i], season);
+	    if (i < frTitles.length)
+		frTitle = frTitles[i];
+	    else
+		frTitle = null;
+	    String frTemplate = translateTemplate(map, frTitle, season);
 	    frArticle += frTemplate + "\n";
 
 	}
 	String debutDate = getDate(al.get(0));
 	String endDate = getDate(al.get(size - 1));
-	String infoBox = createInfobox("New York, unité spéciale", debutDate,
-		endDate, String.valueOf(size));
+	String infoBox = createInfobox("Anger Management (série télévisée)",
+		debutDate, endDate, String.valueOf(size));
 	return infoBox + "\n\n" + frArticle;
     }
 
@@ -62,7 +65,7 @@ public class SeasonArticleImporter {
 
     private static String translateTemplate(LinkedHashMap<String, String> map,
 	    String frTitle, String season) {
-	String section = "=== Épisode %s : ''%s'' ===\n";
+	String section = "=== Épisode %s : %s ===\n";
 
 	String template = "{{Saison de série télévisée/Épisode\n}}";
 
@@ -82,6 +85,12 @@ public class SeasonArticleImporter {
 	template = ParseUtils.setTemplateParam(template, "invités", "\n", true);
 	template = ParseUtils.setTemplateParam(template, "résumé", "\n", true);
 	template = TVSeries.getMessingInfos(template, map, season);
+
+	if (frTitle == null) {
+	    String title = ParseUtils.getTemplateParam(template,
+		    "titre original", true);
+	    frTitle = "titre français inconnu (''" + title + "'')";
+	}
 	section = String.format(section, epNumber2, frTitle.trim());
 
 	return section + template;

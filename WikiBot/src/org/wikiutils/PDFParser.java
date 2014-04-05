@@ -259,7 +259,7 @@ public class PDFParser {
 	    }
 	}
 	return "* {{Audience|Canada|" + viewers + "|M}}" + ref
-		+ "<small>(première diffusion)</small>\n";
+		+ "<small>(première diffusion + différé 7 jours)</small>\n";
     }
 
     private static String getDate(Calendar date, String day) {
