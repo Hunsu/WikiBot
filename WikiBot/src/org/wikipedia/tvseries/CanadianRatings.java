@@ -323,7 +323,9 @@ public class CanadianRatings {
     private static void downloadRatingsFile(URL url) throws IOException {
 	String filename = url.getFile().substring(
 		url.getFile().lastIndexOf("/") + 1);
-	FileUtils.copyURLToFile(url, new File("pdfs/" + filename));
+	File file = new File("pdfs/" + filename);
+	if (!file.exists())
+	    FileUtils.copyURLToFile(url, file);
     }
 
     private static URL contructUrl() {

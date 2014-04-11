@@ -41,7 +41,7 @@ public class TVSeries {
      *            the args
      */
     public static void main(String[] args) {
-	// key = "tt1986770";
+	key = "tt2306299";
 	UpdateFRArticle("Saison 2 de Vikings");
     }
 
@@ -634,6 +634,10 @@ public class TVSeries {
     private static String AddGuests(String template,
 	    LinkedHashMap<String, String> map) {
 	if (season == null || key == null)
+	    return template;
+	String guest = ParseUtils.removeCommentsAndNoWikiText(ParseUtils
+		.getTemplateParam(template, "invités", true));
+	if (guest != null && !guest.equals(""))
 	    return template;
 	int episodeNumber = Integer.valueOf(ParseUtils.getTemplateParam(map,
 		"EpisodeNumber2", true));
